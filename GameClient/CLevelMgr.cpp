@@ -1,7 +1,11 @@
 #include "pch.h"
-#include "CLevel.h"
+
 #include "CLevelMgr.h"
+
+#include "CLevel.h"
 #include "CLevel_Stage01.h"
+
+#include "CPlayer.h"
 
 CLevelMgr::CLevelMgr()
 	: m_arrLevel{}
@@ -25,6 +29,12 @@ void CLevelMgr::init()
 	m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01] = new CLevel_Stage01;
 
 	m_pCurrentLevel = m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01];
+
+	CObject* pObject = new CPlayer;
+	pObject->SetName(L"Player");
+	pObject->SetPos(200.f, 500.f);
+	pObject->SetScale(100.f, 200.f);
+	m_pCurrentLevel->AddObject(pObject);
 
 
 }

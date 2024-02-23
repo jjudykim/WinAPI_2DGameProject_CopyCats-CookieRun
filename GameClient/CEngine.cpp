@@ -9,11 +9,23 @@ CEngine::CEngine()
 	: m_hMainWnd(nullptr)
 	, m_Resolution{}
 	, m_hDC(nullptr)
+	, m_arrPen{}
+	, m_arrBrush{}
 {}
 
 CEngine::~CEngine()
 {
 	ReleaseDC(m_hMainWnd, m_hDC);
+
+	for (int i = 0; i < (UINT)PEN_TYPE::END; ++i)
+	{
+		DeleteObject(m_arrPen[i]);
+	}
+
+	for (int i = 0; i < (UINT)BRUSH_TYPE::END; ++i)
+	{
+		DeleteObject(m_arrBrush[i]);
+	}
 }
 
 int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
@@ -52,10 +64,13 @@ void CEngine::progress()
 	// Render
 	// ===============
 	// Clear
-	CSelectObj SelectBrush(m_hSubDC, GetBrush(BRUSH_TYPE::BRUSH_GRAY));
-	Rectangle(m_hSubDC, -1, -1, m_Resolution.x + 1, m_Resolution.y + 1);
+	{
+		USE_BRUSH(m_hSubDC, BRUSH_TYPE::BRUSH_GRAY);
+		Rectangle(m_hSubDC, -1, -1, m_Resolution.x + 1, m_Resolution.y + 1);
+	}
 
 	CLevelMgr::GetInst()->render();
+	CTimeMgr::GetInst()->render();
 	
 	::BitBlt(m_hDC, 0, 0, m_Resolution.x, m_Resolution.y, m_hSubDC, 0, 0, SRCCOPY);
 }

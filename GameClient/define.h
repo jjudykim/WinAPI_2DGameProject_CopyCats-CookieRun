@@ -12,3 +12,5 @@
 							type(const type& _other) = delete;\
 						public:\
 							~type();
+
+#define USE_BRUSH(DC, TYPE) CSelectObj SelectBrush(DC, GetBrush(TYPE));

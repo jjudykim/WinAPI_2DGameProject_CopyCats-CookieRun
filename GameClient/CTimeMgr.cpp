@@ -2,6 +2,9 @@
 #include "CTimeMgr.h"
 #include "CEngine.h"
 
+float CTimeMgr::AccTime = 0.f;
+wchar_t CTimeMgr::szBuff[255] = {};
+
 CTimeMgr::CTimeMgr()
 	: m_llCurCount{}
 	, m_llPrevCount{}
@@ -37,16 +40,18 @@ void CTimeMgr::tick()
 	
 	++m_FPS;
 
-	static float AccTime = 0.f;
 	AccTime += m_DeltaTime;
 
 	if (1.f < AccTime)
 	{
-		wchar_t szBuff[255] = {};
 		swprintf_s(szBuff, L"DeltaTime : %f, FPS : %d", m_DeltaTime, m_FPS);
-		CEngine* pEngine = CEngine::GetInst();
-		TextOut(pEngine->GetMainDC(), pEngine->GetResolution().x - 250, 10, szBuff, wcslen(szBuff));
 		AccTime = 0.f;
 		m_FPS = 0;
 	}
+}
+
+void CTimeMgr::render()
+{
+	CEngine* pEngine = CEngine::GetInst();
+	TextOut(pEngine->GetSubDC(), pEngine->GetResolution().x - 250, 10, szBuff, wcslen(szBuff));
 }

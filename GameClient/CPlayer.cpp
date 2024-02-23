@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "CPlayer.h"
+#include "CEngine.h"
+#include "CObject.h"
 
 CPlayer::CPlayer()
 {

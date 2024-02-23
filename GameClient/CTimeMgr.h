@@ -4,6 +4,9 @@ class CTimeMgr
 	SINGLE(CTimeMgr);
 
 private:
+	static float AccTime;
+	static wchar_t szBuff[255];
+
 	LARGE_INTEGER m_llCurCount;
 	LARGE_INTEGER m_llPrevCount;
 	LARGE_INTEGER m_llFrequency;
@@ -15,6 +18,7 @@ private:
 public:
 	void init();
 	void tick();
+	void render();
 
 public:
 	float GetDeltaTime() { return m_DeltaTime; }
