@@ -9,7 +9,9 @@ CEngine::CEngine()
 {}
 
 CEngine::~CEngine()
-{}
+{
+	ReleaseDC(m_hMainWnd, m_hDC);
+}
 
 int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 {
@@ -21,6 +23,8 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	AdjustWindowRect(&wndRt, WS_OVERLAPPEDWINDOW, false);
 
 	SetWindowPos(m_hMainWnd, nullptr, 0, 0, wndRt.right - wndRt.left, wndRt.bottom - wndRt.top, 0);
+
+	m_hDC = GetDC(m_hMainWnd);
 
 	return S_OK;
 }
