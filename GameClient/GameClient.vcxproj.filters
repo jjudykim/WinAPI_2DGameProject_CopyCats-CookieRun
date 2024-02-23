@@ -19,7 +19,10 @@
     <Filter Include="03. Game\Object">
       <UniqueIdentifier>{7d500263-2bcf-4d2f-929c-cb07fe9f06f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\header">
+    <Filter Include="03. Game\Manager">
+      <UniqueIdentifier>{2eeea993-3491-4335-a3b7-0228be0d4a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Header">
       <UniqueIdentifier>{a873221c-67a3-411e-bf25-30ebaf3246ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -55,7 +58,13 @@
       <Filter>03. Game\Level</Filter>
     </ClInclude>
     <ClInclude Include="struct.h">
-      <Filter>03. Game\header</Filter>
+      <Filter>03. Game\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CLevelMgr.h">
+      <Filter>03. Game\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="enum.h">
+      <Filter>03. Game\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="CLevel.cpp">
       <Filter>03. Game\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevelMgr.cpp">
+      <Filter>03. Game\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
