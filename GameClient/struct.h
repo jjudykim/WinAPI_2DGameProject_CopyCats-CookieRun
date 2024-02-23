@@ -43,3 +43,23 @@ public:
 	Vec2D operator *(Vec2D _Other) { return Vec2D(x * _Other.x, y * _Other.y); }
 	Vec2D operator /(Vec2D _Other) { assert(!(_Other.x == 0.f || _Other.y == 0.f));  return Vec2D(x + _Other.x, y + _Other.y); }
 };
+
+
+struct tDbgRenderInfo
+{
+	DBG_SHAPE		Shape;   
+	Vec2D		    Position;
+	Vec2D		    Scale;   
+	PEN_TYPE		Color;   
+
+	float		    Duration;
+	float		    Age;     
+};
+
+
+struct tDbgLog
+{
+	LOG_TYPE        Type;
+	wstring			strLog;
+	float			Age;
+};

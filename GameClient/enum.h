@@ -36,3 +36,16 @@ enum class LEVEL_TYPE
 	END,
 };
 
+enum class DBG_SHAPE
+{
+	CIRCLE,
+	RECT,
+	LINE,
+};
+
+enum class LOG_TYPE
+{
+	DBG_LOG,
+	DBG_WARNING,
+	DBG_ERROR,
+};

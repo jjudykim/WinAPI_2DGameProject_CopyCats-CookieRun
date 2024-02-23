@@ -49,6 +49,9 @@
     <Filter Include="03. Game\Manager\TimeMgr">
       <UniqueIdentifier>{d73c7cd5-77df-4263-8a2a-0cf44e822be1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\Manager\DbgRenderMgr">
+      <UniqueIdentifier>{9fa66160-5fff-41f2-82a9-8bb3f9b7726b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -102,6 +105,9 @@
     <ClInclude Include="CSelectObj.h">
       <Filter>03. Game</Filter>
     </ClInclude>
+    <ClInclude Include="CDbgRenderMgr.h">
+      <Filter>03. Game\Manager\DbgRenderMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -133,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="CSelectObj.cpp">
       <Filter>03. Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CDbgRenderMgr.cpp">
+      <Filter>03. Game\Manager\DbgRenderMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

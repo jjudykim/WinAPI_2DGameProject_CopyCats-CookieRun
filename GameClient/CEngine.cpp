@@ -4,6 +4,7 @@
 
 #include "CTimeMgr.h"
 #include "CLevelMgr.h"
+#include "CDbgRenderMgr.h"
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
@@ -54,6 +55,7 @@ void CEngine::progress()
 	// Manager Tick
 	// ===============
 	CTimeMgr::GetInst()->tick();
+	CDbgRenderMgr::GetInst()->tick();
 
 	// ===============
 	// Level Progress
@@ -71,6 +73,7 @@ void CEngine::progress()
 
 	CLevelMgr::GetInst()->render();
 	CTimeMgr::GetInst()->render();
+	CDbgRenderMgr::GetInst()->render();
 	
 	::BitBlt(m_hDC, 0, 0, m_Resolution.x, m_Resolution.y, m_hSubDC, 0, 0, SRCCOPY);
 }

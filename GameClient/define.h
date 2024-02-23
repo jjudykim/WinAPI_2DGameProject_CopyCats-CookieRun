@@ -13,4 +13,8 @@
 						public:\
 							~type();
 
-#define USE_BRUSH(DC, TYPE) CSelectObj SelectBrush(DC, GetBrush(TYPE));
+#define USE_PEN(DC, TYPE) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetPen(TYPE));
+#define USE_BRUSH(DC, TYPE) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetBrush(TYPE));
+
+#define DT CTimeMgr::GetInst()->GetDeltaTime()
+#define DC CEngine::GetInst()->GetSubDC()
