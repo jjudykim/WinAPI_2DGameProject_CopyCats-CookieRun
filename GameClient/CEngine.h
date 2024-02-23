@@ -18,6 +18,6 @@ public:
 	HINSTANCE GetProcessInstance() { return m_hInstance; }
 	HWND GetMainWnd() { return m_hMainWnd; }
 	HDC GetMainDC() { return m_hDC; }
-
+	Vec2D GetResolution() { return m_Resolution; }
 };
 

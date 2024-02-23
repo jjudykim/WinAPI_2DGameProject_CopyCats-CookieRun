@@ -17,8 +17,20 @@ public:
 		, y(_y)
 	{}
 
+	Vec2D(int _x, int _y)
+		: x((float)_x)
+		, y((float)_y)
+	{}
+
+	Vec2D(POINT _pt)
+		: x((float)_pt.x)
+		, y((float)_pt.y)
+	{}
+
 	~Vec2D()
 	{}
+
+
 
 public:
 	Vec2D operator +(float f) { return Vec2D(x + f, y + f); }

@@ -2,6 +2,8 @@
 
 #include "CEngine.h"
 
+#include "CTimeMgr.h"
+
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
 	, m_Resolution{}
@@ -26,10 +28,15 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 
 	m_hDC = GetDC(m_hMainWnd);
 
+	CTimeMgr::GetInst()->init();
+
 	return S_OK;
 }
 
 void CEngine::progress()
 {
-	
+	// ===============
+	// Manager Tick
+	// ===============
+	CTimeMgr::GetInst()->tick();
 }
