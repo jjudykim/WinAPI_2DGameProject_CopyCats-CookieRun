@@ -1,5 +1,29 @@
 #pragma once
 
+enum class PEN_TYPE
+{
+	PEN_RED,
+	PEN_GREEN,
+	PEN_BLUE,
+	PEN_BLACK,
+
+	END,
+};
+
+enum class BRUSH_TYPE
+{
+	BRUSH_RED,
+	BRUSH_GREEN,
+	BRUSH_BLUE,
+	
+	BRUSH_BLACK,
+	BRUSH_WHITE,
+	BRUSH_GRAY,
+	BRUSH_HOLLOW,
+
+	END,
+};
+
 enum class LEVEL_TYPE
 {
 	LOGO_START,
@@ -11,3 +35,4 @@ enum class LEVEL_TYPE
 
 	END,
 };
+

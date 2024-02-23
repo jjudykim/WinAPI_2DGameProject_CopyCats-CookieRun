@@ -99,6 +99,9 @@
     <ClInclude Include="CTimeMgr.h">
       <Filter>03. Game\Manager\TimeMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CSelectObj.h">
+      <Filter>03. Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="CTimeMgr.cpp">
       <Filter>03. Game\Manager\TimeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CSelectObj.cpp">
+      <Filter>03. Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
