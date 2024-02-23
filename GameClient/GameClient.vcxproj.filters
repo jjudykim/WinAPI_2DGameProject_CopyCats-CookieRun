@@ -19,6 +19,9 @@
     <Filter Include="03. Game\Object">
       <UniqueIdentifier>{7d500263-2bcf-4d2f-929c-cb07fe9f06f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\header">
+      <UniqueIdentifier>{a873221c-67a3-411e-bf25-30ebaf3246ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -50,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="CLevel.h">
       <Filter>03. Game\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>03. Game\header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
