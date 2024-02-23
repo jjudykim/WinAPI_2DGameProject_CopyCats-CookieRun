@@ -18,6 +18,9 @@ public:
 	virtual void render();
 
 public:
+	virtual CLevel* Clone() = 0;
+
+public:
 	CLevel();
 	~CLevel();
 };

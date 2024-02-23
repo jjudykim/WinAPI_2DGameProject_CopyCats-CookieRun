@@ -25,6 +25,24 @@
     <Filter Include="03. Game\Header">
       <UniqueIdentifier>{a873221c-67a3-411e-bf25-30ebaf3246ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\Level\Logo_Start">
+      <UniqueIdentifier>{c1e5e4f4-4237-4f21-88ea-352e7e8c2896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Level\Editor">
+      <UniqueIdentifier>{f83c0c49-8602-41d4-acba-38f4ef685d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Level\Stage03">
+      <UniqueIdentifier>{54fed68d-95d4-424e-aa90-43570afaebe2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Level\Stage01">
+      <UniqueIdentifier>{d4c71be2-a069-45c3-b975-1835776dc15b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Level\Stage02">
+      <UniqueIdentifier>{00f5962a-4753-483b-9661-ccfec2fc68ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Object\Player">
+      <UniqueIdentifier>{2acd5cc4-20c9-4e20-b6d3-e1e7b7d95b55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -66,6 +84,12 @@
     <ClInclude Include="enum.h">
       <Filter>03. Game\Header</Filter>
     </ClInclude>
+    <ClInclude Include="CLevel_Stage01.h">
+      <Filter>03. Game\Level\Stage01</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>03. Game\Object\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -85,6 +109,12 @@
     </ClCompile>
     <ClCompile Include="CLevelMgr.cpp">
       <Filter>03. Game\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Stage01.cpp">
+      <Filter>03. Game\Level\Stage01</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>03. Game\Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

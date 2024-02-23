@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CLevel.h"
 #include "CLevelMgr.h"
+#include "CLevel_Stage01.h"
 
 CLevelMgr::CLevelMgr()
 	: m_arrLevel{}
@@ -21,8 +22,7 @@ CLevelMgr::~CLevelMgr()
 
 void CLevelMgr::init()
 {
-	// TODO : 스테이지 생성 
-	// m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01] 
+	m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01] = new CLevel_Stage01;
 
 	m_pCurrentLevel = m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01];
 
