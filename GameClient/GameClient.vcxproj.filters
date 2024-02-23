@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="03. Game\Level">
+      <UniqueIdentifier>{b038deb2-a787-497c-acc0-464174995081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Object">
+      <UniqueIdentifier>{7d500263-2bcf-4d2f-929c-cb07fe9f06f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -39,6 +45,12 @@
     <ClInclude Include="CEntity.h">
       <Filter>03. Game</Filter>
     </ClInclude>
+    <ClInclude Include="CObject.h">
+      <Filter>03. Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CLevel.h">
+      <Filter>03. Game\Level</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -49,6 +61,12 @@
     </ClCompile>
     <ClCompile Include="CEntity.cpp">
       <Filter>03. Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject.cpp">
+      <Filter>03. Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel.cpp">
+      <Filter>03. Game\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
