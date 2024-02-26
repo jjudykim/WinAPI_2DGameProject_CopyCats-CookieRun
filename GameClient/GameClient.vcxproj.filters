@@ -52,6 +52,24 @@
     <Filter Include="03. Game\Manager\DbgRenderMgr">
       <UniqueIdentifier>{9fa66160-5fff-41f2-82a9-8bb3f9b7726b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\Engine">
+      <UniqueIdentifier>{4ad0c281-ffe5-4ee1-8e59-5380c5582cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Module">
+      <UniqueIdentifier>{35f009a3-562c-4cba-be41-056282193f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Component">
+      <UniqueIdentifier>{14747860-f78a-4052-9511-d7f7ad1c8356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Component\Animator">
+      <UniqueIdentifier>{a217f1e6-e67d-4d15-bcb7-407d8daa359c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Module\SelectObject">
+      <UniqueIdentifier>{e51f5625-5bf3-4bbd-8dd0-fb09ac56343a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\Module\Animation">
+      <UniqueIdentifier>{6a3f38ee-b434-43f0-ae85-c551bdf8f373}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -65,9 +83,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>02. Main</Filter>
-    </ClInclude>
-    <ClInclude Include="CEngine.h">
-      <Filter>03. Game</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>02. Main</Filter>
@@ -102,19 +117,28 @@
     <ClInclude Include="CTimeMgr.h">
       <Filter>03. Game\Manager\TimeMgr</Filter>
     </ClInclude>
-    <ClInclude Include="CSelectObj.h">
-      <Filter>03. Game</Filter>
-    </ClInclude>
     <ClInclude Include="CDbgRenderMgr.h">
       <Filter>03. Game\Manager\DbgRenderMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CEngine.h">
+      <Filter>03. Game\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CComponent.h">
+      <Filter>03. Game\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="CSelectObj.h">
+      <Filter>03. Game\Module\SelectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimator.h">
+      <Filter>03. Game\Component\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimation.h">
+      <Filter>03. Game\Module\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>02. Main</Filter>
-    </ClCompile>
-    <ClCompile Include="CEngine.cpp">
-      <Filter>03. Game</Filter>
     </ClCompile>
     <ClCompile Include="CEntity.cpp">
       <Filter>03. Game</Filter>
@@ -137,11 +161,23 @@
     <ClCompile Include="CTimeMgr.cpp">
       <Filter>03. Game\Manager\TimeMgr</Filter>
     </ClCompile>
-    <ClCompile Include="CSelectObj.cpp">
-      <Filter>03. Game</Filter>
-    </ClCompile>
     <ClCompile Include="CDbgRenderMgr.cpp">
       <Filter>03. Game\Manager\DbgRenderMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CEngine.cpp">
+      <Filter>03. Game\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CComponent.cpp">
+      <Filter>03. Game\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="CSelectObj.cpp">
+      <Filter>03. Game\Module\SelectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator.cpp">
+      <Filter>03. Game\Component\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation.cpp">
+      <Filter>03. Game\Module\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

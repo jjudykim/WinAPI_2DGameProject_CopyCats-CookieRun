@@ -45,7 +45,7 @@ public:
 };
 
 
-struct tDbgRenderInfo
+struct DbgRenderInfo
 {
 	DBG_SHAPE		Shape;   
 	Vec2D		    Position;
@@ -57,7 +57,7 @@ struct tDbgRenderInfo
 };
 
 
-struct tDbgLog
+struct DbgLog
 {
 	LOG_TYPE        Type;
 	wstring			strLog;

@@ -21,7 +21,10 @@ void CDbgRenderMgr::tick()
 
 void CDbgRenderMgr::render()
 {
-	list<tDbgRenderInfo>::iterator iter = m_RenderList.begin();
+	if (m_RenderList.empty())
+		return;
+
+	list<DbgRenderInfo>::iterator iter = m_RenderList.begin();
 
 	for (; iter != m_RenderList.end(); )
 	{
@@ -57,8 +60,10 @@ void CDbgRenderMgr::render()
 		else { ++iter; }
 	}
 
+	if (m_LogList.empty())
+		return;
 
-	list<tDbgLog>::iterator logiter = m_LogList.begin();
+	list<DbgLog>::iterator logiter = m_LogList.begin();
 
 	SetBkMode(DC, TRANSPARENT);
 

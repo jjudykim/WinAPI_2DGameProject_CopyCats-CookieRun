@@ -4,15 +4,15 @@ class CDbgRenderMgr
 	SINGLE(CDbgRenderMgr)
 
 private:
-	list<tDbgRenderInfo>  m_RenderList;
-	list<tDbgLog>		  m_LogList;
+	list<DbgRenderInfo>  m_RenderList;
+	list<DbgLog>		  m_LogList;
 
 	float				  m_LogLife;
 	int					  m_LogSpace;
 	Vec2D				  m_LogStartPos;
 
 public:
-	void AddDbgRenderInfo(const tDbgRenderInfo& _info)
+	void AddDbgRenderInfo(const DbgRenderInfo& _info)
 	{
 		m_RenderList.push_back(_info);
 	}
