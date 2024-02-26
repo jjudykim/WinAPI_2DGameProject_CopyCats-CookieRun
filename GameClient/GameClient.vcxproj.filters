@@ -13,62 +13,77 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="03. Game\Level">
-      <UniqueIdentifier>{b038deb2-a787-497c-acc0-464174995081}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Object">
-      <UniqueIdentifier>{7d500263-2bcf-4d2f-929c-cb07fe9f06f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Manager">
-      <UniqueIdentifier>{2eeea993-3491-4335-a3b7-0228be0d4a07}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Header">
+    <Filter Include="03. Game\02. Header">
       <UniqueIdentifier>{a873221c-67a3-411e-bf25-30ebaf3246ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\Level\Logo_Start">
-      <UniqueIdentifier>{c1e5e4f4-4237-4f21-88ea-352e7e8c2896}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Level\Editor">
-      <UniqueIdentifier>{f83c0c49-8602-41d4-acba-38f4ef685d40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Level\Stage03">
-      <UniqueIdentifier>{54fed68d-95d4-424e-aa90-43570afaebe2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Level\Stage01">
-      <UniqueIdentifier>{d4c71be2-a069-45c3-b975-1835776dc15b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Level\Stage02">
-      <UniqueIdentifier>{00f5962a-4753-483b-9661-ccfec2fc68ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Object\Player">
-      <UniqueIdentifier>{2acd5cc4-20c9-4e20-b6d3-e1e7b7d95b55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Manager\LevelMgr">
-      <UniqueIdentifier>{5dbd5ca1-f469-4094-8b5c-b25c8ff1b0cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Manager\TimeMgr">
-      <UniqueIdentifier>{d73c7cd5-77df-4263-8a2a-0cf44e822be1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Manager\DbgRenderMgr">
-      <UniqueIdentifier>{9fa66160-5fff-41f2-82a9-8bb3f9b7726b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Engine">
+    <Filter Include="03. Game\01. Engine">
       <UniqueIdentifier>{4ad0c281-ffe5-4ee1-8e59-5380c5582cd8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\Module">
+    <Filter Include="03. Game\04. Level">
+      <UniqueIdentifier>{b038deb2-a787-497c-acc0-464174995081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\04. Level\Logo_Start">
+      <UniqueIdentifier>{c1e5e4f4-4237-4f21-88ea-352e7e8c2896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\04. Level\Editor">
+      <UniqueIdentifier>{f83c0c49-8602-41d4-acba-38f4ef685d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\04. Level\Stage03">
+      <UniqueIdentifier>{54fed68d-95d4-424e-aa90-43570afaebe2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\04. Level\Stage01">
+      <UniqueIdentifier>{d4c71be2-a069-45c3-b975-1835776dc15b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\04. Level\Stage02">
+      <UniqueIdentifier>{00f5962a-4753-483b-9661-ccfec2fc68ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\03. Manager">
+      <UniqueIdentifier>{2eeea993-3491-4335-a3b7-0228be0d4a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\03. Manager\LevelMgr">
+      <UniqueIdentifier>{5dbd5ca1-f469-4094-8b5c-b25c8ff1b0cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\03. Manager\TimeMgr">
+      <UniqueIdentifier>{d73c7cd5-77df-4263-8a2a-0cf44e822be1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\03. Manager\DbgRenderMgr">
+      <UniqueIdentifier>{9fa66160-5fff-41f2-82a9-8bb3f9b7726b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\08. Module">
       <UniqueIdentifier>{35f009a3-562c-4cba-be41-056282193f9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\Component">
-      <UniqueIdentifier>{14747860-f78a-4052-9511-d7f7ad1c8356}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Component\Animator">
-      <UniqueIdentifier>{a217f1e6-e67d-4d15-bcb7-407d8daa359c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\Module\SelectObject">
+    <Filter Include="03. Game\08. Module\SelectObject">
       <UniqueIdentifier>{e51f5625-5bf3-4bbd-8dd0-fb09ac56343a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\Module\Animation">
+    <Filter Include="03. Game\08. Module\Animation">
       <UniqueIdentifier>{6a3f38ee-b434-43f0-ae85-c551bdf8f373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\05. Object">
+      <UniqueIdentifier>{7d500263-2bcf-4d2f-929c-cb07fe9f06f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\05. Object\Player">
+      <UniqueIdentifier>{2acd5cc4-20c9-4e20-b6d3-e1e7b7d95b55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\06. Component">
+      <UniqueIdentifier>{14747860-f78a-4052-9511-d7f7ad1c8356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\06. Component\Animator">
+      <UniqueIdentifier>{a217f1e6-e67d-4d15-bcb7-407d8daa359c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\07. Asset">
+      <UniqueIdentifier>{fa62caa7-bb5a-4360-b462-91928b02cf81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\03. Manager\AssetMgr">
+      <UniqueIdentifier>{89e9cb1f-0334-4f81-a954-070cacfc1715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\07. Asset\Texture">
+      <UniqueIdentifier>{1db666b4-1668-40b9-bc77-5e3be91e2e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\07. Asset\Sound">
+      <UniqueIdentifier>{b1177d51-4171-4dcd-924a-92cbe7f7e172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\03. Manager\PathMgr">
+      <UniqueIdentifier>{ebdce0bf-c901-4c11-b0ec-d27c67601123}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -94,46 +109,61 @@
       <Filter>03. Game</Filter>
     </ClInclude>
     <ClInclude Include="CObject.h">
-      <Filter>03. Game\Object</Filter>
+      <Filter>03. Game\05. Object</Filter>
     </ClInclude>
     <ClInclude Include="CLevel.h">
-      <Filter>03. Game\Level</Filter>
+      <Filter>03. Game\04. Level</Filter>
     </ClInclude>
     <ClInclude Include="struct.h">
-      <Filter>03. Game\Header</Filter>
+      <Filter>03. Game\02. Header</Filter>
     </ClInclude>
     <ClInclude Include="enum.h">
-      <Filter>03. Game\Header</Filter>
+      <Filter>03. Game\02. Header</Filter>
     </ClInclude>
     <ClInclude Include="CLevel_Stage01.h">
-      <Filter>03. Game\Level\Stage01</Filter>
+      <Filter>03. Game\04. Level\Stage01</Filter>
     </ClInclude>
     <ClInclude Include="CPlayer.h">
-      <Filter>03. Game\Object\Player</Filter>
+      <Filter>03. Game\05. Object\Player</Filter>
     </ClInclude>
     <ClInclude Include="CLevelMgr.h">
-      <Filter>03. Game\Manager\LevelMgr</Filter>
+      <Filter>03. Game\03. Manager\LevelMgr</Filter>
     </ClInclude>
     <ClInclude Include="CTimeMgr.h">
-      <Filter>03. Game\Manager\TimeMgr</Filter>
+      <Filter>03. Game\03. Manager\TimeMgr</Filter>
     </ClInclude>
     <ClInclude Include="CDbgRenderMgr.h">
-      <Filter>03. Game\Manager\DbgRenderMgr</Filter>
+      <Filter>03. Game\03. Manager\DbgRenderMgr</Filter>
     </ClInclude>
     <ClInclude Include="CEngine.h">
-      <Filter>03. Game\Engine</Filter>
+      <Filter>03. Game\01. Engine</Filter>
     </ClInclude>
     <ClInclude Include="CComponent.h">
-      <Filter>03. Game\Component</Filter>
+      <Filter>03. Game\06. Component</Filter>
     </ClInclude>
     <ClInclude Include="CSelectObj.h">
-      <Filter>03. Game\Module\SelectObject</Filter>
+      <Filter>03. Game\08. Module\SelectObject</Filter>
     </ClInclude>
     <ClInclude Include="CAnimator.h">
-      <Filter>03. Game\Component\Animator</Filter>
+      <Filter>03. Game\06. Component\Animator</Filter>
     </ClInclude>
     <ClInclude Include="CAnimation.h">
-      <Filter>03. Game\Module\Animation</Filter>
+      <Filter>03. Game\08. Module\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="CAsset.h">
+      <Filter>03. Game\07. Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="CAssetMgr.h">
+      <Filter>03. Game\03. Manager\AssetMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CTexture.h">
+      <Filter>03. Game\07. Asset\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="CPathMgr.h">
+      <Filter>03. Game\03. Manager\PathMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CSound.h">
+      <Filter>03. Game\07. Asset\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -144,40 +174,55 @@
       <Filter>03. Game</Filter>
     </ClCompile>
     <ClCompile Include="CObject.cpp">
-      <Filter>03. Game\Object</Filter>
+      <Filter>03. Game\05. Object</Filter>
     </ClCompile>
     <ClCompile Include="CLevel.cpp">
-      <Filter>03. Game\Level</Filter>
+      <Filter>03. Game\04. Level</Filter>
     </ClCompile>
     <ClCompile Include="CLevel_Stage01.cpp">
-      <Filter>03. Game\Level\Stage01</Filter>
+      <Filter>03. Game\04. Level\Stage01</Filter>
     </ClCompile>
     <ClCompile Include="CPlayer.cpp">
-      <Filter>03. Game\Object\Player</Filter>
+      <Filter>03. Game\05. Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="CLevelMgr.cpp">
-      <Filter>03. Game\Manager\LevelMgr</Filter>
+      <Filter>03. Game\03. Manager\LevelMgr</Filter>
     </ClCompile>
     <ClCompile Include="CTimeMgr.cpp">
-      <Filter>03. Game\Manager\TimeMgr</Filter>
+      <Filter>03. Game\03. Manager\TimeMgr</Filter>
     </ClCompile>
     <ClCompile Include="CDbgRenderMgr.cpp">
-      <Filter>03. Game\Manager\DbgRenderMgr</Filter>
+      <Filter>03. Game\03. Manager\DbgRenderMgr</Filter>
     </ClCompile>
     <ClCompile Include="CEngine.cpp">
-      <Filter>03. Game\Engine</Filter>
+      <Filter>03. Game\01. Engine</Filter>
     </ClCompile>
     <ClCompile Include="CComponent.cpp">
-      <Filter>03. Game\Component</Filter>
+      <Filter>03. Game\06. Component</Filter>
     </ClCompile>
     <ClCompile Include="CSelectObj.cpp">
-      <Filter>03. Game\Module\SelectObject</Filter>
+      <Filter>03. Game\08. Module\SelectObject</Filter>
     </ClCompile>
     <ClCompile Include="CAnimator.cpp">
-      <Filter>03. Game\Component\Animator</Filter>
+      <Filter>03. Game\06. Component\Animator</Filter>
     </ClCompile>
     <ClCompile Include="CAnimation.cpp">
-      <Filter>03. Game\Module\Animation</Filter>
+      <Filter>03. Game\08. Module\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CAsset.cpp">
+      <Filter>03. Game\07. Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="CAssetMgr.cpp">
+      <Filter>03. Game\03. Manager\AssetMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CTexture.cpp">
+      <Filter>03. Game\07. Asset\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="CPathMgr.cpp">
+      <Filter>03. Game\03. Manager\PathMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CSound.cpp">
+      <Filter>03. Game\07. Asset\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

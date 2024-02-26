@@ -1,5 +1,8 @@
 #pragma once
 #include "CComponent.h"
+
+class CAnimation;
+
 class CAnimator :
     public CComponent
 {
