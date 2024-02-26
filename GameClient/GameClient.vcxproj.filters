@@ -102,9 +102,6 @@
     <ClInclude Include="pch.h">
       <Filter>02. Main</Filter>
     </ClInclude>
-    <ClInclude Include="define.h">
-      <Filter>02. Main</Filter>
-    </ClInclude>
     <ClInclude Include="CEntity.h">
       <Filter>03. Game</Filter>
     </ClInclude>
@@ -164,6 +161,9 @@
     </ClInclude>
     <ClInclude Include="CSound.h">
       <Filter>03. Game\07. Asset\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>03. Game\02. Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -18,3 +18,13 @@
 
 #define DT CTimeMgr::GetInst()->GetDeltaTime()
 #define DC CEngine::GetInst()->GetSubDC()
+
+#define LOG(TYPE, Msg) {\
+							string FuncName = __FUNCTION__;\
+							wstring strFuncName = wstring(FuncName.begin(), FuncName.end());\
+							wchar_t szLog[256] = {};\
+							swprintf_s(szLog, L"{%s : %d} : %s", strFuncName.c_str(), __LINE__, Msg);\
+							DebugLog(TYPE, szLog);\
+						}
+	
+}
