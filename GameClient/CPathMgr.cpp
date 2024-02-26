@@ -34,9 +34,21 @@ void CPathMgr::init()
 
 void CPathMgr::render()
 {
-
+	LOG(LOG_TYPE::DBG_LOG, m_Solution.c_str());
+	LOG(LOG_TYPE::DBG_LOG, m_Proj.c_str());
+	LOG(LOG_TYPE::DBG_LOG, m_Content.c_str());
 }
 
-void CPathMgr::GetParentPath(wchar_t* _Buffer)
+void CPathMgr::GetParentPath(_Inout_ wchar_t* _Buffer)
 {
+	size_t len = wcslen(_Buffer);
+
+	for (size_t i = len - 1; 0 < i; --i)
+	{
+		if (L'\\' == _Buffer[i])
+		{
+			_Buffer[i] = L'\0';
+			break;
+		}
+	}
 }

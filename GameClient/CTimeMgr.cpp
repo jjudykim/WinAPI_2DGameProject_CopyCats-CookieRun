@@ -53,5 +53,5 @@ void CTimeMgr::tick()
 void CTimeMgr::render()
 {
 	CEngine* pEngine = CEngine::GetInst();
-	TextOut(DC, pEngine->GetResolution().x - 250, 10, szBuff, wcslen(szBuff));
+	TextOut(DC, (int)pEngine->GetResolution().x - 250, 10, szBuff, (int)wcslen(szBuff));
 }

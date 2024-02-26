@@ -17,6 +17,11 @@ public:
 		m_RenderList.push_back(_info);
 	}
 
+	void AddDbgLog(const DbgLog& _info) 
+	{
+		m_LogList.push_back(_info);
+	}
+
 public:
 	void tick();
 	void render();

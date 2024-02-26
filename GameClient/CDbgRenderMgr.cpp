@@ -7,6 +7,9 @@
 #include "CTimeMgr.h"
 
 CDbgRenderMgr::CDbgRenderMgr()
+	: m_LogLife(3.f)
+	, m_LogSpace(15)
+	, m_LogStartPos(Vec2D(10.f, 10.f))
 {
 }
 
