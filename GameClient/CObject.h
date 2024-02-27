@@ -1,12 +1,22 @@
 #pragma once
 #include "CEntity.h"
 
+#include "CEngine.h"
+#include "CAssetMgr.h"
+#include "CTexture.h"
+
+class CComponent;
+class CAnimator;
+
 class CObject
 	: public CEntity
 {
 private:
-	Vec2D      m_Pos;
-	Vec2D      m_Scale;
+	Vec2D				m_Pos;
+	Vec2D				m_Scale;
+	vector<CComponent*> m_vecCom;
+
+	CAnimator*			m_Animator;
 
 public:
 	void SetPos(Vec2D _Pos) { m_Pos = _Pos; }
@@ -17,11 +27,15 @@ public:
 	Vec2D GetPos() { return m_Pos; }
 	Vec2D GetScale() { return m_Scale; }
 
+
 public:
 	virtual void begin();
 	virtual void tick();
 	virtual void finaltick();
 	virtual void render();
+
+public:
+	CComponent* AddComponent(CComponent* _Component);
 
 public:
 	virtual CObject* Clone() = 0;

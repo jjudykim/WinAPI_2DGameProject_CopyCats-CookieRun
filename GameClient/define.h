@@ -13,16 +13,19 @@
 						public:\
 							~type();
 
-#define USE_PEN(DC, TYPE) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetPen(TYPE));
-#define USE_BRUSH(DC, TYPE) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetBrush(TYPE));
+#define USE_PEN(DC, Type) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetPen(Type));
+#define USE_BRUSH(DC, Type) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetBrush(Type));
 
 #define DT CTimeMgr::GetInst()->GetDeltaTime()
 #define DC CEngine::GetInst()->GetSubDC()
 
-#define LOG(TYPE, Msg) {\
+#define LOG(Type, Msg) {\
 							string FuncName = __FUNCTION__;\
 							wstring strFuncName = wstring(FuncName.begin(), FuncName.end());\
 							wchar_t szLog[256] = {};\
 							swprintf_s(szLog, L"{%s : %d} : %s", strFuncName.c_str(), __LINE__, Msg);\
-							DebugLog(TYPE, szLog);\
+							DebugLog(Type, szLog);\
 						}
+
+#define CLONE(Type) virtual Type* Clone() override { return new Type(*this); }
+#define CLONE_DISABLE(Type) virtual Type* Clone() override { return nullptr; }

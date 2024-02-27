@@ -14,6 +14,8 @@ public:
     
 public:
     virtual void finaltick() = 0;
+
+public:
     virtual CComponent* Clone() = 0;
     
 

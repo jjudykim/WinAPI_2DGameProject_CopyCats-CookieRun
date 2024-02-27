@@ -5,7 +5,7 @@ class CLevel_Stage01
 	: public CLevel
 {
 public:
-	virtual CLevel_Stage01* Clone() override { return new CLevel_Stage01(*this); }
+	CLONE_DISABLE(CLevel_Stage01);
 
 public:
 	CLevel_Stage01();

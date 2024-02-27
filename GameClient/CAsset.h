@@ -12,7 +12,7 @@ public:
     const wstring& GetRelativePath() { return m_RelativePath; }
 
 public:
-    virtual CAsset* Clone() override { return nullptr; };
+    CLONE_DISABLE(CAsset);
     virtual int Load(const wstring& _strFilePath) = 0;
 
 public:

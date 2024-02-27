@@ -44,7 +44,7 @@ public:
     void render();
 
 public:
-    virtual CAnimation* Clone() override { return new CAnimation(*this); }
+    CLONE(CAnimation);
 
     CAnimation();
     ~CAnimation();

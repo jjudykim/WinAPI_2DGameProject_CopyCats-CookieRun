@@ -1,9 +1,15 @@
 #pragma once
 #include "CObject.h"
+
+class CCollider;
+class CAnimator;
+
 class CPlayer :
     public CObject
 {
 private:
+    CTexture* m_PlayerImg;
+    CAnimator* m_Animator;
 
 public:
     virtual void begin();
