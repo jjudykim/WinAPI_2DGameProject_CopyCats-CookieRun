@@ -85,6 +85,9 @@
     <Filter Include="03. Game\03. Manager\PathMgr">
       <UniqueIdentifier>{ebdce0bf-c901-4c11-b0ec-d27c67601123}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\KeyMgr">
+      <UniqueIdentifier>{1780b463-995c-4ebb-8817-37f335b21804}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -168,6 +171,9 @@
     <ClInclude Include="func.h">
       <Filter>03. Game\02. Header</Filter>
     </ClInclude>
+    <ClInclude Include="CKeyMgr.h">
+      <Filter>03. Game\03. Manager\KeyMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -229,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="func.cpp">
       <Filter>03. Game\02. Header</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyMgr.cpp">
+      <Filter>03. Game\03. Manager\KeyMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
