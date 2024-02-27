@@ -25,14 +25,18 @@ void CObject::tick()
 
 void CObject::finaltick()
 {
+	for (size_t i = 0; i < m_vecCom.size(); ++i)
+	{
+		m_vecCom[i]->finaltick();
+	}
 }
 
 void CObject::render()
 {
-	Rectangle(DC,(int)(m_Pos.x - m_Scale.x * 0.5f)
-				,(int)(m_Pos.y - m_Scale.y * 0.5f)
-				,(int)(m_Pos.x + m_Scale.x * 0.5f)
-				,(int)(m_Pos.y + m_Scale.y * 0.5f));
+	if (m_Animator == nullptr)
+		return;
+
+	m_Animator->render();
 }
 
 CComponent* CObject::AddComponent(CComponent* _Component)

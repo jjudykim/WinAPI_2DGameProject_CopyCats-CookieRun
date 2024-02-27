@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CAnimation.h"
 
+#include "CTimeMgr.h"
+
 #include "CEngine.h"
 #include "CObject.h"
 #include "CAnimator.h"
@@ -19,7 +21,7 @@ CAnimation::~CAnimation()
 {
 }
 
-void CAnimation::Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, int _FrameCount, int _FPS)
+void CAnimation::Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, int _DividerSize, int _FrameCount, int _FPS)
 {
 	m_Atlas = _AtlasTex;
 
@@ -27,7 +29,7 @@ void CAnimation::Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, 
 	{
 		AniFrm frm = {};
 		frm.Duration = 0.5f / (float)_FPS;
-		frm.StartPos = _StartPos + Vec2D(_SliceSize.x * i, 0.f);
+		frm.StartPos = _StartPos + Vec2D((_SliceSize.x + _DividerSize) * i, 0.f);
 		frm.SliceSize = _SliceSize;
 
 		m_vecFrm.push_back(frm);
@@ -36,6 +38,24 @@ void CAnimation::Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, 
 
 void CAnimation::finaltick()
 {
+	if (m_bFinish)
+		return;
+
+	const AniFrm& frm = m_vecFrm[m_CurFrmIdx];
+
+	m_Time += DT;
+
+	if (frm.Duration <= m_Time)
+	{
+		m_Time -= frm.Duration;
+		++m_CurFrmIdx;
+
+		if (m_vecFrm.size() <= m_CurFrmIdx)
+		{
+			--m_CurFrmIdx;
+			m_bFinish = true;
+		}
+	}
 }
 
 void CAnimation::render()
@@ -56,6 +76,6 @@ void CAnimation::render()
 					, m_Atlas->GetDC()
 					, (int)frm.StartPos.x, (int)frm.StartPos.y
 					, (int)frm.SliceSize.x, (int)frm.SliceSize.y
-					, RGB(255, 0, 0));
+					, RGB(0, 0, 0));
 }
 

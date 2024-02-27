@@ -63,3 +63,11 @@ struct DbgLog
 	wstring			strLog;
 	float			Age;
 };
+
+struct COOKIE_INFO
+{
+	COOKIE_TYPE _type;
+	Vec2D       _frmSize;
+	int			_dividerSize;
+	wstring		_path;
+};

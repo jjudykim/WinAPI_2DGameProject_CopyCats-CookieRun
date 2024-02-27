@@ -18,6 +18,10 @@ CLevel::~CLevel()
 
 void CLevel::begin()
 {
+	for (size_t i = 0; i < m_vecObj.size(); ++i)
+	{
+		m_vecObj[i]->begin();
+	}
 }
 
 void CLevel::tick()
@@ -26,6 +30,10 @@ void CLevel::tick()
 
 void CLevel::finaltick()
 {
+	for (size_t i = 0; i < m_vecObj.size(); ++i)
+	{
+		m_vecObj[i]->finaltick();
+	}
 }
 
 void CLevel::render()

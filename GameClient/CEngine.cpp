@@ -3,6 +3,7 @@
 #include "CEngine.h"
 
 #include "CTimeMgr.h"
+#include "CPathMgr.h"
 #include "CLevelMgr.h"
 #include "CDbgRenderMgr.h"
 
@@ -43,8 +44,10 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CreateDefaultGDIObject();
 
 	// Manager initializing ========
+	CPathMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CLevelMgr::GetInst()->init();
+	
 
 	return S_OK;
 }

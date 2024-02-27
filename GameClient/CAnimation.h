@@ -26,7 +26,7 @@ private:
     bool            m_bFinish;
 
 public:
-    void Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, int _FrameCount, int _FPS);
+    void Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, int _DividerSize, int _FrameCount, int _FPS);
     void SetAtlasTexture(CTexture* _Atlas) { m_Atlas = m_Atlas; }
     bool IsFinish() { return m_bFinish; }
     void Reset()

@@ -36,7 +36,7 @@ void CLevelMgr::init()
 	pObject->SetScale(100.f, 200.f);
 	m_pCurrentLevel->AddObject(pObject);
 
-
+	m_pCurrentLevel->begin();
 }
 
 void CLevelMgr::progress()
