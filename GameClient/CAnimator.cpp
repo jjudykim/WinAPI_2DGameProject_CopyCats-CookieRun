@@ -2,11 +2,13 @@
 #include "CAnimator.h"
 
 CAnimator::CAnimator()
+	: m_CurAnim(nullptr)
 {
 }
 
 CAnimator::~CAnimator()
 {
+	Safe_Del_Map(m_mapAnim);
 }
 
 void CAnimator::finaltick()

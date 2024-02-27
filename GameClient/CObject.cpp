@@ -12,6 +12,7 @@ CObject::CObject()
 
 CObject::~CObject()
 {
+	Safe_Del_Vec(m_vecCom);
 }
 
 void CObject::begin()
