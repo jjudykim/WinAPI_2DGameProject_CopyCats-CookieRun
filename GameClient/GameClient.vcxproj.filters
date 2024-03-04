@@ -88,6 +88,9 @@
     <Filter Include="03. Game\03. Manager\KeyMgr">
       <UniqueIdentifier>{1780b463-995c-4ebb-8817-37f335b21804}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\05. Object\Obstacle">
+      <UniqueIdentifier>{c35223d1-5507-4c4e-bd8c-7b68684789b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -174,6 +177,9 @@
     <ClInclude Include="CKeyMgr.h">
       <Filter>03. Game\03. Manager\KeyMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CObstacle.h">
+      <Filter>03. Game\05. Object\Obstacle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -238,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="CKeyMgr.cpp">
       <Filter>03. Game\03. Manager\KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CObstacle.cpp">
+      <Filter>03. Game\05. Object\Obstacle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

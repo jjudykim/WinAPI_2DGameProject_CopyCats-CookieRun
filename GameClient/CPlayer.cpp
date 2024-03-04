@@ -5,6 +5,7 @@
 #include "CObject.h"
 
 #include "CLevelMgr.h"
+#include "CKeyMgr.h"
 #include "CLevel.h"
 
 #include "CAnimator.h"
@@ -19,11 +20,11 @@ CPlayer::CPlayer()
 								Vec2D(270, 270), 2,
 								L"texture\\BraveCookie_Atlas.png"};
 	
-	COOKIE_INFO AngelCookie = { COOKIE_TYPE::ANGLE_COOKIE,
+	COOKIE_INFO AngelCookie = { COOKIE_TYPE::ANGEL_COOKIE,
 								Vec2D(320, 320), 2,
 								L"texture\\AngelCookie_Atlas.png" };
 
-	COOKIE_INFO m_curCookie = AngelCookie;
+	COOKIE_INFO m_curCookie = BraveCookie;
 
 	CTexture* pAtlas = CAssetMgr::GetInst()->LoadTexture(L"PlayerAtlasTex", m_curCookie._path);
 
@@ -43,7 +44,14 @@ void CPlayer::begin()
 
 void CPlayer::tick()
 {
+	CObject::tick();
+
 	Vec2D vPos = GetPos();
+
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::TAP)
+	{
+		LOG(LOG_TYPE::DBG_LOG, L"Player¿« Space Key")
+	}
 
 }
 

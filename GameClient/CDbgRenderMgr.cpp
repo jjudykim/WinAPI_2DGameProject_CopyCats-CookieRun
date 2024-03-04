@@ -24,7 +24,7 @@ void CDbgRenderMgr::tick()
 
 void CDbgRenderMgr::render()
 {
-	if (m_RenderList.empty())
+	if (m_RenderList.empty() && m_LogList.empty())
 		return;
 
 	list<DbgRenderInfo>::iterator iter = m_RenderList.begin();
@@ -92,13 +92,14 @@ void CDbgRenderMgr::render()
 			, (int)m_LogStartPos.y + yoffset
 			, logiter->strLog.c_str()
 			, (int)logiter->strLog.length());
+
+		logiter->Age += DT;
+		if (m_LogLife <= logiter->Age) { logiter = m_LogList.erase(logiter); }
+		else { ++logiter; }
+		++i;
 	}
 
-	logiter->Age += DT;
-	if (m_LogLife <= logiter->Age) { logiter = m_LogList.erase(logiter); }
-	else { ++logiter; }
-	++i;
-
+	
 	SetBkMode(DC, OPAQUE);
 	SetTextColor(DC, RGB(0, 0, 0));
 }

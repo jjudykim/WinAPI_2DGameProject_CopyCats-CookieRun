@@ -4,6 +4,7 @@
 
 #include "CTimeMgr.h"
 #include "CPathMgr.h"
+#include "CKeyMgr.h"
 #include "CLevelMgr.h"
 #include "CDbgRenderMgr.h"
 
@@ -45,6 +46,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 
 	// Manager initializing ========
 	CPathMgr::GetInst()->init();
+	CKeyMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CLevelMgr::GetInst()->init();
 	
@@ -58,6 +60,7 @@ void CEngine::progress()
 	// Manager Tick
 	// ===============
 	CTimeMgr::GetInst()->tick();
+	CKeyMgr::GetInst()->tick();
 	CDbgRenderMgr::GetInst()->tick();
 
 	// ===============
