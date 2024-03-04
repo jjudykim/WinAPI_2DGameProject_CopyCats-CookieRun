@@ -7,14 +7,19 @@
 #include "CLevelMgr.h"
 #include "CKeyMgr.h"
 #include "CLevel.h"
-
+#include "CCollider.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
 
 CPlayer::CPlayer()
 	: m_PlayerImg(nullptr)
 {
+	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
+
+	m_Collider->SetName(L"Cookie's Collider");
+	m_Collider->SetOffsetPos(Vec2D(13.5f, 70.f));
+	m_Collider->SetScale(Vec2D(70.f, 135.f));
 
 	COOKIE_INFO BraveCookie = { COOKIE_TYPE::BRAVE_COOKIE,
 								Vec2D(270, 270), 2,

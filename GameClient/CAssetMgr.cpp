@@ -28,7 +28,7 @@ CTexture* CAssetMgr::LoadTexture(const wstring& _Key, const wstring& _strRelativ
 	pTex = new CTexture;
 	if (FAILED(pTex->Load(strFilePath)))
 	{
-		LOG(LOG_TYPE::DBG_ERROR, _strRelativePath.c_str(), L"텍스쳐 로딩 실패", MB_OK);
+		LOG(LOG_TYPE::DBG_ERROR, L"텍스쳐 로딩 실패");
 		delete pTex;
 
 		return nullptr;

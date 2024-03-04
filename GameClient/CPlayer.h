@@ -8,8 +8,9 @@ class CPlayer :
     public CObject
 {
 private:
-    CTexture* m_PlayerImg;
-    CAnimator* m_Animator;
+    CCollider*  m_Collider;
+    CTexture*   m_PlayerImg;
+    CAnimator*  m_Animator;
 
 public:
     virtual void begin();
