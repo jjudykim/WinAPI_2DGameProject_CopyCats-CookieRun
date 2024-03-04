@@ -43,6 +43,22 @@ public:
 public:
 	CComponent* AddComponent(CComponent* _Component);
 
+	template<typename T>
+	T* GetComponent()
+	{
+		for (size_t i = 0; i < m_vecCom.size(); ++i)
+		{
+			T* pComponent = dynamic_cast<T*>(m_vecCom[i]);
+
+			if (pComponent)
+			{
+				return pComponent;
+			}
+		}
+		return nullptr;
+	}
+
+
 public:
 	virtual CObject* Clone() = 0;
 

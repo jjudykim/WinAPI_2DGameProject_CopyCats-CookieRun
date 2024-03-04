@@ -36,14 +36,20 @@ void CCollider::finaltick()
 
 void CCollider::BeginOverlap(CCollider* _OtherCollider)
 {
+	m_OverlapCount++;
+
+	GetOwner()->BeginOverlap(this, _OtherCollider->GetOwner(), _OtherCollider);
 }
 
 void CCollider::OnOverlap(CCollider* _OtherCollider)
 {
+	GetOwner()->OnOverlap(this, _OtherCollider->GetOwner(), _OtherCollider);
 }
 
 void CCollider::EndOverlap(CCollider* _OtherCollider)
 {
+	m_OverlapCount--;
+	GetOwner()->EndOverlap(this, _OtherCollider->GetOwner(), _OtherCollider);
 }
 
 
