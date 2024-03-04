@@ -100,6 +100,9 @@
     <Filter Include="03. Game\06. Component\RigidBody">
       <UniqueIdentifier>{500358f6-3014-417c-9a55-9e521ac708ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\05. Object\Platform">
+      <UniqueIdentifier>{aa63836a-b43b-4db2-9b54-314592312468}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -198,6 +201,9 @@
     <ClInclude Include="CRigidBody.h">
       <Filter>03. Game\06. Component\RigidBody</Filter>
     </ClInclude>
+    <ClInclude Include="CPlatform.h">
+      <Filter>03. Game\05. Object\Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -274,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="CRigidBody.cpp">
       <Filter>03. Game\06. Component\RigidBody</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlatform.cpp">
+      <Filter>03. Game\05. Object\Platform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

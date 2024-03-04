@@ -37,7 +37,9 @@ void CObject::render()
 	if (m_Animator == nullptr)
 	{
 		CJelly* curJelly = dynamic_cast<CJelly*>(this);
-		curJelly->render();
+		if (curJelly != nullptr)
+			curJelly->render();
+
 		return;
 	}
 	

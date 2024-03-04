@@ -7,6 +7,7 @@
 
 class CComponent;
 class CAnimator;
+class CCollider;
 
 class CObject
 	: public CEntity
@@ -33,6 +34,11 @@ public:
 	virtual void tick();
 	virtual void finaltick();
 	virtual void render();
+
+	virtual void BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) {}
+	virtual void OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) {}
+	virtual void EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) {}
+
 
 public:
 	CComponent* AddComponent(CComponent* _Component);

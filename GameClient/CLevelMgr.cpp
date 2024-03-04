@@ -7,6 +7,7 @@
 
 #include "CPlayer.h"
 #include "CJelly.h"
+#include "CPlatform.h"
 
 CLevelMgr::CLevelMgr()
 	: m_arrLevel{}
@@ -33,7 +34,7 @@ void CLevelMgr::init()
 
 	CObject* pObject = new CPlayer;
 	pObject->SetName(L"Player");
-	pObject->SetPos(200.f, 500.f);
+	pObject->SetPos(200.f, 400.f);
 	pObject->SetScale(100.f, 200.f);
 	m_pCurrentLevel->AddObject(pObject);
 
@@ -50,6 +51,10 @@ void CLevelMgr::init()
 	pObject = new CJelly(JELLY_TYPE::GENERAL_YELLOW_BEAR);
 	pObject->SetPos(700.f, 480.f);
 	pObject->SetScale(60.f, 60.f);
+	m_pCurrentLevel->AddObject(pObject);
+
+	pObject = new CPlatform(Vec2D(1500.f, 20.f));
+	pObject->SetPos(50.f, 600.f);
 	m_pCurrentLevel->AddObject(pObject);
 
 
