@@ -1,21 +1,34 @@
 #include "pch.h"
 #include "CJelly.h"
 
-#include "CTexture.h"
 #include "CPathMgr.h"
+
+#include "CTexture.h"
 #include "CAnimator.h"
+#include "CCollider.h"
 
 CJelly::CJelly()
 	: m_type(JELLY_TYPE::END)
 {
+	CJelly(m_type);
 	//m_Animator = (CAnimator*)AddComponent(new CAnimator);
-	
 	//CTexture* pAtlas = CAssetMgr::GetInst()->LoadTexture(L"JelliesAtlasTex", L"texture\\GeneralJellies_Atlas.png");
 }
 
 CJelly::CJelly(JELLY_TYPE _type)
 	: m_type(_type)
 {
+	m_Collider = (CCollider*)AddComponent(new CCollider);
+	
+	if ((UINT)_type < 5)
+	{
+		m_Collider->SetScale(Vec2D(30.f, 30.f));
+	}
+	else
+	{
+		m_Collider->SetScale(Vec2D(40.f, 50.f));
+	}
+	
 }
 
 CJelly::~CJelly()

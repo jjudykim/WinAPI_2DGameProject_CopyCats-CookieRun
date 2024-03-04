@@ -8,6 +8,7 @@
 
 CCollider::CCollider()
 	: m_OverlapCount(0)
+	, m_OffsetPos(Vec2D())
 {
 
 }

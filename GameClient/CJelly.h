@@ -1,11 +1,15 @@
 #pragma once
 #include "CObject.h"
 
+class CCollider;
+
 class CJelly :
     public CObject
 {
 private:
     JELLY_TYPE  m_type;
+
+    CCollider* m_Collider;
 
 public:
     virtual void begin() override;
