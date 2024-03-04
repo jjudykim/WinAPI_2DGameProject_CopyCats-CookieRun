@@ -17,7 +17,7 @@ public:
     void SetJellyType(JELLY_TYPE _type) { m_type = _type; }
 
 public:
-    virtual CJelly* Clone() { return new CJelly(*this); }
+    CLONE(CJelly);
 
 public:
     CJelly();

@@ -1,6 +1,9 @@
 #pragma once
 
 void DebugLog(LOG_TYPE _Type, const wchar_t* _LogMgs);
+void DrawDebugRect(PEN_TYPE _Type, Vec2D _Pos, Vec2D _Scale, float _Time);
+void DrawDebugCircle(PEN_TYPE _Type, Vec2D _Pos, Vec2D _Scale, float _Time);
+void DrawDebugLine(PEN_TYPE _Type, Vec2D _Pos, Vec2D _Scale, float _Time);
 
 template<typename T1, typename T2>
 void Safe_Del_Map(map<T1, T2>& _map)

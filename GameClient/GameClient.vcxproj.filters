@@ -189,6 +189,9 @@
     <ClInclude Include="CJelly.h">
       <Filter>03. Game\05. Object\Jelly</Filter>
     </ClInclude>
+    <ClInclude Include="CCollider.h">
+      <Filter>03. Game\06. Component\Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -259,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="CJelly.cpp">
       <Filter>03. Game\05. Object\Jelly</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollider.cpp">
+      <Filter>03. Game\06. Component\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

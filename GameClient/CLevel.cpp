@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CLevel.h"
+
 #include "CObject.h"
+#include "CCollider.h"
 
 CLevel::CLevel()
 {
@@ -46,6 +48,11 @@ void CLevel::render()
 	{
 		m_vecObj[i]->CObject::render();
 	}
+}
+
+void CLevel::RegisterCollider(CCollider* _Collider)
+{
+	m_vecCollider.push_back(_Collider);
 }
 
 
