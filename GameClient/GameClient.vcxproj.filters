@@ -97,6 +97,9 @@
     <Filter Include="03. Game\06. Component\Collider">
       <UniqueIdentifier>{5e2c6320-661e-4ca7-b0df-a2917bb5430f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Component\RigidBody">
+      <UniqueIdentifier>{500358f6-3014-417c-9a55-9e521ac708ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -192,6 +195,9 @@
     <ClInclude Include="CCollider.h">
       <Filter>03. Game\06. Component\Collider</Filter>
     </ClInclude>
+    <ClInclude Include="CRigidBody.h">
+      <Filter>03. Game\06. Component\RigidBody</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -265,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="CCollider.cpp">
       <Filter>03. Game\06. Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CRigidBody.cpp">
+      <Filter>03. Game\06. Component\RigidBody</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -30,6 +30,30 @@ public:
 	~Vec2D()
 	{}
 
+public:
+	bool IsZero()
+	{
+		return (x == 0.f && y == 0.f);
+	}
+
+	float GetDistance(Vec2D _Other)
+	{
+		return sqrtf(powf(x - _Other.x, 2) + powf(y - _Other.y, 2));
+	}
+
+	float Length()
+	{
+		return sqrtf(x * x + y * y);
+	}
+
+	void Normalize()
+	{
+		assert(!(x == 0.f && y == 0.f));
+
+		float fLen = Length();
+		x /= fLen;
+		y /= fLen;
+	}
 
 
 public:
@@ -53,6 +77,58 @@ public:
 	{
 		if (x == f && y == f) { return true; }
 		else { return false; }
+	}
+
+	void operator += (Vec2D _Other)
+	{
+		x += _Other.x;
+		y += _Other.y;
+	}
+
+	void operator += (float f)
+	{
+		x += f;
+		y += f;
+	}
+
+	void operator -= (Vec2D _Other)
+	{
+		x -= _Other.x;
+		y -= _Other.y;
+	}
+
+	void operator -= (float f)
+	{
+		x -= f;
+		y -= f;
+	}
+
+	void operator *= (Vec2D _Other)
+	{
+		x *= _Other.x;
+		y *= _Other.y;
+	}
+
+	void operator *= (float f)
+	{
+		x *= f;
+		y *= f;
+	}
+
+	void operator /= (Vec2D _Other)
+	{
+		assert(_Other.x && _Other.y);
+
+		x /= _Other.x;
+		y /= _Other.y;
+	}
+
+	void operator /= (float f)
+	{
+		assert(f);
+
+		x /= f;
+		y /= f;
 	}
 };
 
