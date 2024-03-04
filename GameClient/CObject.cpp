@@ -2,11 +2,12 @@
 #include "CObject.h"
 
 #include "CEngine.h"
-
+#include "CJelly.h"
 #include "CComponent.h"
 #include "CAnimator.h"
 
 CObject::CObject()
+	: m_Animator(nullptr)
 {
 }
 
@@ -34,8 +35,12 @@ void CObject::finaltick()
 void CObject::render()
 {
 	if (m_Animator == nullptr)
+	{
+		CJelly* curJelly = dynamic_cast<CJelly*>(this);
+		curJelly->render();
 		return;
-
+	}
+	
 	m_Animator->render();
 }
 

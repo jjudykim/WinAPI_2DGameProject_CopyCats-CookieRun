@@ -1,11 +1,12 @@
 #include "pch.h"
-
 #include "CLevelMgr.h"
 
+#include "CPathMgr.h"
 #include "CLevel.h"
 #include "CLevel_Stage01.h"
 
 #include "CPlayer.h"
+#include "CJelly.h"
 
 CLevelMgr::CLevelMgr()
 	: m_arrLevel{}
@@ -36,7 +37,24 @@ void CLevelMgr::init()
 	pObject->SetScale(100.f, 200.f);
 	m_pCurrentLevel->AddObject(pObject);
 
+	pObject = new CJelly(JELLY_TYPE::BLUE_BEAN);
+	pObject->SetPos(500.f, 480.f);
+	pObject->SetScale(40.f, 50.f);
+	m_pCurrentLevel->AddObject(pObject);
+
+	pObject = new CJelly(JELLY_TYPE::PINK_BEAN);
+	pObject->SetPos(600.f, 480.f);
+	pObject->SetScale(40.f, 50.f);
+	m_pCurrentLevel->AddObject(pObject);
+
+	pObject = new CJelly(JELLY_TYPE::GENERAL_YELLOW_BEAR);
+	pObject->SetPos(700.f, 480.f);
+	pObject->SetScale(60.f, 60.f);
+	m_pCurrentLevel->AddObject(pObject);
+
+
 	m_pCurrentLevel->begin();
+
 }
 
 void CLevelMgr::progress()

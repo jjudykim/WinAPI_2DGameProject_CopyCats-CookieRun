@@ -94,6 +94,9 @@
     <Filter Include="03. Game\05. Object\Jelly">
       <UniqueIdentifier>{31f00f47-7135-46ae-a3fd-65ad4f6fdcb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Component\Collider">
+      <UniqueIdentifier>{5e2c6320-661e-4ca7-b0df-a2917bb5430f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">

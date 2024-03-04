@@ -76,6 +76,6 @@ struct JELLY_INFO
 {
 	JELLY_TYPE	_type;
 	Vec2D		_frmSize;
+	int			_frmCount;
 	int			_dividerSize;
-	wstring     _path;
 };

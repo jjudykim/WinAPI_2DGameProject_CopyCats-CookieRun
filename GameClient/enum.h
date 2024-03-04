@@ -96,4 +96,6 @@ enum class JELLY_TYPE
 	// Bonus Time
 	BONUSTIME,
 
+
+	END,
 };

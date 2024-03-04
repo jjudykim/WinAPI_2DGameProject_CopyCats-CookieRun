@@ -30,7 +30,10 @@ void CAnimator::finaltick()
 void CAnimator::render()
 {
 	if (m_CurAnim != nullptr)
+	{
 		m_CurAnim->render();
+	}
+		
 }
 
 void CAnimator::CreateAnimation(const wstring& _AnimName, CTexture* _Atlas, Vec2D _StartPos, Vec2D _SliceSize, int _DividerSize, int _FrameCount, int _FPS)
