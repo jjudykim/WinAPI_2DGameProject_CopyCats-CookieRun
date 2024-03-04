@@ -91,6 +91,9 @@
     <Filter Include="03. Game\05. Object\Obstacle">
       <UniqueIdentifier>{c35223d1-5507-4c4e-bd8c-7b68684789b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\05. Object\Jelly">
+      <UniqueIdentifier>{31f00f47-7135-46ae-a3fd-65ad4f6fdcb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -180,6 +183,9 @@
     <ClInclude Include="CObstacle.h">
       <Filter>03. Game\05. Object\Obstacle</Filter>
     </ClInclude>
+    <ClInclude Include="CJelly.h">
+      <Filter>03. Game\05. Object\Jelly</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -247,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="CObstacle.cpp">
       <Filter>03. Game\05. Object\Obstacle</Filter>
+    </ClCompile>
+    <ClCompile Include="CJelly.cpp">
+      <Filter>03. Game\05. Object\Jelly</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

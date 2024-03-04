@@ -4,7 +4,8 @@ class CObstacle :
     public CObject
 {
 private:
-    CTexture* m_Img;
+    CTexture*   m_ObstacleImg;
+    CAnimator*  m_Animator;
 
 public:
     virtual void begin() override;

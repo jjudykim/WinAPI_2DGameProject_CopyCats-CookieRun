@@ -71,3 +71,11 @@ struct COOKIE_INFO
 	int			_dividerSize;
 	wstring		_path;
 };
+
+struct JELLY_INFO
+{
+	JELLY_TYPE	_type;
+	Vec2D		_frmSize;
+	int			_dividerSize;
+	wstring     _path;
+};
