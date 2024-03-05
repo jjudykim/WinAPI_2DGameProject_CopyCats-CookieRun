@@ -19,7 +19,10 @@ private:
 public:
     virtual void begin();
     virtual void tick();
-    virtual void render();
+
+    void BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
+    void OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
+    void EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
 
 public:
     virtual CObject* Clone() override { return new CPlayer(*this); }

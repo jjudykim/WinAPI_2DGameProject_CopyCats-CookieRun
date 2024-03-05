@@ -50,6 +50,22 @@ enum class LOG_TYPE
 	DBG_ERROR,
 };
 
+enum class LAYER_TYPE
+{
+	DEFAULT,
+	BACKGROUND,
+	TILE,
+	PLATFORM,
+	OBSTACLE,
+	JELLY,
+	PLAYER,
+
+	UI = 10,
+	END = 11,
+
+	NONE = -1,
+};
+
 enum class COOKIE_TYPE
 {
 	BRAVE_COOKIE,

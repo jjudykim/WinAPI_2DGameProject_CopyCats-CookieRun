@@ -7,6 +7,7 @@
 #include "CKeyMgr.h"
 #include "CLevelMgr.h"
 #include "CDbgRenderMgr.h"
+#include "CCollisionMgr.h"
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
@@ -67,6 +68,7 @@ void CEngine::progress()
 	// Level Progress
 	// ===============
 	CLevelMgr::GetInst()->progress();
+	CCollisionMgr::GetInst()->tick();
 
 	// ===============
 	// Render

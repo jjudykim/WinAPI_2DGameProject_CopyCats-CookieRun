@@ -31,5 +31,7 @@ public:
 public:
     CCollider();
     ~CCollider();
+
+    friend class CCollisionMgr;
 };
 

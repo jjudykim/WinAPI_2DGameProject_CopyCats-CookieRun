@@ -7,7 +7,8 @@
 #include "CAnimator.h"
 
 CObject::CObject()
-	: m_Animator(nullptr)
+	: m_Type(LAYER_TYPE::NONE)
+	, m_Animator(nullptr)
 {
 }
 

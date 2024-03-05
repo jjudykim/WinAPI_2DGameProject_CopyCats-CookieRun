@@ -6,8 +6,8 @@ class CLevelMgr
 {
 	SINGLE(CLevelMgr)
 private:
-	CLevel* m_arrLevel[(UINT)LEVEL_TYPE::END];
-	CLevel* m_pCurrentLevel;
+	CLevel*		m_arrLevel[(UINT)LEVEL_TYPE::END];
+	CLevel*		m_pCurrentLevel;
 
 public:
 	void init();

@@ -19,6 +19,8 @@ private:
 
 	CAnimator*			m_Animator;
 
+	LAYER_TYPE          m_Type;
+
 public:
 	void SetPos(Vec2D _Pos) { m_Pos = _Pos; }
 	void SetPos(float _x, float _y) { m_Pos.x = _x; m_Pos.y = _y; }
@@ -27,6 +29,7 @@ public:
 
 	Vec2D GetPos() { return m_Pos; }
 	Vec2D GetScale() { return m_Scale; }
+	LAYER_TYPE GetLayerType() { return m_Type; }
 
 
 public:
@@ -65,5 +68,7 @@ public:
 public:
 	CObject();
 	~CObject();
+
+	friend class CLevel;
 };
 

@@ -103,6 +103,9 @@
     <Filter Include="03. Game\05. Object\Platform">
       <UniqueIdentifier>{aa63836a-b43b-4db2-9b54-314592312468}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\CollisionMgr">
+      <UniqueIdentifier>{924f026f-255c-4337-a77b-7af7287e6c87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -204,6 +207,9 @@
     <ClInclude Include="CPlatform.h">
       <Filter>03. Game\05. Object\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="CCollisionMgr.h">
+      <Filter>03. Game\03. Manager\CollisionMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -283,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="CPlatform.cpp">
       <Filter>03. Game\05. Object\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionMgr.cpp">
+      <Filter>03. Game\03. Manager\CollisionMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

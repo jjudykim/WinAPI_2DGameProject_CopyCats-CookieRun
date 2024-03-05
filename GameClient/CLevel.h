@@ -7,11 +7,12 @@ class CCollider;
 class CLevel
 	: public CEntity
 {
-	vector<CObject*>    m_vecObj;
-	vector<CCollider*>	m_vecCollider;
+	vector<CObject*>    m_arrObj[(UINT)LAYER_TYPE::END];
+	vector<CCollider*>	m_arrCollider[(UINT)LAYER_TYPE::END];
 
 public:
-	void AddObject(CObject* _Object) { m_vecObj.push_back(_Object); }
+	void AddObject(LAYER_TYPE _Layer, CObject* _Object);
+	void RegisterCollider(CCollider* _Collider);
 
 public:
 	virtual void begin();
@@ -20,7 +21,8 @@ public:
 	virtual void render();
 
 public:
-	void RegisterCollider(CCollider* _Collider);
+	const vector<CCollider*>& GetColliders(LAYER_TYPE _Layer) { return m_arrCollider[(UINT)_Layer]; }
+
 public:
 	virtual CLevel* Clone() = 0;
 

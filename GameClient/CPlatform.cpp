@@ -30,7 +30,7 @@ void CPlatform::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CColli
 	if (_OtherObj->GetName() == L"Player")
 	{
 		CRigidBody* pRB = _OtherObj->GetComponent<CRigidBody>();
-		pRB->SetGround(true);
+  		pRB->SetGround(true);
 	}
 }
 

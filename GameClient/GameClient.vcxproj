@@ -141,6 +141,7 @@
     <ClInclude Include="CAsset.h" />
     <ClInclude Include="CAssetMgr.h" />
     <ClInclude Include="CCollider.h" />
+    <ClInclude Include="CCollisionMgr.h" />
     <ClInclude Include="CComponent.h" />
     <ClInclude Include="CDbgRenderMgr.h" />
     <ClInclude Include="CEngine.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="CAsset.cpp" />
     <ClCompile Include="CAssetMgr.cpp" />
     <ClCompile Include="CCollider.cpp" />
+    <ClCompile Include="CCollisionMgr.cpp" />
     <ClCompile Include="CComponent.cpp" />
     <ClCompile Include="CDbgRenderMgr.cpp" />
     <ClCompile Include="CEngine.cpp" />
