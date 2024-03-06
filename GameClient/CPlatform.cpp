@@ -11,7 +11,6 @@ CPlatform::CPlatform()
 
 CPlatform::CPlatform(Vec2D _Scale)
 {
-	CPlatform();
 	SetScale(_Scale);
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Collider->SetScale(GetScale());

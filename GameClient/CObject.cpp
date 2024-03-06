@@ -35,6 +35,9 @@ void CObject::finaltick()
 
 void CObject::render()
 {
+	if (this == nullptr)
+		return;
+
 	if (m_Animator == nullptr)
 	{
 		CJelly* curJelly = dynamic_cast<CJelly*>(this);

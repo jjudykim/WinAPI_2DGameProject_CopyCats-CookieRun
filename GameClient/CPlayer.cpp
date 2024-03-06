@@ -25,15 +25,15 @@ CPlayer::CPlayer()
 	m_Collider->SetOffsetPos(Vec2D(13.5f, 70.f));
 	m_Collider->SetScale(Vec2D(70.f, 135.f));
 
-	COOKIE_INFO BraveCookie = { COOKIE_TYPE::BRAVE_COOKIE,
+	CookieInfo BraveCookie = { COOKIE_TYPE::BRAVE_COOKIE,
 								Vec2D(270, 270), 2,
 								L"texture\\BraveCookie_Atlas.png"};
 	
-	COOKIE_INFO AngelCookie = { COOKIE_TYPE::ANGEL_COOKIE,
+	CookieInfo AngelCookie = { COOKIE_TYPE::ANGEL_COOKIE,
 								Vec2D(320, 320), 2,
 								L"texture\\AngelCookie_Atlas.png" };
 
-	COOKIE_INFO m_curCookie = BraveCookie;
+	CookieInfo m_curCookie = BraveCookie;
 
 	CTexture* pAtlas = CAssetMgr::GetInst()->LoadTexture(L"PlayerAtlasTex", m_curCookie._path);
 

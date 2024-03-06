@@ -152,7 +152,7 @@ struct DbgLog
 	float			Age;
 };
 
-struct COOKIE_INFO
+struct CookieInfo
 {
 	COOKIE_TYPE _type;
 	Vec2D       _frmSize;
@@ -160,10 +160,17 @@ struct COOKIE_INFO
 	wstring		_path;
 };
 
-struct JELLY_INFO
+struct JellyInfo
 {
 	JELLY_TYPE	_type;
 	Vec2D		_frmSize;
 	int			_frmCount;
 	int			_dividerSize;
+};
+
+struct BackgroundInfo
+{
+	BACKGROUND_TYPE		_type;
+	Vec2D				_startPos;
+	Vec2D				_sliceSize;
 };

@@ -106,6 +106,9 @@
     <Filter Include="03. Game\03. Manager\CollisionMgr">
       <UniqueIdentifier>{924f026f-255c-4337-a77b-7af7287e6c87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\05. Object\Background">
+      <UniqueIdentifier>{f14d6a8f-f4f0-40f2-9514-3a00dfdaa246}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -210,6 +213,9 @@
     <ClInclude Include="CCollisionMgr.h">
       <Filter>03. Game\03. Manager\CollisionMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CBackground.h">
+      <Filter>03. Game\05. Object\Background</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -292,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="CCollisionMgr.cpp">
       <Filter>03. Game\03. Manager\CollisionMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CBackground.cpp">
+      <Filter>03. Game\05. Object\Background</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

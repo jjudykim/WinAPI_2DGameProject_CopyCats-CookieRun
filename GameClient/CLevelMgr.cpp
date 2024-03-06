@@ -6,6 +6,7 @@
 #include "CLevel.h"
 #include "CLevel_Stage01.h"
 
+#include "CBackground.h"
 #include "CPlayer.h"
 #include "CJelly.h"
 #include "CPlatform.h"
@@ -31,9 +32,23 @@ void CLevelMgr::init()
 {
 	m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01] = new CLevel_Stage01;
 
-	m_pCurrentLevel = m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01];
+	LEVEL_TYPE CurLevelType = LEVEL_TYPE::STAGE_01;
 
-	CObject* pObject = new CPlayer;
+	m_pCurrentLevel = m_arrLevel[(UINT)CurLevelType];
+
+	CObject* pObject = new CBackground(CurLevelType, BACKGROUND_TYPE::MAIN);
+	pObject->SetName(L"Background_MAIN");
+	pObject->SetPos(0.f, 0.f);
+	pObject->SetScale(CEngine::GetInst()->GetResolution());
+	m_pCurrentLevel->AddObject(LAYER_TYPE::BACKGROUND, pObject);
+
+	pObject = new CBackground(CurLevelType, BACKGROUND_TYPE::SUB1);
+	pObject->SetName(L"Background_SUB1");
+	pObject->SetPos(0.f, 0.f);
+	pObject->SetScale(CEngine::GetInst()->GetResolution());
+	m_pCurrentLevel->AddObject(LAYER_TYPE::BACKGROUND, pObject);
+
+	pObject = new CPlayer;
 	pObject->SetName(L"Player");
 	pObject->SetPos(200.f, 400.f);
 	pObject->SetScale(100.f, 200.f);

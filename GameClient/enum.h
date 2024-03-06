@@ -115,3 +115,13 @@ enum class JELLY_TYPE
 
 	END,
 };
+
+enum class BACKGROUND_TYPE
+{
+	MAIN,
+	SUB1,
+	SUB2,
+	SUB3,
+
+	END,
+};
