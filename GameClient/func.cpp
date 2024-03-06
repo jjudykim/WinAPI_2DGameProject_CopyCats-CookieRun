@@ -12,6 +12,15 @@ void DebugLog(LOG_TYPE _Type, const wchar_t* _LogMgs)
 	CDbgRenderMgr::GetInst()->AddDbgLog(log);
 }
 
+void DebugLog(LOG_TYPE _Type, wstring _LogMgs)
+{
+	DbgLog log = {};
+	log.Type = _Type;
+	log.strLog = _LogMgs;
+
+	CDbgRenderMgr::GetInst()->AddDbgLog(log);
+}
+
 void DrawDebugRect(PEN_TYPE _Type, Vec2D _Pos, Vec2D _Scale, float _Time)
 {
 	DbgRenderInfo info{};

@@ -8,6 +8,7 @@
 #include "CLevelMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CCollisionMgr.h"
+#include "CCamera.h"
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
@@ -50,6 +51,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CKeyMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CLevelMgr::GetInst()->init();
+	CCamera::GetInst()->init();
 
 	return S_OK;
 }
@@ -62,6 +64,7 @@ void CEngine::progress()
 	CTimeMgr::GetInst()->tick();
 	CKeyMgr::GetInst()->tick();
 	CDbgRenderMgr::GetInst()->tick();
+	CCamera::GetInst()->tick();
 
 	// ===============
 	// Level Progress
@@ -81,6 +84,7 @@ void CEngine::progress()
 	CLevelMgr::GetInst()->render();
 	CTimeMgr::GetInst()->render();
 	CDbgRenderMgr::GetInst()->render();
+	CCamera::GetInst()->render();
 	
 	::BitBlt(m_hDC, 0, 0, m_Resolution.x, m_Resolution.y, m_hSubDC, 0, 0, SRCCOPY);
 }

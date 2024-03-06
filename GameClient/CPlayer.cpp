@@ -59,7 +59,7 @@ void CPlayer::tick()
 {
 	CObject::tick();
 
-	Vec2D vPos = GetPos();
+	Vec2D vPos = GetRenderPos();
 
 	m_RigidBody->AddForce(Vec2D(300.f, 0.f));
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::TAP)
@@ -67,6 +67,8 @@ void CPlayer::tick()
 		m_RigidBody->Jump();
 		LOG(LOG_TYPE::DBG_LOG, L"Player¿« Space Key")
 	}
+
+	SetPos(vPos);
 }
 
 void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)

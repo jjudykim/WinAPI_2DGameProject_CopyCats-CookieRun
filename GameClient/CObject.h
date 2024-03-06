@@ -3,6 +3,7 @@
 
 #include "CEngine.h"
 #include "CAssetMgr.h"
+#include "CCamera.h"
 #include "CTexture.h"
 
 class CComponent;
@@ -29,6 +30,7 @@ public:
 
 	Vec2D GetPos() { return m_Pos; }
 	Vec2D GetScale() { return m_Scale; }
+	Vec2D GetRenderPos() { return CCamera::GetInst()->GetRenderPos(m_Pos); }
 	LAYER_TYPE GetLayerType() { return m_Type; }
 
 

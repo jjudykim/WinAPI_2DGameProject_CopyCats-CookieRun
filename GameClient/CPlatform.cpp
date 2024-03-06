@@ -45,7 +45,9 @@ void CPlatform::begin()
 
 void CPlatform::tick()
 {
-	
+	Vec2D vPos = GetRenderPos();
+
+	SetPos(vPos);
 }
 
 void CPlatform::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)

@@ -5,6 +5,7 @@
 #include "CJelly.h"
 #include "CComponent.h"
 #include "CAnimator.h"
+#include "CCamera.h"
 
 CObject::CObject()
 	: m_Type(LAYER_TYPE::NONE)
