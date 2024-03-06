@@ -12,6 +12,20 @@ CObject::CObject()
 {
 }
 
+CObject::CObject(const CObject& _Other)
+	: CEntity(_Other)
+	, m_Pos(_Other.m_Pos)
+	, m_Scale(_Other.m_Scale)
+	, m_Animator(nullptr)
+	, m_Type(LAYER_TYPE::NONE)
+{
+	for (size_t i = 0; i < _Other.m_vecCom.size(); ++i)
+	{
+		AddComponent(_Other.m_vecCom[i]->Clone());
+	}
+}
+
+
 CObject::~CObject()
 {
 	Safe_Del_Vec(m_vecCom);

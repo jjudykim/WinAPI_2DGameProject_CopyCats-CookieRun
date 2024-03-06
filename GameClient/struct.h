@@ -26,6 +26,16 @@ public:
 		: x((float)_pt.x)
 		, y((float)_pt.y)
 	{}
+	
+	Vec2D(float _f)
+		: x(_f)
+		, y(_f)
+	{}
+
+	Vec2D(int _i)
+		: x((float)_i)
+		, y((float)_i)
+	{}
 
 	~Vec2D()
 	{}

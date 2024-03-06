@@ -67,6 +67,7 @@ public:
 
 public:
 	CObject();
+	CObject(const CObject& _Other);
 	~CObject();
 
 	friend class CLevel;

@@ -64,7 +64,6 @@ void CBackground::tick()
 
 void CBackground::render()
 {
-
 	BLENDFUNCTION bf = {};
 
 	bf.BlendOp = AC_SRC_OVER;
@@ -80,13 +79,4 @@ void CBackground::render()
 				, (int)m_Info._startPos.x, (int)m_Info._startPos.y
 				, (int)m_Info._sliceSize.x, (int)m_Info._sliceSize.y
 				, bf);
-
-	/*TransparentBlt(DC
-		, (int)(GetPos().x - m_Info._sliceSize.x / 2.f)
-		, (int)(GetPos().y - m_Info._sliceSize.y / 2.f)
-		, (int)m_Info._sliceSize.x, (int)m_Info._sliceSize.y
-		, m_BackGroundImg->GetDC()
-		, (int)m_Info._startPos.x, (int)m_Info._startPos.y
-		, (int)m_Info._sliceSize.x, (int)m_Info._sliceSize.y
-		, RGB(255, 255, 255));*/
 }

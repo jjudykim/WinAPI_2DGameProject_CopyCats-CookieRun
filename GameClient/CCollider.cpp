@@ -8,9 +8,17 @@
 
 CCollider::CCollider()
 	: m_OverlapCount(0)
-	, m_OffsetPos(Vec2D())
+	, m_OffsetPos(Vec2D(0))
 {
 
+}
+
+CCollider::CCollider(const CCollider& _Other)
+	: CComponent(_Other)
+	, m_OffsetPos(_Other.m_OffsetPos)
+	, m_Scale(_Other.m_Scale)
+	, m_OverlapCount(0)
+{
 }
 
 CCollider::~CCollider()

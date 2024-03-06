@@ -20,6 +20,7 @@ public:
 
 public:
 	CEntity();
+	CEntity(const CEntity& _Other);
 	virtual ~CEntity();
 };
 

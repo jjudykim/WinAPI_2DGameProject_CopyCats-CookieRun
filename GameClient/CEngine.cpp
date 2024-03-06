@@ -50,7 +50,6 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CKeyMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CLevelMgr::GetInst()->init();
-	
 
 	return S_OK;
 }
