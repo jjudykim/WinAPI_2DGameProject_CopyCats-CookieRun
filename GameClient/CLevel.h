@@ -13,6 +13,9 @@ class CLevel
 public:
 	void AddObject(LAYER_TYPE _Layer, CObject* _Object);
 	void RegisterCollider(CCollider* _Collider);
+	CObject* FindObjectByName(const wstring& _Name);
+	CObject* FindObjectByName(LAYER_TYPE _Type, const wstring& _Name);
+
 
 public:
 	virtual void begin();

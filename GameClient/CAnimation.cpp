@@ -67,11 +67,11 @@ void CAnimation::render()
 
 	CObject* pOwnerObj = m_Animator->GetOwner();
 
-	Vec2D vPos = pOwnerObj->GetPos();
+	Vec2D vRenderPos = pOwnerObj->GetRenderPos();
 
 	TransparentBlt(	  DC
-					, (int)(vPos.x - frm.SliceSize.x / 2.f + frm.Offset.x)
-					, (int)(vPos.y - frm.SliceSize.y / 2.f + frm.Offset.y)
+					, (int)(vRenderPos.x - frm.SliceSize.x / 2.f + frm.Offset.x)
+					, (int)(vRenderPos.y - frm.SliceSize.y / 2.f + frm.Offset.y)
 					, (int)frm.SliceSize.x, (int)frm.SliceSize.y
 					, m_Atlas->GetDC()
 					, (int)frm.StartPos.x, (int)frm.StartPos.y

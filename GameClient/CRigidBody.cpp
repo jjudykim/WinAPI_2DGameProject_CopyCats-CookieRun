@@ -5,71 +5,46 @@
 #include "CTimeMgr.h"
 
 CRigidBody::CRigidBody()
-	: m_Mass(1.f)
-	, m_JumpSpeed(400.f)
-	, m_MaxGravitySpeed(0.f)
-	, m_GravityAccel(980.f)
+	: m_UseGravity(false)
+	, m_JumpSpeed(600.f)
+	, m_GravityAccel(1500.f)
 	, m_Ground(false)
 {
+	
 }
 
 CRigidBody::~CRigidBody()
 {
 }
 
+void CRigidBody::Walk(Vec2D& _originPos)
+{
+	_originPos += Vec2D(1.0f, 0.0f) * (m_WalkSpeed * DT);
+}
+
 void CRigidBody::Jump()
 {
 	m_VelocityByGravity += Vec2D(0.f, -1.f) * m_JumpSpeed;
+	
 	SetGround(false);
 }
 
 void CRigidBody::finaltick()
 {
+	m_WalkSpeed = GetOwner()->GetSpeed();
 	Vec2D vObjPos = GetOwner()->GetPos();
-	Vec2D vAccel = m_Force / m_Mass;
 
-	if (!m_Ground)
-	{
-		m_Velocity += vAccel * DT * 0.5f;
-	}
-	else
-	{
-		m_Velocity += vAccel * DT * 1.f;
-	}
-
-	if (m_Force.IsZero())
-	{
-		float Speed = m_Velocity.Length();
-
-		if (Speed < 0)
-			Speed = 0.f;
-
-		if (!m_Velocity.IsZero())
-			m_Velocity.Normalize();
-
-		m_Velocity *= Speed;
-	}
+	Walk(vObjPos);
 
 	if (!m_Ground)
 	{
 		m_VelocityByGravity += Vec2D(0.f, 1.f) * m_GravityAccel * DT;
-
-		if (m_MaxGravitySpeed != 0.f && m_MaxGravitySpeed < m_VelocityByGravity.Length())
-		{
-			m_VelocityByGravity.Normalize();
-			m_VelocityByGravity *= m_MaxGravitySpeed;
-		}
 	}
-
-	Vec2D vFinalVelocity = m_Velocity + m_VelocityByGravity;
-
-	vObjPos += vFinalVelocity * DT;
+	vObjPos += m_VelocityByGravity * DT;
 	GetOwner()->SetPos(vObjPos);
 
-	m_Force = Vec2D(0.f, 0.f);
-	m_AddVelocity = Vec2D(0.f, 0.f);
-
-	DrawDebugLine(PEN_TYPE::PEN_BLUE, vObjPos, vObjPos + vFinalVelocity, 0.f);
+	
+	DrawDebugLine(PEN_TYPE::PEN_BLUE, GetOwner()->GetRenderPos(), GetOwner()->GetRenderPos() + m_VelocityByGravity, 0.f);
 }
 
 

@@ -16,6 +16,7 @@ class CObject
 private:
 	Vec2D				m_Pos;
 	Vec2D				m_Scale;
+	float               m_Speed;
 	vector<CComponent*> m_vecCom;
 
 	CAnimator*			m_Animator;
@@ -25,11 +26,13 @@ private:
 public:
 	void SetPos(Vec2D _Pos) { m_Pos = _Pos; }
 	void SetPos(float _x, float _y) { m_Pos.x = _x; m_Pos.y = _y; }
+	void SetSpeed(float _speed) { m_Speed = _speed; }
 	void SetScale(Vec2D _Scale) { m_Scale = _Scale; }
 	void SetScale(float _width, float _height) { m_Scale.x = _width; m_Scale.y = _height; }
 
 	Vec2D GetPos() { return m_Pos; }
 	Vec2D GetScale() { return m_Scale; }
+	float GetSpeed() { return m_Speed; }
 	Vec2D GetRenderPos() { return CCamera::GetInst()->GetRenderPos(m_Pos); }
 	LAYER_TYPE GetLayerType() { return m_Type; }
 

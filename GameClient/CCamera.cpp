@@ -3,10 +3,13 @@
 
 #include "CEngine.h"
 #include "CTexture.h"
+#include "CLevelMgr.h"
+#include "CLevel.h"
+#include "CPlayer.h"
 #include "CTimeMgr.h"
 
 CCamera::CCamera()
-	: m_CamSpeed(1.35f)
+	: m_CamSpeed(0.f)
 	, m_FadeTex(nullptr)
 {
 }
@@ -20,10 +23,21 @@ void CCamera::init()
 	Vec2D vResol = CEngine::GetInst()->GetResolution();
 
 	m_LookAt = Vec2D(vResol.x / 2.f, vResol.y / 2.f);
+	m_PrevLookAt = m_LookAt;
+
+	CObject* pObj = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
+
+	if (pObj != nullptr)
+	{
+		m_StandardObj = dynamic_cast<CPlayer*>(pObj);
+	}
 }
 
 void CCamera::tick()
 {
+	if (m_StandardObj != nullptr)
+		m_CamSpeed = m_StandardObj->GetSpeed();
+
 	Move();
 
 	Vec2D vResol = CEngine::GetInst()->GetResolution();
@@ -63,19 +77,9 @@ void CCamera::SetCameraEffect(CAM_EFFECT _Effect, float _Duration)
 	m_EffectList.push_back(info);
 }
 
-
-
 void CCamera::Move()
 {
-	m_LookAt.x += DT * 0.2f;
-	wstring m_DiffStr = wstring(L"Now m_Diff : ") + std::to_wstring(m_Diff.x);
-	if (m_Time > 1.0f)
-	{
-		DebugLog(LOG_TYPE::DBG_WARNING, m_DiffStr);
-		m_Time = 0;
-	}
-	m_Time += DT;
-	
+	m_LookAt.x += m_CamSpeed * DT;
 }
 
 void CCamera::CameraEffect()

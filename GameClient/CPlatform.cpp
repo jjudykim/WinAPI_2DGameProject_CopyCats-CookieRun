@@ -7,6 +7,8 @@
 
 
 CPlatform::CPlatform()
+	: m_PlatformImg(nullptr)
+	, m_Collider(nullptr)
 {
 	
 }
@@ -45,9 +47,6 @@ void CPlatform::begin()
 
 void CPlatform::tick()
 {
-	Vec2D vPos = GetRenderPos();
-
-	SetPos(vPos);
 }
 
 void CPlatform::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
@@ -77,8 +76,8 @@ void CPlatform::render()
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	AlphaBlend(DC
-		, (int)(GetPos().x - m_PlatformImg->GetWidth() / 2.f)
-		, (int)(GetPos().y - m_PlatformImg->GetHeight() / 2.f)
+		, (int)(GetRenderPos().x - m_PlatformImg->GetWidth() / 2.f)
+		, (int)(GetRenderPos().y - m_PlatformImg->GetHeight() / 2.f)
 		, m_PlatformImg->GetWidth(), m_PlatformImg->GetHeight()
 		, m_PlatformImg->GetDC(), 0, 0
 		, m_PlatformImg->GetWidth(), m_PlatformImg->GetHeight()

@@ -12,9 +12,10 @@ private:
     Vec2D   m_VelocityByGravity;
     Vec2D   m_AddVelocity;
 
-    float m_MaxGravitySpeed;
-    float m_GravityAccel;
+    float   m_WalkSpeed;
 
+    float   m_GravityAccel;
+    bool    m_UseGravity;
     float   m_JumpSpeed;
     bool    m_Ground;
 
@@ -22,13 +23,14 @@ public:
     void AddForce(Vec2D _vForce) { m_Force += _vForce; }
 
     void SetMass(float _Mass) { m_Mass = _Mass; }
-    void SetMaxGravitySpeed(float _Speed) { m_MaxGravitySpeed = _Speed; }
     void SetGravityVelocity(Vec2D _Velocity) { m_VelocityByGravity = _Velocity; }
     void SetJumpSpeed(float _Speed) { m_JumpSpeed = _Speed; }
 
+    void Walk(Vec2D& _OriginPos);
     void Jump();
 
     float GetMass() { return m_Mass; }
+    bool GetUseGravity() { return m_UseGravity; }
     Vec2D GetGraivtyVelocity() { return m_VelocityByGravity; }
 
     void SetGround(bool _Ground)
@@ -50,5 +52,6 @@ public:
 public:
     CRigidBody();
     ~CRigidBody();
+    
 };
 

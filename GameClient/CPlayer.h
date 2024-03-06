@@ -9,7 +9,6 @@ class CPlayer :
     public CObject
 {
 private:
-    float m_Speed;
 
     CCollider*  m_Collider;
     CTexture*   m_PlayerImg;

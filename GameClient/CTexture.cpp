@@ -24,7 +24,7 @@ int CTexture::Load(const wstring& _strFilePath)
 
 		if (m_hBit == nullptr)
 		{
-			LOG(LOG_TYPE::DBG_ERROR, "비트맵 Asset 로딩 실패");
+			LOG(LOG_TYPE::DBG_ERROR, L"비트맵 Asset 로딩 실패");
 			return E_FAIL;
 		}
 	}

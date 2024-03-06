@@ -42,12 +42,14 @@ void CLevelMgr::init()
 	pObject->SetName(L"Background_SUB1");
 	pObject->SetPos(0.f, 0.f);
 	pObject->SetScale(CEngine::GetInst()->GetResolution());
+	pObject->SetSpeed(10.f);
 	m_pCurrentLevel->AddObject(LAYER_TYPE::BACKGROUND, pObject);
 
 	pObject = new CPlayer;
 	pObject->SetName(L"Player");
-	pObject->SetPos(200.f, 350.f);
+	pObject->SetPos(200.f, 300.f);
 	pObject->SetScale(100.f, 200.f);
+	pObject->SetSpeed(500.f);
 	m_pCurrentLevel->AddObject(LAYER_TYPE::PLAYER, pObject);
 
 	pObject = new CJelly(JELLY_TYPE::BLUE_BEAN);

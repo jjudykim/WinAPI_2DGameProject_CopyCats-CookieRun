@@ -27,7 +27,7 @@ CCollider::~CCollider()
 
 void CCollider::finaltick()
 {
-	m_FinalPos = GetOwner()->GetPos() + m_OffsetPos;
+	m_FinalPos = GetOwner()->GetRenderPos() + m_OffsetPos;
 
 	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 	pLevel->RegisterCollider(this);

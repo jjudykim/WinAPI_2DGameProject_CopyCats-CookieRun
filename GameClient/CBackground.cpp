@@ -4,7 +4,8 @@
 #include "CTimeMgr.h"
 
 CBackground::CBackground()
-	: m_Speed(0.f)
+	: m_BackGroundImg(nullptr)
+	, m_Level(LEVEL_TYPE::END)
 {
 	
 }

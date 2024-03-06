@@ -77,4 +77,32 @@ void CLevel::RegisterCollider(CCollider* _Collider)
 	m_arrCollider[(UINT)Layer].push_back(_Collider);
 }
 
+CObject* CLevel::FindObjectByName(const wstring& _Name)
+{
+	for (UINT i = 0; i < (UINT)LAYER_TYPE::END; ++i)
+	{
+		CObject* pFindObj = FindObjectByName((LAYER_TYPE)i, _Name);
+
+		if (pFindObj)
+		{
+			return pFindObj;
+		}
+	}
+
+	return nullptr;
+}
+
+CObject* CLevel::FindObjectByName(LAYER_TYPE _Type, const wstring& _Name)
+{
+	for (size_t i = 0; i < m_arrObj[(UINT)_Type].size(); ++i)
+	{
+		if (_Name == m_arrObj[(UINT)_Type][i]->GetName())
+		{
+			return m_arrObj[(UINT)_Type][i];
+		}
+	}
+
+	return nullptr;
+}
+
 

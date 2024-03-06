@@ -10,6 +10,7 @@
 CObject::CObject()
 	: m_Type(LAYER_TYPE::NONE)
 	, m_Animator(nullptr)
+	, m_Speed(0.f)
 {
 }
 
@@ -17,6 +18,7 @@ CObject::CObject(const CObject& _Other)
 	: CEntity(_Other)
 	, m_Pos(_Other.m_Pos)
 	, m_Scale(_Other.m_Scale)
+	, m_Speed(_Other.m_Speed)
 	, m_Animator(nullptr)
 	, m_Type(LAYER_TYPE::NONE)
 {

@@ -16,12 +16,16 @@ struct CAM_EFFECT_INFO
 };
 
 class CTexture;
+class CObject;
 
 class CCamera
 {
 	SINGLE(CCamera)
 private:
+	CObject*		m_StandardObj;
+
 	Vec2D			m_LookAt;
+	Vec2D			m_PrevLookAt;
 	Vec2D			m_Diff;
 	float			m_CamSpeed;
 	float			m_Time;

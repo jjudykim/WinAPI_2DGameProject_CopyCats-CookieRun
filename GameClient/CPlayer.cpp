@@ -5,6 +5,7 @@
 #include "CObject.h"
 
 #include "CLevelMgr.h"
+#include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "CLevel.h"
 
@@ -14,8 +15,7 @@
 #include "CAnimation.h"
 
 CPlayer::CPlayer()
-	: m_Speed(500.f)
-	, m_PlayerImg(nullptr)
+	: m_PlayerImg(nullptr)
 {
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
@@ -40,10 +40,6 @@ CPlayer::CPlayer()
 	m_Animator->CreateAnimation(L"RUNNING", pAtlas, Vec2D(0.f + m_curCookie._dividerSize, m_curCookie._frmSize.y + m_curCookie._dividerSize * 2), 
 														  Vec2D(m_curCookie._frmSize.x, m_curCookie._frmSize.y), m_curCookie._dividerSize, 4, 5);
 	m_Animator->Play(L"RUNNING", true);
-
-	m_RigidBody->SetMass(1.f);
-	m_RigidBody->SetMaxGravitySpeed(1000.f);
-	m_RigidBody->SetJumpSpeed(400.f);
 }
 
 CPlayer::~CPlayer()
@@ -59,16 +55,10 @@ void CPlayer::tick()
 {
 	CObject::tick();
 
-	Vec2D vPos = GetRenderPos();
-
-	m_RigidBody->AddForce(Vec2D(300.f, 0.f));
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::TAP)
 	{
 		m_RigidBody->Jump();
-		LOG(LOG_TYPE::DBG_LOG, L"Player¿« Space Key")
 	}
-
-	SetPos(vPos);
 }
 
 void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
