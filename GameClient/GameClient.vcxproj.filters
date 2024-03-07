@@ -115,6 +115,15 @@
     <Filter Include="03. Game\03. Manager\TaskMgr">
       <UniqueIdentifier>{0f522dc9-bdaa-4ee8-bd8e-535c52058089}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Component\FSM">
+      <UniqueIdentifier>{85018fa9-ad57-4fa7-90fe-986ef4054b74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\08. Module\State">
+      <UniqueIdentifier>{1b414ea9-2c7d-4e49-b114-be688fe4e75f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\08. Module\State\PlayerState">
+      <UniqueIdentifier>{55d20914-e00d-42fa-b49e-bdf5dd46a04f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -228,6 +237,12 @@
     <ClInclude Include="CTaskMgr.h">
       <Filter>03. Game\03. Manager\TaskMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CFSM.h">
+      <Filter>03. Game\06. Component\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="CState.h">
+      <Filter>03. Game\08. Module\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -319,6 +334,12 @@
     </ClCompile>
     <ClCompile Include="CTaskMgr.cpp">
       <Filter>03. Game\03. Manager\TaskMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CFSM.cpp">
+      <Filter>03. Game\06. Component\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="CState.cpp">
+      <Filter>03. Game\08. Module\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

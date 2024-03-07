@@ -148,6 +148,7 @@
     <ClInclude Include="CDbgRenderMgr.h" />
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="CEntity.h" />
+    <ClInclude Include="CFSM.h" />
     <ClInclude Include="CJelly.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CLevel.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="CRigidBody.h" />
     <ClInclude Include="CSelectObj.h" />
     <ClInclude Include="CSound.h" />
+    <ClInclude Include="CState.h" />
     <ClInclude Include="CTaskMgr.h" />
     <ClInclude Include="CTexture.h" />
     <ClInclude Include="CTimeMgr.h" />
@@ -187,6 +189,7 @@
     <ClCompile Include="CDbgRenderMgr.cpp" />
     <ClCompile Include="CEngine.cpp" />
     <ClCompile Include="CEntity.cpp" />
+    <ClCompile Include="CFSM.cpp" />
     <ClCompile Include="CJelly.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CLevel.cpp" />
@@ -200,6 +203,7 @@
     <ClCompile Include="CRigidBody.cpp" />
     <ClCompile Include="CSelectObj.cpp" />
     <ClCompile Include="CSound.cpp" />
+    <ClCompile Include="CState.cpp" />
     <ClCompile Include="CTaskMgr.cpp" />
     <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
