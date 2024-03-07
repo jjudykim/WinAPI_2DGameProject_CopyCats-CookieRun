@@ -142,6 +142,14 @@ public:
 	}
 };
 
+struct Task
+{
+	TASK_TYPE	type;
+	DWORD_PTR	Param1;
+	DWORD_PTR	Param2;
+	DWORD_PTR	Param3;
+};
+
 
 struct DbgRenderInfo
 {

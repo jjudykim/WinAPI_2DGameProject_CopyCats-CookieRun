@@ -46,7 +46,7 @@ void CJelly::tick()
 
 void CJelly::render()
 {
-	Vec2D vPos = GetPos();
+	Vec2D vPos = GetRenderPos();
 	Vec2D vScale = GetScale();
 
 	if (m_type == JELLY_TYPE::BLUE_BEAN)

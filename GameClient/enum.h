@@ -66,6 +66,13 @@ enum class LAYER_TYPE
 	NONE = -1,
 };
 
+enum class TASK_TYPE
+{
+	SPAWN_OBJECT,     // 1 : Level, 2 : LAYER_TYPE, 3: Object Adress
+	DELETE_OBJECT,    // 1 : Object Adress
+	CHEANGE_LEVEL,
+};
+
 enum class COOKIE_TYPE
 {
 	BRAVE_COOKIE,

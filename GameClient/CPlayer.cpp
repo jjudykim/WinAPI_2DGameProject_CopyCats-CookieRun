@@ -15,7 +15,8 @@
 #include "CAnimation.h"
 
 CPlayer::CPlayer()
-	: m_PlayerImg(nullptr)
+	: m_DoubleJumpCount(2)
+	, m_CurJumpCount(0)
 {
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
@@ -49,6 +50,7 @@ CPlayer::~CPlayer()
 
 void CPlayer::begin()
 {
+	m_RigidBody->SetGroundDelegate(this, (DELEGATE)&CPlayer::RestoreJumpCount);
 }
 
 void CPlayer::tick()
@@ -57,7 +59,11 @@ void CPlayer::tick()
 
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::TAP)
 	{
-		m_RigidBody->Jump();
+		if (m_DoubleJumpCount > m_CurJumpCount)
+		{
+			m_RigidBody->Jump();
+			m_CurJumpCount += 1;
+		}
 	}
 }
 

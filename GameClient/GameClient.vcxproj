@@ -161,6 +161,7 @@
     <ClInclude Include="CRigidBody.h" />
     <ClInclude Include="CSelectObj.h" />
     <ClInclude Include="CSound.h" />
+    <ClInclude Include="CTaskMgr.h" />
     <ClInclude Include="CTexture.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="define.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="CRigidBody.cpp" />
     <ClCompile Include="CSelectObj.cpp" />
     <ClCompile Include="CSound.cpp" />
+    <ClCompile Include="CTaskMgr.cpp" />
     <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="func.cpp" />

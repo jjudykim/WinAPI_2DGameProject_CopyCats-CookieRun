@@ -45,18 +45,21 @@ void CLevelMgr::init()
 	pObject->SetSpeed(10.f);
 	m_pCurrentLevel->AddObject(LAYER_TYPE::BACKGROUND, pObject);
 
-	pObject = new CPlayer;
-	pObject->SetName(L"Player");
-	pObject->SetPos(200.f, 300.f);
-	pObject->SetScale(100.f, 200.f);
-	pObject->SetSpeed(500.f);
-	m_pCurrentLevel->AddObject(LAYER_TYPE::PLAYER, pObject);
-
 	pObject = new CJelly(JELLY_TYPE::BLUE_BEAN);
-	pObject->SetName(L"JELLY_BLUE_BEAN");
-	pObject->SetPos(500.f, 480.f);
+	pObject->SetPos(1000.f, 480.f);
 	pObject->SetScale(40.f, 50.f);
 	m_pCurrentLevel->AddObject(LAYER_TYPE::JELLY, pObject);
+
+	CObject* pObjectClone = nullptr;
+	for (int i = 0; i < 20; i++)
+	{
+		pObjectClone = pObject->Clone();
+		pObjectClone->SetPos(pObject->GetPos().x + pObject->GetScale().x + 20,
+			pObject->GetPos().y);
+		m_pCurrentLevel->AddObject(LAYER_TYPE::PLATFORM, pObjectClone);
+		pObject = pObjectClone;
+	}
+	pObjectClone = nullptr;
 
 	pObject = new CJelly(JELLY_TYPE::PINK_BEAN);
 	pObject->SetName(L"JELLY_PINK_BEAN");
@@ -76,8 +79,7 @@ void CLevelMgr::init()
 	pObject->SetScale(124.f, 120.f);
 	m_pCurrentLevel->AddObject(LAYER_TYPE::PLATFORM, pObject);
 
-	CObject* pObjectClone = nullptr;
-	for (int i = 0; i < 25; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		pObjectClone = pObject->Clone();
 		pObjectClone->SetPos(pObject->GetPos().x + pObject->GetScale().x, 
@@ -85,6 +87,13 @@ void CLevelMgr::init()
 		m_pCurrentLevel->AddObject(LAYER_TYPE::PLATFORM, pObjectClone);
 		pObject = pObjectClone;
 	}
+
+	pObject = new CPlayer;
+	pObject->SetName(L"Player");
+	pObject->SetPos(200.f, 300.f);
+	pObject->SetScale(100.f, 200.f);
+	pObject->SetSpeed(400.f);
+	m_pCurrentLevel->AddObject(LAYER_TYPE::PLAYER, pObject);
 
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);

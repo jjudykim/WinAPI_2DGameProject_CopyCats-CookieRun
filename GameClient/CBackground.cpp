@@ -41,13 +41,13 @@ void CBackground::SetBackgroundInfo(BACKGROUND_TYPE _type)
 		{
 			tStartPos = Vec2D(2.0f, 17.0f);
 			tSlicePos = Vec2D(569.f, 320.f);
-			m_Speed = 0.f;
+			//m_Speed = 0.f;
 		}
 		else if (_type == BACKGROUND_TYPE::SUB1)
 		{
 			tStartPos = Vec2D(573.f, 17.0f);
 			tSlicePos = Vec2D(862.f, 320.f);
-			m_Speed = 10.f;
+			//m_Speed = 10.f;
 		}
 	}
 
@@ -58,7 +58,7 @@ void CBackground::tick()
 {
 	Vec2D tPos = GetPos();
 
-	tPos.x -= m_Speed * DT;
+	tPos.x -= GetSpeed() * DT;
 
 	SetPos(tPos);
 }
@@ -73,8 +73,8 @@ void CBackground::render()
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	AlphaBlend(DC
-				, (int)(GetPos().x)
-				, (int)(GetPos().y)
+				, (int)(GetRenderPos().x)
+				, (int)(GetRenderPos().y)
 				, (int)m_Info._sliceSize.x * 2.25f, (int)m_Info._sliceSize.y * 2.25f
 				, m_BackGroundImg->GetDC()
 				, (int)m_Info._startPos.x, (int)m_Info._startPos.y

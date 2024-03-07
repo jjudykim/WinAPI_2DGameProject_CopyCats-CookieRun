@@ -10,7 +10,6 @@ private:
     LEVEL_TYPE      m_Level;
     BackgroundInfo  m_Info;
     CTexture*       m_BackGroundImg;
-    float           m_Speed;
 
 public:
     virtual void tick() override;

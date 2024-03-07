@@ -9,9 +9,10 @@ class CPlayer :
     public CObject
 {
 private:
+    int m_DoubleJumpCount;
+    int m_CurJumpCount;
 
     CCollider*  m_Collider;
-    CTexture*   m_PlayerImg;
     CAnimator*  m_Animator;
     CRigidBody* m_RigidBody;
 
@@ -23,8 +24,11 @@ public:
     void OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
     void EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
 
+private:
+    void RestoreJumpCount() { m_CurJumpCount = 0; }
+
 public:
-    virtual CObject* Clone() override { return new CPlayer(*this); }
+    CLONE_DISABLE(CPlayer)
 
 public:
     CPlayer();

@@ -33,7 +33,7 @@ CTexture* CAssetMgr::LoadTexture(const wstring& _Key, const wstring& _strRelativ
 
 		return nullptr;
 	}
-	
+
 	m_mapTex.insert(make_pair(_Key, pTex));
 	pTex->m_Key = _Key;
 	pTex->m_RelativePath = _strRelativePath;
