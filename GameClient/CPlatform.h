@@ -5,6 +5,7 @@ class CPlatform :
     public CObject
 {
 private:
+    bool        m_Edge;
     CTexture*   m_PlatformImg;
     CCollider*  m_Collider;
 
@@ -17,6 +18,10 @@ public:
     virtual void EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
 
     CLONE(CPlatform)
+
+public:
+    void SetEdge(bool _b) { m_Edge = _b; }
+
 public:
     CPlatform();
     CPlatform(PLATFORM_TYPE _type);

@@ -9,6 +9,7 @@
 CPlatform::CPlatform()
 	: m_PlatformImg(nullptr)
 	, m_Collider(nullptr)
+	, m_Edge(false)
 {
 	
 }
@@ -55,6 +56,7 @@ void CPlatform::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CColli
 	{
 		CRigidBody* pRB = _OtherObj->GetComponent<CRigidBody>();
   		pRB->SetGround(true);
+		LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 	}
 }
 
@@ -64,6 +66,12 @@ void CPlatform::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider
 
 void CPlatform::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
+	if (_OtherObj->GetName() == L"Player" && m_Edge)
+	{
+		CRigidBody* pRB = _OtherObj->GetComponent<CRigidBody>();
+		pRB->SetGround(false);
+		LOG(LOG_TYPE::DBG_LOG, L"SetGround -> false");
+	}
 }
 
 void CPlatform::render()
