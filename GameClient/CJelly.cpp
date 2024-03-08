@@ -79,3 +79,8 @@ void CJelly::render()
 	}
 }
 
+void CJelly::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
+{
+	Destroy();
+}
+

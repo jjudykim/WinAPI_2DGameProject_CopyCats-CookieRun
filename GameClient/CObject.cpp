@@ -2,6 +2,7 @@
 #include "CObject.h"
 
 #include "CEngine.h"
+#include "CTaskMgr.h"
 #include "CJelly.h"
 #include "CComponent.h"
 #include "CAnimator.h"
@@ -34,6 +35,15 @@ CObject::CObject(const CObject& _Other)
 CObject::~CObject()
 {
 	Safe_Del_Vec(m_vecCom);
+}
+
+void CObject::Destroy()
+{
+	Task task = {};
+	task.Type = TASK_TYPE::DELETE_OBJECT;
+	task.Param1 = (DWORD_PTR)this;
+
+	CTaskMgr::GetInst()->AddTask(task);
 }
 
 void CObject::begin()

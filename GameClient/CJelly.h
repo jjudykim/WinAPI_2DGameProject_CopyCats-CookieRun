@@ -16,6 +16,8 @@ public:
     virtual void tick() override;
     virtual void render() override;
 
+    virtual void BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
+
 public:
     JELLY_TYPE GetJellyType() { return m_type; }
     void SetJellyType(JELLY_TYPE _type) { m_type = _type; }

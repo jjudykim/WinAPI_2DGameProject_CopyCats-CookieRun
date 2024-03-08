@@ -55,7 +55,6 @@ void CTaskMgr::ExectueTask()
 				continue;
 			}
 			pObj->m_bDead = true;
-
 			m_GC.push_back(pObj);
 		}
 			break;

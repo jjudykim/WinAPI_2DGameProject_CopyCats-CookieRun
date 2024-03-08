@@ -69,15 +69,6 @@ void CAnimation::render()
 
 	Vec2D vRenderPos = pOwnerObj->GetRenderPos();
 
-	/*TransparentBlt(	  DC
-					, (int)(vRenderPos.x - frm.SliceSize.x / 2.f + frm.Offset.x)
-					, (int)(vRenderPos.y - frm.SliceSize.y / 2.f + frm.Offset.y)
-					, (int)frm.SliceSize.x, (int)frm.SliceSize.y
-					, m_Atlas->GetDC()
-					, (int)frm.StartPos.x, (int)frm.StartPos.y
-					, (int)frm.SliceSize.x, (int)frm.SliceSize.y
-					, RGB(0, 0, 0));*/
-
 	BLENDFUNCTION bf = {};
 
 	bf.BlendOp = AC_SRC_OVER;
