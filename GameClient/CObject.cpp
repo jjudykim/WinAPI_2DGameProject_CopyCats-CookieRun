@@ -9,6 +9,7 @@
 
 CObject::CObject()
 	: m_Type(LAYER_TYPE::NONE)
+	, m_bDead(false)
 	, m_Animator(nullptr)
 	, m_Speed(0.f)
 {
@@ -21,6 +22,7 @@ CObject::CObject(const CObject& _Other)
 	, m_Speed(_Other.m_Speed)
 	, m_Animator(nullptr)
 	, m_Type(LAYER_TYPE::NONE)
+	, m_bDead(false)
 {
 	for (size_t i = 0; i < _Other.m_vecCom.size(); ++i)
 	{

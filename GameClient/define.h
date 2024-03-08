@@ -29,3 +29,6 @@
 
 #define CLONE(Type) virtual Type* Clone() override { return new Type(*this); }
 #define CLONE_DISABLE(Type) virtual Type* Clone() override { return nullptr; }
+
+#define GET_CUR_LEVEL CLevelMgr::GetInst()->GetCurrentLevel()
+#define GET_CUR_LEVELTYPE CLevelMgr::GetInst()->GetCurrentLevelType()

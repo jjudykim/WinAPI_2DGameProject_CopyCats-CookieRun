@@ -23,6 +23,9 @@ public:
 	virtual void finaltick();
 	virtual void render();
 
+	virtual void Enter() = 0;
+	virtual void Exit() = 0;
+
 public:
 	const vector<CCollider*>& GetColliders(LAYER_TYPE _Layer) { return m_arrCollider[(UINT)_Layer]; }
 

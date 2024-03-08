@@ -8,6 +8,7 @@
 #include "CLevelMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CCollisionMgr.h"
+#include "CTaskMgr.h"
 #include "CCamera.h"
 
 CEngine::CEngine()
@@ -87,6 +88,11 @@ void CEngine::progress()
 	CCamera::GetInst()->render();
 	
 	::BitBlt(m_hDC, 0, 0, m_Resolution.x, m_Resolution.y, m_hSubDC, 0, 0, SRCCOPY);
+
+	// =================
+	// Task
+	// =================
+	CTaskMgr::GetInst()->tick();
 }
 
 void CEngine::CreateDefaultGDIObject()

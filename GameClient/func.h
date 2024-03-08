@@ -40,3 +40,9 @@ void Safe_Del_Arr(T* (&Arr)[size])
 		}
 	}
 }
+
+class CObject;
+class CLevel;
+
+void SpawnObject(CLevel* _Level, LAYER_TYPE _type, CObject* _pSpawned);
+void ChangeLevel(LEVEL_TYPE _NextLevelType);

@@ -22,7 +22,7 @@ class CCamera
 {
 	SINGLE(CCamera)
 private:
-	CObject*		m_StandardObj;
+	CObject*		m_FocusObj;
 
 	Vec2D			m_LookAt;
 	Vec2D			m_PrevLookAt;
@@ -36,7 +36,7 @@ private:
 public:
 	Vec2D GetRenderPos(Vec2D _RealPos) { return _RealPos - m_Diff; }
 	Vec2D GetRealPos(Vec2D _RenderPos) { return _RenderPos + m_Diff; }
-
+	void SetCameraFocus();
 	void SetCameraEffect(CAM_EFFECT _Effect, float _Duration);
 
 public:

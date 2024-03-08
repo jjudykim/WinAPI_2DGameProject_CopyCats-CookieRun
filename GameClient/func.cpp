@@ -59,3 +59,26 @@ void DrawDebugLine(PEN_TYPE _Type, Vec2D _Start, Vec2D _End, float _Time)
 
 	CDbgRenderMgr::GetInst()->AddDbgRenderInfo(info);
 }
+
+#include "CLevel.h"
+#include "CObject.h"
+#include "CTaskMgr.h"
+void SpawnObject(CLevel* _Level, LAYER_TYPE _type, CObject* _pSpawned)
+{
+	Task task = {};
+	task.Type = TASK_TYPE::SPAWN_OBJECT;
+	task.Param1 = (DWORD_PTR)_Level;
+	task.Param2 = (DWORD_PTR)_type;
+	task.Param3 = (DWORD_PTR)_pSpawned;
+
+	CTaskMgr::GetInst()->AddTask(task);
+}
+
+void ChangeLevel(LEVEL_TYPE _NextLevelType)
+{
+	Task task = {};
+	task.Type = TASK_TYPE::CHANGE_LEVEL;
+	task.Param1 = (DWORD_PTR)_NextLevelType;
+
+	CTaskMgr::GetInst()->AddTask(task);
+}

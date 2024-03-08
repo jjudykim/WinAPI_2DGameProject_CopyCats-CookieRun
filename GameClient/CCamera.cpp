@@ -24,25 +24,18 @@ void CCamera::init()
 
 	m_LookAt = Vec2D(vResol.x / 2.f, vResol.y / 2.f);
 	m_PrevLookAt = m_LookAt;
-
-	CObject* pObj = CLevelMgr::GetInst()->GetCurrentLevel()->FindObjectByName(L"Player");
-
-	if (pObj != nullptr)
-	{
-		m_StandardObj = dynamic_cast<CPlayer*>(pObj);
-	}
 }
 
 void CCamera::tick()
 {
-	if (m_StandardObj != nullptr)
-		m_CamSpeed = m_StandardObj->GetSpeed();
+	if(m_FocusObj != nullptr)
+		m_CamSpeed = m_FocusObj->GetSpeed();
 
 	Move();
 
 	Vec2D vResol = CEngine::GetInst()->GetResolution();
 	m_Diff = m_LookAt - Vec2D(vResol.x / 2.f, vResol.y / 2.f);
-
+	
 	CameraEffect();
 }
 
@@ -63,6 +56,16 @@ void CCamera::render()
 	AlphaBlend(DC, 0, 0, m_FadeTex->GetWidth(), m_FadeTex->GetHeight()
 				 , m_FadeTex->GetDC(), 0, 0
 				 , m_FadeTex->GetWidth(), m_FadeTex->GetHeight(), bf);
+}
+
+void CCamera::SetCameraFocus()
+{
+	CObject* pObj = GET_CUR_LEVEL->FindObjectByName(L"Player");
+
+	if (pObj != nullptr)
+	{
+		m_FocusObj = dynamic_cast<CPlayer*>(pObj);
+	}
 }
 
 void CCamera::SetCameraEffect(CAM_EFFECT _Effect, float _Duration)

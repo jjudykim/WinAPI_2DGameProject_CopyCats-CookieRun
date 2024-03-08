@@ -15,6 +15,7 @@ public:
 	void AddTask(const Task& _Task) { m_vecTask.push_back(_Task); }
 
 private:
-
+	void ClearGC();
+	void ExectueTask();
 };
 

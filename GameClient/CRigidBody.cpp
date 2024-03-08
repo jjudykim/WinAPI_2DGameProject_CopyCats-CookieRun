@@ -13,6 +13,8 @@ CRigidBody::CRigidBody()
 	, m_Ground(true)
 	, m_GroundInst(nullptr)
 	, m_GroundDelegate(nullptr)
+	//, m_AirInst(nullptr)
+	//, m_AirDelegate(nullptr)
 	// m_AirInst, m_AirDelegate을 nullptr로 초기화 시 힙 손상 발생하는 이유?
 {
 	
@@ -45,8 +47,13 @@ void CRigidBody::finaltick()
 	{
 		Vec2D vJumpSpeed = Vec2D(0.f, 1.0f) * m_GravityAccel * DT;
 		m_VelocityByGravity += vJumpSpeed;
+		vObjPos += m_VelocityByGravity * DT;
 	}
-	vObjPos += m_VelocityByGravity * DT;
+	else
+	{
+		GetOwner()->SetPos(Vec2D(vObjPos.x, 465.f));
+		return;
+	}
 	GetOwner()->SetPos(vObjPos);
 	DrawDebugLine(PEN_TYPE::PEN_BLUE, GetOwner()->GetRenderPos(), GetOwner()->GetRenderPos() + m_VelocityByGravity, 0.f);
 }

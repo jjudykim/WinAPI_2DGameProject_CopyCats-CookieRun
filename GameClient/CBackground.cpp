@@ -2,25 +2,26 @@
 #include "CBackground.h"
 
 #include "CTimeMgr.h"
+#include "CLevelMgr.h"
+
 
 CBackground::CBackground()
 	: m_BackGroundImg(nullptr)
-	, m_Level(LEVEL_TYPE::END)
 {
 	
 }
 
-CBackground::CBackground(LEVEL_TYPE _Leveltype, BACKGROUND_TYPE _BGtype)
+CBackground::CBackground(BACKGROUND_TYPE _BGtype)
 	: CObject()
-	, m_Level(_Leveltype)
 {
 	wstring Path = L"";
+	LEVEL_TYPE CurLevel = GET_CUR_LEVELTYPE;
 
-	if (_Leveltype == LEVEL_TYPE::STAGE_01)
+	if (CurLevel == LEVEL_TYPE::STAGE_01)
 	{
 		Path = L"texture\\Ep1_Background_Atlas.png";
 	}
-	m_BackGroundImg = CAssetMgr::GetInst()->LoadTexture(L"BackgroundAtlasTex", Path);
+	m_BackGroundImg = CAssetMgr::GetInst()->LoadTexture(L"Ep1_BackgroundAtlasTex", Path);
 	
 	SetBackgroundInfo(_BGtype);
 }
@@ -35,7 +36,9 @@ void CBackground::SetBackgroundInfo(BACKGROUND_TYPE _type)
 	Vec2D tStartPos;
 	Vec2D tSlicePos;
 
-	if (m_Level == LEVEL_TYPE::STAGE_01)
+	LEVEL_TYPE CurLevel = GET_CUR_LEVELTYPE;
+
+	if (CurLevel == LEVEL_TYPE::STAGE_01)
 	{
 		if (_type == BACKGROUND_TYPE::MAIN)
 		{

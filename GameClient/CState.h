@@ -1,7 +1,7 @@
 #pragma once
 #include "CEntity.h"
+#include "CFSM.h"
 
-class CFSM;
 class CObject;
 
 class CState :

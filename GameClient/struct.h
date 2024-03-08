@@ -144,7 +144,7 @@ public:
 
 struct Task
 {
-	TASK_TYPE	type;
+	TASK_TYPE	Type;
 	DWORD_PTR	Param1;
 	DWORD_PTR	Param2;
 	DWORD_PTR	Param3;
@@ -191,4 +191,5 @@ struct BackgroundInfo
 	BACKGROUND_TYPE		_type;
 	Vec2D				_startPos;
 	Vec2D				_sliceSize;
+	
 };

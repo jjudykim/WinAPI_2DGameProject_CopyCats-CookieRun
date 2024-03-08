@@ -22,6 +22,7 @@ private:
 	CAnimator*			m_Animator;
 
 	LAYER_TYPE          m_Type;
+	bool				m_bDead;
 
 public:
 	void SetPos(Vec2D _Pos) { m_Pos = _Pos; }
@@ -35,7 +36,9 @@ public:
 	float GetSpeed() { return m_Speed; }
 	Vec2D GetRenderPos() { return CCamera::GetInst()->GetRenderPos(m_Pos); }
 	LAYER_TYPE GetLayerType() { return m_Type; }
+	bool IsDead() { return m_bDead; }
 
+	void Destroy();
 
 public:
 	virtual void begin();
@@ -76,5 +79,6 @@ public:
 	~CObject();
 
 	friend class CLevel;
+	friend class CTaskMgr;
 };
 
