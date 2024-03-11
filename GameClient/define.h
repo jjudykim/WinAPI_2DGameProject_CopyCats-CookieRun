@@ -32,3 +32,5 @@
 
 #define GET_CUR_LEVEL CLevelMgr::GetInst()->GetCurrentLevel()
 #define GET_CUR_LEVELTYPE CLevelMgr::GetInst()->GetCurrentLevelType()
+
+#define GROUND_YPOS 465.f

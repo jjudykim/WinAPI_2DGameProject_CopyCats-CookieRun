@@ -138,3 +138,13 @@ enum class PLATFORM_TYPE
 	GROUNDED,
 	FLOATED,
 };
+
+enum class OBS_TYPE
+{
+	JUMP_NOTI,
+	JUMP,
+	DBJUMP,
+	DOWN,
+
+	END,
+};

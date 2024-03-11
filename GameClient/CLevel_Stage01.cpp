@@ -6,6 +6,7 @@
 #include "CObject.h"
 #include "CBackground.h"
 #include "CPlayer.h"
+#include "CObstacle.h"
 #include "CJelly.h"
 #include "CPlatform.h"
 
@@ -44,10 +45,16 @@ void CLevel_Stage01::Enter()
 
 	pObject = new CPlayer;
 	pObject->SetName(L"Player");
-	pObject->SetPos(200.f, 465.f);
+	pObject->SetPos(200.f, GROUND_YPOS);
 	pObject->SetScale(100.f, 200.f);
 	pObject->SetSpeed(400.f);
 	AddObject(LAYER_TYPE::PLAYER, pObject);
+
+	pObject = new CObstacle(OBS_TYPE::JUMP);
+	pObject->SetName(L"Obstacle");
+	pObject->SetPos(1200.f, 550.f);
+	pObject->SetScale(104.f, 135.f);
+	AddObject(LAYER_TYPE::OBSTACLE, pObject);
 
 	pObject = new CJelly(JELLY_TYPE::BLUE_BEAN);
 	pObject->SetPos(1000.f, 480.f);

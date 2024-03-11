@@ -7,6 +7,8 @@ private:
     CTexture*   m_ObstacleImg;
     CAnimator*  m_Animator;
 
+    CCollider* m_Collider;
+
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -17,6 +19,7 @@ public:
 
 public:
     CObstacle();
+    CObstacle(OBS_TYPE _type);
     ~CObstacle();
 };
 
