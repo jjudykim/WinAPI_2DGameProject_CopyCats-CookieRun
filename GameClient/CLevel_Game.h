@@ -1,13 +1,16 @@
 #pragma once
 #include "CLevel.h"
 
+class CStage;
+
 class CLevel_Game :
     public CLevel
 {
 private:
-    vector<BGInfo>      m_vecBGInfo;
-    vector<OBSInfo>     m_vecOBSInfo;
-    vector<PLTInfo>     m_vecPLTInfo;
+    CStage* m_CurStage;
+    CStage* m_PostStage;
+    
+
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -15,6 +18,8 @@ public:
     virtual void Enter() override;
     virtual void Exit() override;
 
+public:
+    void LoadFromFile(const wstring& _FullPath);
 public:
     CLONE_DISABLE(CLevel_Game);
 

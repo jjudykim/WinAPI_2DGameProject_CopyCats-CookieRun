@@ -39,4 +39,9 @@ void CLevel_Game::Exit()
 {
 }
 
+void CLevel_Game::LoadFromFile(const wstring& _FullPath)
+{
+	
+}
+
 

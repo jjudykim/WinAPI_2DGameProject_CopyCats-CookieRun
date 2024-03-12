@@ -207,3 +207,13 @@ struct PLTInfo
 	Vec2D		_Pos;
 	wstring		_Path;
 };
+
+struct StageOBJInfo
+{
+	OBJ_TYPE_LIST	_ObjType;
+	int				_O
+	Vec2D			_startPos;
+	bool			_atlas;
+	wstring			_path;
+	Vec2D			_sliceSize;
+};

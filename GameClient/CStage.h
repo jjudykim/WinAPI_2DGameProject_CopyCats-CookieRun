@@ -4,6 +4,7 @@
 class CStage :
     public CEntity
 {
-    vector<CObject*>    m_arrObj[(UINT)LAYER_TYPE::END];
+private:
+    vector<StageOBJInfo>      m_vecStageInfo;
 };
 
