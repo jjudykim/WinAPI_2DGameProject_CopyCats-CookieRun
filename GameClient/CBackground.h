@@ -7,7 +7,7 @@ class CBackground :
     public CObject
 {
 private:
-    BackgroundInfo  m_Info;
+    BGInfo  m_Info;
     CTexture*       m_BackGroundImg;
 
 public:

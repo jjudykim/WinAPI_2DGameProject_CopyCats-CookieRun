@@ -54,7 +54,7 @@ void CBackground::SetBackgroundInfo(BACKGROUND_TYPE _type)
 		}
 	}
 
-	m_Info = BackgroundInfo{ _type, tStartPos, tSlicePos };
+	m_Info = BGInfo{ _type, tStartPos, tSlicePos };
 }
 
 void CBackground::tick()

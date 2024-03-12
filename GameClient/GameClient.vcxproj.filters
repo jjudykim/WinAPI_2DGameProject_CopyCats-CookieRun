@@ -28,14 +28,8 @@
     <Filter Include="03. Game\04. Level\Editor">
       <UniqueIdentifier>{f83c0c49-8602-41d4-acba-38f4ef685d40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\04. Level\Stage03">
-      <UniqueIdentifier>{54fed68d-95d4-424e-aa90-43570afaebe2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Game\04. Level\Stage01">
       <UniqueIdentifier>{d4c71be2-a069-45c3-b975-1835776dc15b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03. Game\04. Level\Stage02">
-      <UniqueIdentifier>{00f5962a-4753-483b-9661-ccfec2fc68ca}</UniqueIdentifier>
     </Filter>
     <Filter Include="03. Game\03. Manager">
       <UniqueIdentifier>{2eeea993-3491-4335-a3b7-0228be0d4a07}</UniqueIdentifier>
@@ -126,6 +120,9 @@
     </Filter>
     <Filter Include="03. Game\09. Module\State\PlayerState">
       <UniqueIdentifier>{55d20914-e00d-42fa-b49e-bdf5dd46a04f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\04. Level\Game">
+      <UniqueIdentifier>{00f5962a-4753-483b-9661-ccfec2fc68ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +246,9 @@
     <ClInclude Include="CStage.h">
       <Filter>03. Game\05. Stage</Filter>
     </ClInclude>
+    <ClInclude Include="CLevel_Game.h">
+      <Filter>03. Game\04. Level\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -349,6 +349,9 @@
     </ClCompile>
     <ClCompile Include="CStage.cpp">
       <Filter>03. Game\05. Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Game.cpp">
+      <Filter>03. Game\04. Level\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

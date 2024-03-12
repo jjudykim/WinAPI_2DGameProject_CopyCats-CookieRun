@@ -33,4 +33,5 @@
 #define GET_CUR_LEVEL CLevelMgr::GetInst()->GetCurrentLevel()
 #define GET_CUR_LEVELTYPE CLevelMgr::GetInst()->GetCurrentLevelType()
 
-#define GROUND_YPOS 465.f
+#define COOKIE_DEFAULT_POSX 200.f
+#define COOKIE_DEFAULT_POSY 465.f

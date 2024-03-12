@@ -133,7 +133,7 @@ enum class BACKGROUND_TYPE
 	END,
 };
 
-enum class PLATFORM_TYPE
+enum class PLT_TYPE
 {
 	GROUNDED,
 	FLOATED,

@@ -186,10 +186,24 @@ struct JellyInfo
 	int			_dividerSize;
 };
 
-struct BackgroundInfo
+struct BGInfo
 {
 	BACKGROUND_TYPE		_type;
 	Vec2D				_startPos;
 	Vec2D				_sliceSize;
 	
+};
+
+struct OBSInfo
+{
+	OBS_TYPE	_type;
+	Vec2D		_Pos;
+	wstring		_Path;
+};
+
+struct PLTInfo
+{
+	PLT_TYPE    _type;
+	Vec2D		_Pos;
+	wstring		_Path;
 };

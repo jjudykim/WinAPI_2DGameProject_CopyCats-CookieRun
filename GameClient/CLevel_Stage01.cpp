@@ -45,7 +45,7 @@ void CLevel_Stage01::Enter()
 
 	pObject = new CPlayer;
 	pObject->SetName(L"Player");
-	pObject->SetPos(200.f, GROUND_YPOS);
+	pObject->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
 	pObject->SetScale(100.f, 200.f);
 	pObject->SetSpeed(400.f);
 	AddObject(LAYER_TYPE::PLAYER, pObject);
@@ -84,7 +84,7 @@ void CLevel_Stage01::Enter()
 	pObject->SetScale(60.f, 60.f);
 	AddObject(LAYER_TYPE::JELLY, pObject);
 
-	pObject = new CPlatform(PLATFORM_TYPE::GROUNDED);
+	pObject = new CPlatform(PLT_TYPE::GROUNDED);
 	pObject->SetName(L"Platform");
 	pObject->SetPos(60.f, 660.f);
 	pObject->SetScale(124.f, 120.f);

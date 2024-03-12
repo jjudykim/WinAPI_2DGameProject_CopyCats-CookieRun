@@ -24,7 +24,7 @@ public:
 
 public:
     CPlatform();
-    CPlatform(PLATFORM_TYPE _type);
+    CPlatform(PLT_TYPE _type);
     CPlatform(const CPlatform& _Other);
     ~CPlatform();
     
