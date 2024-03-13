@@ -14,11 +14,14 @@ CPlatform::CPlatform()
 	
 }
 
-CPlatform::CPlatform(PLT_TYPE _type)
+CPlatform::CPlatform(UINT _typeIndex)
 {
+	SetLayerType(LAYER_TYPE::PLATFORM);
+	m_type = (PLT_TYPE)_typeIndex;
+
 	wstring tPath = L"";
 
-	if (_type == PLT_TYPE::GROUNDED)
+	if (m_type == PLT_TYPE::GROUNDED)
 	{
 		tPath = L"texture\\Ep1_grounded_Platform.png";
 	}

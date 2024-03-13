@@ -170,6 +170,13 @@ struct DbgLog
 	float			Age;
 };
 
+struct AtlasInfo
+{
+	bool  UseAtlas;
+	Vec2D StartPos;
+	Vec2D SliceSize;
+};
+
 struct CookieInfo
 {
 	COOKIE_TYPE _type;
@@ -186,34 +193,40 @@ struct JellyInfo
 	int			_dividerSize;
 };
 
-struct BGInfo
-{
-	BACKGROUND_TYPE		_type;
-	Vec2D				_startPos;
-	Vec2D				_sliceSize;
-	
-};
+//struct BGInfo
+//{
+//	BACKGROUND_TYPE		_type;
+//	Vec2D				_startPos;
+//	Vec2D				_sliceSize;
+//	
+//};
+//
+//struct OBSInfo
+//{
+//	OBS_TYPE	_type;
+//	Vec2D		_Pos;
+//	wstring		_Path;
+//};
+//
+//struct PLTInfo
+//{
+//	PLT_TYPE    _type;
+//	Vec2D		_Pos;
+//	wstring		_Path;
+//};
 
-struct OBSInfo
+struct StageObjInfo
 {
-	OBS_TYPE	_type;
-	Vec2D		_Pos;
-	wstring		_Path;
-};
+	LAYER_TYPE		_objType;
 
-struct PLTInfo
-{
-	PLT_TYPE    _type;
-	Vec2D		_Pos;
-	wstring		_Path;
-};
-
-struct StageOBJInfo
-{
-	OBJ_TYPE_LIST	_ObjType;
-	int				_O
+	UINT			_typeIndex;
 	Vec2D			_startPos;
-	bool			_atlas;
+	Vec2D			_scale;
+	float			_speed;
+
+	wstring			_imageName;
 	wstring			_path;
+	bool			_atlas;
+	Vec2D			_slicePos;
 	Vec2D			_sliceSize;
 };

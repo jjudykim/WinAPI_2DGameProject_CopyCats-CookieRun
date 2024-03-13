@@ -4,6 +4,7 @@ class CObstacle :
     public CObject
 {
 private:
+    OBS_TYPE    m_type;
     CTexture*   m_ObstacleImg;
     CAnimator*  m_Animator;
 
@@ -19,7 +20,7 @@ public:
 
 public:
     CObstacle();
-    CObstacle(OBS_TYPE _type);
+    CObstacle(UINT _typeIndex);
     ~CObstacle();
 };
 

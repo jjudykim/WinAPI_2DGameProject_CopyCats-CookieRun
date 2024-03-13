@@ -6,6 +6,7 @@ class CPlatform :
 {
 private:
     bool        m_Edge;
+    PLT_TYPE    m_type;
     CTexture*   m_PlatformImg;
     CCollider*  m_Collider;
 
@@ -24,7 +25,7 @@ public:
 
 public:
     CPlatform();
-    CPlatform(PLT_TYPE _type);
+    CPlatform(UINT _typeIndex);
     CPlatform(const CPlatform& _Other);
     ~CPlatform();
     

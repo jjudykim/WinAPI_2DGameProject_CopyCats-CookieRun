@@ -10,12 +10,15 @@ CObstacle::CObstacle()
 
 }
 
-CObstacle::CObstacle(OBS_TYPE _type)
+CObstacle::CObstacle(UINT _typeIndex)
 {
+	SetLayerType(LAYER_TYPE::OBSTACLE);
+	m_type = (OBS_TYPE)_typeIndex;
+
 	wstring tPath = L"";
 	Vec2D tColliderScale;
 
-	if (_type == OBS_TYPE::JUMP)
+	if (m_type == OBS_TYPE::JUMP)
 	{
 		tPath = L"texture\\Ep1_jump_1.png";
 		tColliderScale = Vec2D(80.f, 100.f);

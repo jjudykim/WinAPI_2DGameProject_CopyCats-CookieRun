@@ -37,6 +37,17 @@ CObject::~CObject()
 	Safe_Del_Vec(m_vecCom);
 }
 
+void CObject::SetAtlasInfo(bool _use, Vec2D _StartPos, Vec2D _SlicePos)
+{
+	if (!_use)
+	{
+		m_ImageInfo.UseAtlas = false;
+		return;
+	}
+	m_ImageInfo.StartPos = _StartPos;
+	m_ImageInfo.SliceSize = _SlicePos;
+}
+
 void CObject::Destroy()
 {
 	Task task = {};

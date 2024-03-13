@@ -10,7 +10,6 @@
 CJelly::CJelly()
 	: m_type(JELLY_TYPE::END)
 {
-	CJelly(m_type);
 	//m_Animator = (CAnimator*)AddComponent(new CAnimator);
 	//CTexture* pAtlas = CAssetMgr::GetInst()->LoadTexture(L"JelliesAtlasTex", L"texture\\GeneralJellies_Atlas.png");
 }
@@ -49,7 +48,7 @@ void CJelly::render()
 	Vec2D vPos = GetRenderPos();
 	Vec2D vScale = GetScale();
 
-	if (m_type == JELLY_TYPE::BLUE_BEAN)
+	if (m_type == JELLY_TYPE::NORMAL_JELLY)
 	{
 		USE_BRUSH(DC, BRUSH_TYPE::BRUSH_BLUE);
 		Rectangle(DC, (int)(vPos.x - vScale.x * 0.5f)
@@ -57,7 +56,7 @@ void CJelly::render()
 			, (int)(vPos.x + vScale.x * 0.5f)
 			, (int)(vPos.y + vScale.y * 0.5f));
 	}
-	else if (m_type == JELLY_TYPE::PINK_BEAN)
+	/*else if (m_type == JELLY_TYPE::PINK_BEAN)
 	{
 		USE_BRUSH(DC, BRUSH_TYPE::BRUSH_RED);
 		Rectangle(DC, (int)(vPos.x - vScale.x * 0.5f)
@@ -72,7 +71,7 @@ void CJelly::render()
 			, (int)(vPos.y - vScale.y * 0.5f)
 			, (int)(vPos.x + vScale.x * 0.5f)
 			, (int)(vPos.y + vScale.y * 0.5f));
-	}
+	}*/
 	else
 	{
 		LOG(LOG_TYPE::DBG_ERROR, L"Not defineded Jelly")

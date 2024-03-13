@@ -30,7 +30,7 @@ void CLevel_Stage01::tick()
 
 void CLevel_Stage01::Enter()
 {
-	CObject* pObject = new CBackground(BACKGROUND_TYPE::MAIN);
+	/*CObject* pObject = new CBackground(BACKGROUND_TYPE::MAIN);
 	pObject->SetName(L"Background_MAIN");
 	pObject->SetPos(0.f, 0.f);
 	pObject->SetScale(CEngine::GetInst()->GetResolution());
@@ -99,7 +99,7 @@ void CLevel_Stage01::Enter()
 		pObject = pObjectClone;
 	}
 	CPlatform* vLastPlatfrom = (CPlatform*)pObject;
-	vLastPlatfrom->SetEdge(true);
+	vLastPlatfrom->SetEdge(true);*/
 
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
