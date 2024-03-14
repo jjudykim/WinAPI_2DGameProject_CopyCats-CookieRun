@@ -86,6 +86,11 @@ void CKeyMgr::tick()
 				m_vecKeyInfo[i].bPressed = false;
 			}
 		}
+
+		POINT ptMousePos = {};
+		GetCursorPos(&ptMousePos);
+		ScreenToClient(CEngine::GetInst()->GetMainWnd(), &ptMousePos);
+		m_MousePos = ptMousePos;
 	}
 	// 윈도우의 포커싱이 해제됨
 	else

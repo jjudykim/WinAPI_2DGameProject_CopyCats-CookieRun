@@ -44,12 +44,15 @@ class CKeyMgr
 private:
 	vector<KeyInfo>	m_vecKeyInfo;
 
+	Vec2D			m_MousePos;
+
 public:
 	void init();
 	void tick();
 
 public:
 	KEY_STATE GetKeyState(KEY _Key) { return m_vecKeyInfo[(UINT)_Key].eKeyState; }
+	Vec2D GetMousePos() { return m_MousePos; }
 };
 
 

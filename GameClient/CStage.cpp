@@ -9,6 +9,7 @@ CStage::CStage()
 
 CStage::~CStage()
 {
+	m_vecStageInfo.clear();
 }
 
 int CStage::LoadFromFile(const wstring& _FullPath)
@@ -25,6 +26,7 @@ int CStage::LoadFromFile(const wstring& _FullPath)
 	while (EOF != fwscanf_s(pFile, L"%s", szReadBuff, 256))
 	{
 		StageObjInfo tStageObj = {};
+
 		if (wstring(szReadBuff) == L"[OBJECT_TYPE]")
 		{
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
@@ -33,7 +35,7 @@ int CStage::LoadFromFile(const wstring& _FullPath)
 			else if (strType == L"PLATFORM") tStageObj._objType = LAYER_TYPE::PLATFORM;
 			else if (strType == L"OBSTACLE") tStageObj._objType = LAYER_TYPE::OBSTACLE;
 		}
-
+		
 		fwscanf_s(pFile, L"%s", szReadBuff, 256);
 		if (wstring(szReadBuff) == L"[OBJECT_COUNT]")
 		{
@@ -73,6 +75,11 @@ int CStage::LoadFromFile(const wstring& _FullPath)
 					fwscanf_s(pFile, L"%f%f", &tStageObj._slicePos.x, &tStageObj._slicePos.y);
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
 					fwscanf_s(pFile, L"%f%f", &tStageObj._sliceSize.x, &tStageObj._sliceSize.y);
+				}
+				else
+				{
+					fwscanf_s(pFile, L"%s", szReadBuff, 256);
+					fwscanf_s(pFile, L"%s", szReadBuff, 256);
 				}
 
 				m_vecStageInfo.push_back(tStageObj);

@@ -124,6 +124,9 @@
     <Filter Include="03. Game\04. Level\Game">
       <UniqueIdentifier>{00f5962a-4753-483b-9661-ccfec2fc68ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Object\UI">
+      <UniqueIdentifier>{b9d9ca75-d1b0-46ce-be2d-54884cd651ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -249,6 +252,9 @@
     <ClInclude Include="CLevel_Game.h">
       <Filter>03. Game\04. Level\Game</Filter>
     </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>03. Game\06. Object\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -352,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="CLevel_Game.cpp">
       <Filter>03. Game\04. Level\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>03. Game\06. Object\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
