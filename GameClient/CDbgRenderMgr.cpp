@@ -5,6 +5,7 @@
 #include "CEngine.h"
 #include "CSelectObj.h"
 #include "CTimeMgr.h"
+#include "CCamera.h"
 
 CDbgRenderMgr::CDbgRenderMgr()
 	: m_LogLife(3.f)
@@ -24,7 +25,7 @@ void CDbgRenderMgr::tick()
 
 void CDbgRenderMgr::render()
 {
-	if (m_RenderList.empty() && m_LogList.empty())
+	if (m_RenderList.empty() && m_LogList.empty() && m_InfoList.empty())
 		return;
 
 	list<DbgRenderInfo>::iterator iter = m_RenderList.begin();
@@ -63,7 +64,7 @@ void CDbgRenderMgr::render()
 		else { ++iter; }
 	}
 
-	if (m_LogList.empty())
+	if (m_LogList.empty() && m_InfoList.empty())
 		return;
 
 	list<DbgLog>::iterator logiter = m_LogList.begin();
@@ -99,7 +100,24 @@ void CDbgRenderMgr::render()
 		++i;
 	}
 
-	
 	SetBkMode(DC, OPAQUE);
 	SetTextColor(DC, RGB(0, 0, 0));
+
+
+	if (m_InfoList.empty())
+		return;
+
+	list<DbgObjInfo>::iterator infoIter = m_InfoList.begin();
+	
+	int j = 0;
+	for (; infoIter != m_InfoList.end(); )
+	{
+		Vec2D tPos = CCamera::GetInst()->GetRenderPos(infoIter->ObjPosition);
+		TextOut(DC, (int)tPos.x
+			, (int)tPos.y + infoIter->ObjScale.y + 10
+			, infoIter->strLog.c_str()
+			, (int)infoIter->strLog.length());
+
+		infoIter = m_InfoList.erase(infoIter);
+	}
 }

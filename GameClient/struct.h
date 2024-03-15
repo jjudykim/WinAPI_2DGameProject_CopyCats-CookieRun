@@ -170,6 +170,13 @@ struct DbgLog
 	float			Age;
 };
 
+struct DbgObjInfo
+{
+	Vec2D			ObjPosition;
+	Vec2D			ObjScale;
+	wstring         strLog;
+};
+
 struct AtlasInfo
 {
 	bool  UseAtlas;

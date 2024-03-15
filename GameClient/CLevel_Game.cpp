@@ -2,6 +2,7 @@
 #include "CLevel_Game.h"
 
 #include "CCollisionMgr.h"
+#include "CDbgRenderMgr.h"
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
 #include "CTaskMgr.h"
@@ -46,19 +47,11 @@ void CLevel_Game::tick()
 		return;
 
 	float CamRealPosX = CCamera::GetInst()->GetRealPos(m_Cookie->GetPos()).x;
-	m_SpawnPosX = CamRealPosX + m_ResolutionWidth;
-	m_DeletePosX = CamRealPosX - m_ResolutionWidth;
+	float StandardPosX = m_Cookie->GetPos().x;
+	m_SpawnPosX = StandardPosX + m_ResolutionWidth;
+	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
 
 	vector<StageObjInfo>& vecStageInfo = m_CurStage->m_vecStageInfo;
-	
-	/*for (size_t i = 0; i < vecStageInfo.size(); ++i)
-	{
-		if (vecStageInfo[i]._startPos.x <= m_SpawnPosX)
-		{
-			SpawnStageObject(vecStageInfo[i]);
-		}
-	}*/
-
 	vector<StageObjInfo>::iterator iter = vecStageInfo.begin();
 	for (; iter != vecStageInfo.end(); )
 	{
@@ -88,6 +81,13 @@ void CLevel_Game::tick()
 			}
 		}
 	}
+
+
+	// Cookie Debug Info
+	DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
+						L"posX : " + std::to_wstring(m_Cookie->GetPos().x) +
+						L"posY : " + std::to_wstring(m_Cookie->GetPos().y) };
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 }
 
 void CLevel_Game::Enter()
