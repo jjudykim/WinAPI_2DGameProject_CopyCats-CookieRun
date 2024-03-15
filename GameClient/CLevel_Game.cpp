@@ -5,6 +5,7 @@
 #include "CDbgRenderMgr.h"
 #include "CTimeMgr.h"
 #include "CPathMgr.h"
+#include "CKeyMgr.h"
 #include "CLevelMgr.h"
 #include "CTaskMgr.h"
 
@@ -44,6 +45,14 @@ void CLevel_Game::tick()
 
 	if (m_Cookie == nullptr)
 		return;
+
+
+	// TODO: test
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
+	{
+		ChangeLevel(LEVEL_TYPE::EDITOR);
+	}
+
 
 	float StandardPosX = m_Cookie->GetPos().x;
 	m_SpawnPosX = StandardPosX + m_ResolutionWidth;

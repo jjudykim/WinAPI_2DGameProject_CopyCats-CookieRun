@@ -13,8 +13,11 @@
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
+	, m_hInstance(nullptr)
 	, m_Resolution{}
 	, m_hDC(nullptr)
+	, m_hSubDC(nullptr)
+	, m_hSubBitmap()
 	, m_arrPen{}
 	, m_arrBrush{}
 {}
@@ -120,4 +123,12 @@ void CEngine::CreateDefaultGDIObject()
 	m_arrBrush[(UINT)BRUSH_TYPE::BRUSH_GRAY] = ::CreateSolidBrush(RGB(100, 100, 100));
 	m_arrBrush[(UINT)BRUSH_TYPE::BRUSH_HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 
+}
+
+void CEngine::ChangeWindowSize(Vec2D _Resolution, bool _bMenu)
+{
+	RECT rt = { 0, 0, (LONG)_Resolution.x, (LONG)_Resolution.y };
+	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, _bMenu);
+
+	SetWindowPos(m_hMainWnd, nullptr, 0, 0, rt.right - rt.left, rt.bottom - rt.top, 0);
 }

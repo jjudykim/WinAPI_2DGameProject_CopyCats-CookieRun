@@ -255,6 +255,9 @@
     <ClInclude Include="CUI.h">
       <Filter>03. Game\06. Object\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CLevel_Editor.h">
+      <Filter>03. Game\04. Level\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -361,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="CUI.cpp">
       <Filter>03. Game\06. Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Editor.cpp">
+      <Filter>03. Game\04. Level\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,7 @@ public:
 
 public:
 	void CreateDefaultGDIObject();
+	void ChangeWindowSize(Vec2D _Resolution, bool _bMenu);
 
 public:
 	HINSTANCE GetProcessInstance() { return m_hInstance; }

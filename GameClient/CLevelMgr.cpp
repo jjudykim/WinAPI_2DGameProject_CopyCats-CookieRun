@@ -5,12 +5,14 @@
 #include "CPathMgr.h"
 #include "CCollisionMgr.h"
 #include "CLevel.h"
+#include "CLevel_Editor.h"
 #include "CLevel_Game.h"
 #include "CLevel_Stage01.h"
 
 
 CLevelMgr::CLevelMgr()
 	: m_arrLevel{}
+	, m_CurrentLevelType(LEVEL_TYPE::END)
 	, m_pCurrentLevel(nullptr)
 {}
 
@@ -22,10 +24,11 @@ CLevelMgr::~CLevelMgr()
 
 void CLevelMgr::init()
 {
+	m_arrLevel[(UINT)LEVEL_TYPE::EDITOR] = new CLevel_Editor;
 	m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01] = new CLevel_Stage01;
 	m_arrLevel[(UINT)LEVEL_TYPE::GAME] = new CLevel_Game;
 
-	m_CurrentLevelType = LEVEL_TYPE::STAGE_01;
+	m_CurrentLevelType = LEVEL_TYPE::GAME;
 	::ChangeLevel(m_CurrentLevelType);
 }
 

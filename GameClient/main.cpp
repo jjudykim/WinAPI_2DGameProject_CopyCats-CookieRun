@@ -148,6 +148,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+
+#include "CLevelMgr.h"
+#include "CLevel_Editor.h"
+
+INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -163,6 +169,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
+                break;
+            case ID_EDITANIM:
+                DialogBox(hInst, MAKEINTRESOURCE(IDD_EDITANIM), hWnd, EditAnimProc);
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);

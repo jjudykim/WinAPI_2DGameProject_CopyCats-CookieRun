@@ -16,5 +16,7 @@ public:
 
 	CTexture* LoadTexture(const wstring& _Key, const wstring& _strRelativePath);
 	CTexture* FindTexture(const wstring& _Key);
+
+	friend class CLevel_Editor;
 };
 
