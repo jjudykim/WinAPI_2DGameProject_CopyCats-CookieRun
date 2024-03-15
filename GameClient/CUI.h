@@ -5,7 +5,12 @@ class CUI
 	: public CObject
 {
 private:
-	bool		m_MouseOn;
+	CUI*			m_ParentUI;
+	vector<CUI*>	m_vecChildUI;
+
+	Vec2D			m_vFinalPos;
+
+	bool			m_MouseOn;
 
 public:
 	virtual void tick() override;

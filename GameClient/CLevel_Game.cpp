@@ -3,6 +3,7 @@
 
 #include "CCollisionMgr.h"
 #include "CDbgRenderMgr.h"
+#include "CTimeMgr.h"
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
 #include "CTaskMgr.h"
@@ -14,8 +15,6 @@
 #include "CPlatform.h"
 #include "CObstacle.h"
 #include "CStage.h"
-
-wchar_t szBuff[256] = L"";
 
 CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
@@ -46,7 +45,6 @@ void CLevel_Game::tick()
 	if (m_Cookie == nullptr)
 		return;
 
-	float CamRealPosX = CCamera::GetInst()->GetRealPos(m_Cookie->GetPos()).x;
 	float StandardPosX = m_Cookie->GetPos().x;
 	m_SpawnPosX = StandardPosX + m_ResolutionWidth;
 	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
@@ -84,11 +82,26 @@ void CLevel_Game::tick()
 
 
 	// Cookie Debug Info
+	if (m_QuaterSecond >= 0.25f)
+	{
+		m_LogPos = m_Cookie->GetPos();
+		m_QuaterSecond = 0.f;
+	}
 	DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
-						L"posX : " + std::to_wstring(m_Cookie->GetPos().x) +
-						L"posY : " + std::to_wstring(m_Cookie->GetPos().y) };
+						L"posX : " + std::to_wstring(m_LogPos.x) +
+						L" posY : " + std::to_wstring(m_LogPos.y) };
 	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+
+	/*DbgRenderInfo cookieDbg = { DBG_SHAPE::RECT,
+								CCamera::GetInst()->GetRenderPos(m_Cookie->GetPos()),
+								m_Cookie->GetScale(),
+								PEN_TYPE::PEN_BLUE,
+								0, 0};
+
+	CDbgRenderMgr::GetInst()->AddDbgRenderInfo(cookieDbg);*/
+	m_QuaterSecond += DT;
 }
+
 
 void CLevel_Game::Enter()
 {

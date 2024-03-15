@@ -34,7 +34,7 @@ CPlayer::CPlayer()
 								Vec2D(320, 320), 2,
 								L"texture\\AngelCookie_Atlas.png" };
 
-	CookieInfo m_curCookie = BraveCookie;
+	CookieInfo m_curCookie = AngelCookie;
 
 	CTexture* pAtlas = CAssetMgr::GetInst()->LoadTexture(L"PlayerAtlasTex", m_curCookie._path);
 

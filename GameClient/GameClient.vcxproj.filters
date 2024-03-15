@@ -375,5 +375,8 @@
     <Image Include="GameClient.ico">
       <Filter>01. 리소스 파일</Filter>
     </Image>
+    <Image Include="icon1.ico">
+      <Filter>01. 리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>
