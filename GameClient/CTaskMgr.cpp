@@ -34,15 +34,10 @@ void CTaskMgr::ExectueTask()
 		{
 		case TASK_TYPE::SPAWN_OBJECT:
 		{
-			CLevel* pSpawnLevel = (CLevel*)m_vecTask[i].Param1;
-			LAYER_TYPE Layer = (LAYER_TYPE)m_vecTask[i].Param2;
-			CObject* pObj = (CObject*)m_vecTask[i].Param3;
+			LAYER_TYPE Layer = (LAYER_TYPE)m_vecTask[i].Param1;
+			CObject* pObj = (CObject*)m_vecTask[i].Param2;
 
-			if (GET_CUR_LEVEL != pSpawnLevel)
-			{
-				delete pObj;
-			}
-			pSpawnLevel->AddObject(Layer, pObj);
+			GET_CUR_LEVEL->AddObject(Layer, pObj);
 			pObj->begin();
 		}
 			break;

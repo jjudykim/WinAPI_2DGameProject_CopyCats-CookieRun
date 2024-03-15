@@ -2,6 +2,7 @@
 #include "CLevel_Stage01.h"
 
 #include "CCollisionMgr.h"
+#include "CKeyMgr.h"
 
 #include "CObject.h"
 #include "CBackground.h"
@@ -26,6 +27,11 @@ void CLevel_Stage01::begin()
 void CLevel_Stage01::tick()
 {
 	CLevel::tick();
+
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::ENTER) == KEY_STATE::TAP)
+	{
+		ChangeLevel(LEVEL_TYPE::GAME);
+	}
 }
 
 void CLevel_Stage01::Enter()
@@ -101,10 +107,10 @@ void CLevel_Stage01::Enter()
 	CPlatform* vLastPlatfrom = (CPlatform*)pObject;
 	vLastPlatfrom->SetEdge(true);*/
 
-	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
+	/*CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
 
-	CCamera::GetInst()->SetCameraFocus();
+	CCamera::GetInst()->SetCameraFocus();*/
 }
 
 void CLevel_Stage01::Exit()

@@ -2,15 +2,24 @@
 #include "CLevel_Game.h"
 
 #include "CCollisionMgr.h"
+#include "CPathMgr.h"
+#include "CLevelMgr.h"
+#include "CTaskMgr.h"
 
+#include "CEngine.h"
+#include "CObject.h"
 #include "CPlayer.h"
 #include "CBackground.h"
 #include "CPlatform.h"
 #include "CObstacle.h"
-#include "CPathMgr.h"
 #include "CStage.h"
 
+wchar_t szBuff[256] = L"";
+
 CLevel_Game::CLevel_Game()
+	: m_Cookie(nullptr)
+	, m_SpawnPosX(0)
+	, m_DeletePosX(0)
 {
 	
 }
@@ -22,15 +31,70 @@ CLevel_Game::~CLevel_Game()
 void CLevel_Game::begin()
 {
 	CLevel::begin();
+
+	m_SpawnPosX = 0;
+	m_DeletePosX = m_ResolutionWidth;
+
+
 }
 
 void CLevel_Game::tick()
 {
 	CLevel::tick();
+
+	if (m_Cookie == nullptr)
+		return;
+
+	float CamRealPosX = CCamera::GetInst()->GetRealPos(m_Cookie->GetPos()).x;
+	m_SpawnPosX = CamRealPosX + m_ResolutionWidth;
+	m_DeletePosX = CamRealPosX - m_ResolutionWidth;
+
+	vector<StageObjInfo>& vecStageInfo = m_CurStage->m_vecStageInfo;
+	
+	/*for (size_t i = 0; i < vecStageInfo.size(); ++i)
+	{
+		if (vecStageInfo[i]._startPos.x <= m_SpawnPosX)
+		{
+			SpawnStageObject(vecStageInfo[i]);
+		}
+	}*/
+
+	vector<StageObjInfo>::iterator iter = vecStageInfo.begin();
+	for (; iter != vecStageInfo.end(); )
+	{
+		if (iter->_startPos.x <= m_SpawnPosX)
+		{
+			SpawnStageObject(*iter);
+			iter = vecStageInfo.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
+
+	// Delete Passed Stage Object
+	for (int i = 0; i < (UINT)LAYER_TYPE::END; ++i)
+	{
+		const vector<CObject*>& vecObj = GET_CUR_LEVEL->GetObjects(static_cast<LAYER_TYPE>(i));
+
+		for (size_t j = 0; j < vecObj.size(); ++j)
+		{
+			float tPosX = vecObj[j]->GetPos().x + vecObj[j]->GetScale().x;
+			if (tPosX <= m_DeletePosX)
+			{
+				vecObj[j]->Destroy();
+
+			}
+		}
+	}
 }
 
 void CLevel_Game::Enter()
 {
+	m_ResolutionWidth = CEngine::GetInst()->GetResolution().x;
+	
+
 	// 현재 스테이지 맵 데이터 불러오기
 	m_CurStage = new CStage();
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
@@ -45,6 +109,7 @@ void CLevel_Game::Enter()
 	pObject->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
 	pObject->SetScale(100.f, 200.f);
 	pObject->SetSpeed(400.f);
+	m_Cookie = pObject;
 	AddObject(LAYER_TYPE::PLAYER, pObject);
 
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
@@ -57,31 +122,35 @@ void CLevel_Game::Exit()
 {
 }
 
+void CLevel_Game::SpawnStageObject(StageObjInfo& _ObjInfo)
+{
+	Task task = {};
+	CObject* pObject = nullptr;
+
+	LAYER_TYPE type = _ObjInfo._objType;
+	UINT index = _ObjInfo._typeIndex;
+	if (type == LAYER_TYPE::BACKGROUND)	pObject = new CBackground(index);
+	else if (type == LAYER_TYPE::PLATFORM) pObject = new CPlatform(index);
+	else if (type == LAYER_TYPE::OBSTACLE) pObject = new CObstacle(index);
+
+	pObject->SetPos(_ObjInfo._startPos);
+	pObject->SetScale(_ObjInfo._scale);
+	pObject->SetSpeed(_ObjInfo._speed);
+
+	pObject->SetImage(CAssetMgr::GetInst()->LoadTexture(_ObjInfo._imageName, _ObjInfo._path));
+	pObject->SetAtlasInfo(_ObjInfo._atlas, _ObjInfo._slicePos, _ObjInfo._sliceSize);
+
+	task.Type = TASK_TYPE::SPAWN_OBJECT;
+	task.Param1 = (DWORD_PTR)type;
+	task.Param2 = (DWORD_PTR)pObject;
+
+	CTaskMgr::GetInst()->AddTask(task);
+}
+
 void CLevel_Game::LoadFromFile(const wstring& _FullPath)
 {
 	m_CurStage->LoadFromFile(_FullPath);
 	
-	const vector<StageObjInfo>& vecStageInfo = m_CurStage->GetStageInfo();
-
-	CObject* pObject = nullptr;
-
-	for (size_t i = 0; i < vecStageInfo.size(); ++i)
-	{
-		LAYER_TYPE type = vecStageInfo[i]._objType;
-		UINT index = vecStageInfo[i]._typeIndex;
-		if (type == LAYER_TYPE::BACKGROUND)	pObject = new CBackground(index);
-		else if (type == LAYER_TYPE::PLATFORM) pObject = new CPlatform(index);
-		else if (type == LAYER_TYPE::OBSTACLE) pObject = new CObstacle(index);
-
-		pObject->SetPos(vecStageInfo[i]._startPos);
-		pObject->SetScale(vecStageInfo[i]._scale);
-		pObject->SetSpeed(vecStageInfo[i]._speed);
-
-		pObject->SetImage(CAssetMgr::GetInst()->LoadTexture(vecStageInfo[i]._imageName, vecStageInfo[i]._path));
-		pObject->SetAtlasInfo(vecStageInfo[i]._atlas, vecStageInfo[i]._slicePos, vecStageInfo[i]._sliceSize);
-
-		AddObject(pObject->GetLayerType(), pObject);
-	}
 }
 
 

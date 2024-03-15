@@ -7,9 +7,14 @@ class CLevel_Game :
     public CLevel
 {
 private:
-    CStage* m_CurStage;
-    CStage* m_PostStage;
+    CStage*     m_CurStage;
+    CStage*     m_PostStage;
     
+    float       m_ResolutionWidth;
+    float       m_SpawnPosX;
+    float       m_DeletePosX;
+
+    CObject*    m_Cookie;
 
 public:
     virtual void begin() override;
@@ -18,7 +23,11 @@ public:
     virtual void Enter() override;
     virtual void Exit() override;
 
+    
+
 public:
+    void SpawnStageObject(StageObjInfo& _ObjInfo);
+    //void DeleteStageObject(CObject* _Obj);
     void LoadFromFile(const wstring& _FullPath);
 public:
     CLONE_DISABLE(CLevel_Game);

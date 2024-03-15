@@ -17,5 +17,7 @@ public:
 	CStage();
 	// CStage(const CStage& _Other);
 	~CStage();
+
+	friend class CLevel_Game;
 };
 
