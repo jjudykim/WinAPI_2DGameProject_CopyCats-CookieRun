@@ -258,6 +258,18 @@
     <ClInclude Include="CLevel_Editor.h">
       <Filter>03. Game\04. Level\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="CJumpState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CDamageState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CSlideState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CRunState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -367,6 +379,18 @@
     </ClCompile>
     <ClCompile Include="CLevel_Editor.cpp">
       <Filter>03. Game\04. Level\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="CJumpState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CDamageState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CSlideState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CRunState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

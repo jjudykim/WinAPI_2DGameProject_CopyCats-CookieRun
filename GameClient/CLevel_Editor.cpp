@@ -55,7 +55,6 @@ vector<wstring> CLevel_Editor::GetLoadedTextureKey()
 }
 
 
-
 // Dialog Procedure Function
 INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
