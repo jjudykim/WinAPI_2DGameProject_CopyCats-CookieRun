@@ -270,6 +270,9 @@
     <ClInclude Include="CRunState.h">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
     </ClInclude>
+    <ClInclude Include="CInvState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -390,6 +393,9 @@
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
     </ClCompile>
     <ClCompile Include="CRunState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CInvState.cpp">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
     </ClCompile>
   </ItemGroup>

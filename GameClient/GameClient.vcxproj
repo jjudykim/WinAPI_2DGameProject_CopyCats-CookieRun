@@ -150,6 +150,7 @@
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="CEntity.h" />
     <ClInclude Include="CFSM.h" />
+    <ClInclude Include="CInvState.h" />
     <ClInclude Include="CJelly.h" />
     <ClInclude Include="CJumpState.h" />
     <ClInclude Include="CKeyMgr.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="CEngine.cpp" />
     <ClCompile Include="CEntity.cpp" />
     <ClCompile Include="CFSM.cpp" />
+    <ClCompile Include="CInvState.cpp" />
     <ClCompile Include="CJelly.cpp" />
     <ClCompile Include="CJumpState.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />

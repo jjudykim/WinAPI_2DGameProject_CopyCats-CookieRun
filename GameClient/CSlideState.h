@@ -4,5 +4,6 @@
 class CSlideState
 	: public CState
 {
+public:
 };
 

@@ -84,6 +84,11 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		}
 		else if (LOWORD(wParam) == IDSELECT)
 		{
+			// 선택된 텍스쳐 반영하면서 끄기
+			wchar_t szBuff[256] = {};
+			SetDlgItemText(hDlg, IDC_TEX, szBuff);
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == IDCANCEL)
 		{
@@ -142,6 +147,16 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 		CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
 		assert(pEditorLevel);
+
+		/*wstring Tex;
+		wstring Anim;
+
+		wchar_t szBuff[256] = {};
+		GetDlgItemText(hDlg, IDC_TEX, szBuff, 256);
+		Tex = szBuff;
+
+		GetDlgItemText(hDlg, IDC_ANIM, szBuff, 256);
+		Anim = szBuff;*/
 	}
 	return (INT_PTR)TRUE;
 	break;
@@ -159,7 +174,6 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
-
 		else if (LOWORD(wParam) == ID_TEXBTN)
 		{
 			DialogBox(CEngine::GetInst()->GetProcessInstance(),
@@ -177,13 +191,21 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 		else if (LOWORD(wParam) == ID_LOWFRAME)
 		{
+			int Frame = GetDlgItemInt(hDlg, IDC_FRAME, nullptr, true);
+			if (0 <= Frame - 1) --Frame;
+			SetDlgItemInt(hDlg, IDC_FRAME, Frame, true);
+
 		}
 		else if (LOWORD(wParam) == ID_HIGHFRAME)
 		{
+			int Frame = GetDlgItemInt(hDlg, IDC_FRAME, nullptr, true);
+			++Frame;
+			SetDlgItemInt(hDlg, IDC_FRAME, Frame, true);
 		}
 
 		else if (LOWORD(wParam) == ID_DIRECTDRAW)
 		{
+			
 		}
 		else if (LOWORD(wParam) == ID_APPLY)
 		{
@@ -191,6 +213,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 		else if (LOWORD(wParam) == ID_LOWPOSX)
 		{
+			
 		}
 		else if (LOWORD(wParam) == ID_HIGHPOSX)
 		{
