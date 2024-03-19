@@ -23,9 +23,13 @@
 #define IDC_COOKIE                      1004
 #define ID_LOWFRAME                     1005
 #define IDC_EDIT4                       1006
+#define ID_FRAMEBOX                     1006
+#define IDC_FRAME                       1006
 #define ID_HIGHFRAME                    1007
 #define IDC_EDIT5                       1008
+#define IDC_MAXFRAME                    1008
 #define IDC_EDIT6                       1009
+#define IDC_DURATION                    1009
 #define IDC_POSX                        1010
 #define IDC_POSY                        1011
 #define ID_LOWPOSX                      1012
@@ -49,7 +53,6 @@
 #define ID_APPLY                        1029
 #define IDPLAY                          1030
 #define IDSAVE                          1031
-#define IDC_BUTTON1                     1032
 #define ID_LOADANIM                     1032
 #define IDC_TEXLIST                     1033
 #define IDSELECT                        1034

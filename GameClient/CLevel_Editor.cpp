@@ -213,42 +213,114 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 		else if (LOWORD(wParam) == ID_LOWPOSX)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_POSX, szBuff, 256);
+			float posX = (float)_wtof(szBuff);
+			posX -= 5.f;
+			swprintf_s(szBuff, 256, L"%f", posX);
+			SetDlgItemText(hDlg, IDC_POSX, szBuff);
 			
 		}
 		else if (LOWORD(wParam) == ID_HIGHPOSX)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_POSX, szBuff, 256);
+			float posX = (float)_wtof(szBuff);
+			posX += 5.f;
+			swprintf_s(szBuff, 256, L"%f", posX);
+			SetDlgItemText(hDlg, IDC_POSX, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_LOWPOSY)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_POSY, szBuff, 256);
+			float posY = (float)_wtof(szBuff);
+			posY -= 5.f;
+			swprintf_s(szBuff, 256, L"%f", posY);
+			SetDlgItemText(hDlg, IDC_POSY, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_HIGHPOSY)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_POSY, szBuff, 256);
+			float posY = (float)_wtof(szBuff);
+			posY += 5.f;
+			swprintf_s(szBuff, 256, L"%f", posY);
+			SetDlgItemText(hDlg, IDC_POSY, szBuff);
 		}
 
 		else if (LOWORD(wParam) == ID_LOWSIZEX)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_SIZEX, szBuff, 256);
+			float sizeX = (float)_wtof(szBuff);
+			sizeX -= 5.f;
+			swprintf_s(szBuff, 256, L"%f", sizeX);
+			SetDlgItemText(hDlg, IDC_SIZEX, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_HIGHSIZEX)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_SIZEX, szBuff, 256);
+			float sizeX = (float)_wtof(szBuff);
+			sizeX += 5.f;
+			swprintf_s(szBuff, 256, L"%f", sizeX);
+			SetDlgItemText(hDlg, IDC_SIZEX, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_LOWSIZEY)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_SIZEY, szBuff, 256);
+			float sizeY = (float)_wtof(szBuff);
+			sizeY -= 5.f;
+			swprintf_s(szBuff, 256, L"%f", sizeY);
+			SetDlgItemText(hDlg, IDC_SIZEY, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_HIGHSIZEY)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_SIZEY, szBuff, 256);
+			float sizeY = (float)_wtof(szBuff);
+			sizeY += 5.f;
+			swprintf_s(szBuff, 256, L"%f", sizeY);
+			SetDlgItemText(hDlg, IDC_SIZEY, szBuff);
 		}
 
 		else if (LOWORD(wParam) == ID_LOWOFFSETX)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_OFFSETX, szBuff, 256);
+			float offsetX = (float)_wtof(szBuff);
+			offsetX -= 5.f;
+			swprintf_s(szBuff, 256, L"%f", offsetX);
+			SetDlgItemText(hDlg, IDC_OFFSETX, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_HIGHOFFSETX)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_OFFSETX, szBuff, 256);
+			float offsetX = (float)_wtof(szBuff);
+			offsetX += 5.f;
+			swprintf_s(szBuff, 256, L"%f", offsetX);
+			SetDlgItemText(hDlg, IDC_OFFSETX, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_LOWOFFSETY)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_OFFSETY, szBuff, 256);
+			float offsetY = (float)_wtof(szBuff);
+			offsetY -= 5.f;
+			swprintf_s(szBuff, 256, L"%f", offsetY);
+			SetDlgItemText(hDlg, IDC_OFFSETY, szBuff);
 		}
 		else if (LOWORD(wParam) == ID_HIGHOFFSETY)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_OFFSETY, szBuff, 256);
+			float offsetY = (float)_wtof(szBuff);
+			offsetY += 5.f;
+			swprintf_s(szBuff, 256, L"%f", offsetY);
+			SetDlgItemText(hDlg, IDC_OFFSETY, szBuff);
 		}
 
 		break;
