@@ -35,6 +35,9 @@ CEngine::~CEngine()
 	{
 		DeleteObject(m_arrBrush[i]);
 	}
+	
+	// GDI+ 종료
+	GdiplusShutdown(m_gdiplusToken);
 }
 
 int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
@@ -49,6 +52,11 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	SetWindowPos(m_hMainWnd, nullptr, 0, 0, wndRt.right - wndRt.left, wndRt.bottom - wndRt.top, 0);
 
 	CreateDefaultGDIObject();
+
+	// GDI+ 초기화
+	
+	GdiplusStartupInput gdiplusStartupInput;
+	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
 	// Manager initializing ========
 	CPathMgr::GetInst()->init();

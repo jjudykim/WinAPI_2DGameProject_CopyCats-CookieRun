@@ -10,6 +10,7 @@ private:
     BITMAP      m_Info;
 
 private:
+    int Create(UINT _Width, UINT _Height);
     virtual int Load(const wstring& _strFilePath) override;
 
 public:
@@ -20,6 +21,8 @@ public:
 public:
     CTexture();
     ~CTexture();
+
+    
 
     friend class CAssetMgr;
 };

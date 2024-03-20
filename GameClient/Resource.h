@@ -16,6 +16,8 @@
 #define IDI_ICON1                       130
 #define IDD_TEXLIST                     131
 #define IDD_ANIMLIST                    132
+#define IDD_EDITTEX                     133
+#define IDD_ADDTEX                      134
 #define IDC_TEX                         1000
 #define ID_TEXBTN                       1001
 #define IDC_ANIM                        1002
@@ -33,13 +35,17 @@
 #define IDC_POSX                        1010
 #define IDC_POSY                        1011
 #define ID_LOWPOSX                      1012
+#define IDC_POSX2                       1012
 #define ID_HIGHPOSX                     1013
+#define IDC_POSY2                       1013
 #define ID_LOWPOSY                      1014
 #define ID_HIGHPOSY                     1015
 #define IDC_SIZEX                       1016
 #define IDC_SIZEY                       1017
 #define ID_LOWSIZEX                     1018
+#define IDC_SIZEX2                      1018
 #define ID_HIGHSIZEX                    1019
+#define IDC_SIZEY3                      1019
 #define ID_LOWSIZEY                     1020
 #define ID_HIGHSIZEY                    1021
 #define IDC_OFFSETX                     1022
@@ -54,9 +60,25 @@
 #define IDPLAY                          1030
 #define IDSAVE                          1031
 #define ID_LOADANIM                     1032
+#define IDC_SIZEY2                      1032
 #define IDC_TEXLIST                     1033
 #define IDSELECT                        1034
+#define ID_DELFRAME                     1034
 #define ID_LOADTEX                      1035
+#define ID_ADDFRAME                     1035
+#define IDC_POSX_SPIN                   1037
+#define IDC_POSY_SPIN                   1038
+#define IDC_TEXTURE                     1038
+#define IDC_SIZEX_SPIN                  1039
+#define IDC_EDIT1                       1039
+#define IDC_NEWTEX                      1039
+#define IDC_SIZEY_SPIN                  1040
+#define IDC_OFFSETX_SPIN                1041
+#define IDC_OFFSETY_SPIN                1042
+#define IDC_COLPOSX_SPIN                1043
+#define IDC_COLPOSY_SPIN                1044
+#define IDC_COLSIZEX_SPIN               1045
+#define IDC_COLSIZEY_SPIN               1046
 #define ID_EDITMODE_ANIMATIONEDITMODE   32771
 #define ID_EDITMODE_STAGEEDITMODE       32772
 #define ID_EDITANIM                     32773
@@ -68,9 +90,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        132
+#define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1036
+#define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

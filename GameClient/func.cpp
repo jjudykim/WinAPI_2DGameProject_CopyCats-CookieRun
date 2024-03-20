@@ -63,6 +63,7 @@ void DrawDebugLine(PEN_TYPE _Type, Vec2D _Start, Vec2D _End, float _Time)
 #include "CLevel.h"
 #include "CObject.h"
 #include "CTaskMgr.h"
+
 void SpawnObject(CLevel* _Level, LAYER_TYPE _type, CObject* _pSpawned)
 {
 	Task task = {};
@@ -82,3 +83,8 @@ void ChangeLevel(LEVEL_TYPE _NextLevelType)
 
 	CTaskMgr::GetInst()->AddTask(task);
 }
+
+
+
+
+

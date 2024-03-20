@@ -41,6 +41,26 @@ CTexture* CAssetMgr::LoadTexture(const wstring& _Key, const wstring& _strRelativ
 	return pTex;
 }
 
+CTexture* CAssetMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height)
+{
+	// 해당 키로 등록된 텍스쳐가 있다면
+	assert(!FindTexture(_Key));
+
+	CTexture* pTex = new CTexture;
+	if (FAILED(pTex->Create(_Width, _Height)))
+	{
+		MessageBox(nullptr, _Key.c_str(), L"텍스쳐 생성 실패", MB_OK);
+		delete pTex;
+		return nullptr;
+	}
+
+	m_mapTex.insert(make_pair(_Key, pTex));
+	pTex->m_Key = _Key;
+
+	return pTex;
+	
+}
+
 CTexture* CAssetMgr::FindTexture(const wstring& _Key)
 {
 	map<wstring, CTexture*>::iterator iter = m_mapTex.find(_Key);

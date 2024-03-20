@@ -16,6 +16,8 @@ private:
 	HPEN        m_arrPen[(UINT)PEN_TYPE::END];
 	HBRUSH      m_arrBrush[(UINT)BRUSH_TYPE::END];
 
+	ULONG_PTR   m_gdiplusToken;
+
 public:
 	int init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution);
 	void progress();
