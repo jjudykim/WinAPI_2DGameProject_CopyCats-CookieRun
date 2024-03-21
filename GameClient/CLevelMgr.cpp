@@ -63,6 +63,7 @@ void CLevelMgr::ChangeLevel(LEVEL_TYPE _NextLevelType)
 	}
 
 	m_pCurrentLevel = m_arrLevel[(UINT)_NextLevelType];
+	m_CurrentLevelType = _NextLevelType;
 	assert(m_pCurrentLevel);
 
 	m_pCurrentLevel->Enter();

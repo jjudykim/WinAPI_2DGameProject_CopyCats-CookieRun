@@ -28,7 +28,7 @@ private:
 	Vec2D			m_PrevLookAt;
 	Vec2D			m_Diff;
 	float			m_CamSpeed;
-	float			m_Time;
+
 	list<CAM_EFFECT_INFO> m_EffectList;
 
 	CTexture*		m_FadeTex;
@@ -36,6 +36,7 @@ private:
 public:
 	Vec2D GetRenderPos(Vec2D _RealPos) { return _RealPos - m_Diff; }
 	Vec2D GetRealPos(Vec2D _RenderPos) { return _RenderPos + m_Diff; }
+	void SetCameraDefault();
 	void SetCameraFocus();
 	void SetCameraEffect(CAM_EFFECT _Effect, float _Duration);
 

@@ -7,11 +7,16 @@
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
 #include "CAssetMgr.h"
+#include "CCamera.h"
+
+#include "CTexture.h"
+
 
 wstring tDialogText = L"";
 
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
+	, m_editTex(nullptr)
 {
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCE(IDC_GAMECLIENT));
 }
@@ -26,6 +31,27 @@ void CLevel_Editor::begin()
 
 void CLevel_Editor::tick()
 {
+}
+
+void CLevel_Editor::render()
+{
+	Vec2D texPos;
+	texPos = CCamera::GetInst()->GetRenderPos(texPos);
+
+	if (m_editTex!= nullptr)
+	{
+		BLENDFUNCTION bf = {};
+
+		bf.BlendOp = AC_SRC_OVER;
+		bf.BlendFlags = 0;
+		bf.SourceConstantAlpha = 255;
+		bf.AlphaFormat = AC_SRC_ALPHA;
+
+		AlphaBlend(DC, texPos.x, texPos.y
+			, (int)m_editTex->GetWidth(), (int)m_editTex->GetHeight()
+			, m_editTex->GetDC(), 0, 0
+			, (int)m_editTex->GetWidth(), (int)m_editTex->GetHeight(), bf);
+	}
 }
 
 void CLevel_Editor::Enter()
@@ -113,7 +139,6 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	case WM_INITDIALOG:
 	{
 		// 로드된 텍스쳐 목록 불러오기
-		
 		const vector<wstring> &vKey = pEditorLevel->GetLoadedTextureKey();
 		for (size_t i = 0; i < vKey.size(); ++i)
 		{
@@ -128,9 +153,12 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		{
 			if (OpenLoadFile(L"texture", L"png"))
 			{
+				SendMessage(hListBox, LB_RESETCONTENT, 0, 0);
 				const vector<wstring>& vKey = pEditorLevel->GetLoadedTextureKey();
-				vector<wstring>::const_iterator iter = vKey.begin();
-				SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)iter->c_str());
+				for (size_t i = 0; i < vKey.size(); ++i)
+				{
+					SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)vKey[i].c_str());
+				}
 			}
 			
 		}
@@ -145,9 +173,8 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			}
 			
 			// 선택된 텍스쳐 반영하면서 끄기
-			SetDlgItemText(hDlg, IDC_TEX, szBuff);
-			wchar_t itemText[256] = {};
-			GetDlgItemText(hDlg, IDC_TEX, itemText, 256);
+			tDialogText = szBuff;
+			//SetDlgItemText(hDlg, IDC_TEX, szBuff);
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
@@ -201,24 +228,16 @@ INT_PTR CALLBACK SelectAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
+	assert(pEditorLevel);
+
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
 	case WM_INITDIALOG:
 	{
-		CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-		CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
-		assert(pEditorLevel);
 
-		/*wstring Tex;
-		wstring Anim;
-
-		wchar_t szBuff[256] = {};
-		GetDlgItemText(hDlg, IDC_TEX, szBuff, 256);
-		Tex = szBuff;
-
-		GetDlgItemText(hDlg, IDC_ANIM, szBuff, 256);
-		Anim = szBuff;*/
 	}
 	return (INT_PTR)TRUE;
 	break;
@@ -230,10 +249,12 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		else if (LOWORD(wParam) == IDSAVE)
 		{
 
+			DestroyWindow(hDlg);
+			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == IDCANCEL)
 		{
-			EndDialog(hDlg, LOWORD(wParam));
+			DestroyWindow(hDlg);
 			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == ID_TEXBTN)
@@ -241,7 +262,10 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			DialogBox(CEngine::GetInst()->GetProcessInstance(),
 					  MAKEINTRESOURCE(IDD_TEXLIST),
 				      CEngine::GetInst()->GetMainWnd(), SelectTexProc);
-			break;
+
+			SetDlgItemText(hDlg, IDC_TEX, tDialogText.c_str());
+			pEditorLevel->SetEditTex(CAssetMgr::GetInst()->FindTexture(tDialogText));
+			CCamera::GetInst()->SetCameraDefault();
 		}
 		
 		else if (LOWORD(wParam) == ID_ANIMBTN)
@@ -384,8 +408,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			swprintf_s(szBuff, 256, L"%f", offsetY);
 			SetDlgItemText(hDlg, IDC_OFFSETY, szBuff);
 		}
-
-		break;
+		break;	
 	}
 	return (INT_PTR)FALSE;
 }
@@ -451,16 +474,11 @@ bool OpenLoadFile(wstring _Path, wstring _FileType)
 				MAKEINTRESOURCE(IDD_ADDTEX),
 				CEngine::GetInst()->GetMainWnd(), CreateTexProc);
 
-			wstring SelectedFilePath = ofn.lpstrFile;
-			Image* image = new Image(SelectedFilePath.c_str());
-
-			if (image->GetLastStatus() == Ok)
-			{
-				CAssetMgr::GetInst()->CreateTexture(tDialogText, image->GetWidth(), image->GetHeight());
-			}
+			wstring SelectedFileName = L"texture\\";
+			SelectedFileName += PathFindFileNameW(ofn.lpstrFile);
+			CAssetMgr::GetInst()->LoadTexture(tDialogText, SelectedFileName);
 		}
 		
-
 		return true;
 	}
 

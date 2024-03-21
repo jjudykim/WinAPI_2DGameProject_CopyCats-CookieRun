@@ -123,7 +123,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
    g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    
 
@@ -171,7 +171,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 DestroyWindow(hWnd);
                 break;
             case ID_EDITANIM:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_EDITANIM), hWnd, EditAnimProc);
+            {
+                HWND AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITANIM), hWnd, EditAnimProc);
+                if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }
+                /*AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITTEX), hWnd, EditAnimProc);
+                if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }*/
+            }
                 break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);

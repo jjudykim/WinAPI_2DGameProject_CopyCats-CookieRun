@@ -4,6 +4,7 @@
 #include "CEngine.h"
 #include "CTexture.h"
 #include "CLevelMgr.h"
+#include "CKeyMgr.h"
 #include "CLevel.h"
 #include "CPlayer.h"
 #include "CTimeMgr.h"
@@ -11,6 +12,7 @@
 CCamera::CCamera()
 	: m_CamSpeed(0.f)
 	, m_FadeTex(nullptr)
+	, m_FocusObj(nullptr)
 {
 }
 
@@ -28,10 +30,19 @@ void CCamera::init()
 
 void CCamera::tick()
 {
-	if(m_FocusObj != nullptr)
-		m_CamSpeed = m_FocusObj->GetSpeed();
+	LEVEL_TYPE curLevel = GET_CUR_LEVELTYPE;
 
-	Move();
+	if (curLevel == LEVEL_TYPE::GAME)
+	{
+		if (m_FocusObj != nullptr)
+			m_CamSpeed = m_FocusObj->GetSpeed();
+		m_LookAt.x += m_CamSpeed * DT;
+	}
+	else if (curLevel == LEVEL_TYPE::EDITOR)
+	{
+		m_CamSpeed = 300.f;
+		Move();
+	}
 
 	Vec2D vResol = CEngine::GetInst()->GetResolution();
 	m_Diff = m_LookAt - Vec2D(vResol.x / 2.f, vResol.y / 2.f);
@@ -58,6 +69,12 @@ void CCamera::render()
 				 , m_FadeTex->GetWidth(), m_FadeTex->GetHeight(), bf);
 }
 
+void CCamera::SetCameraDefault()
+{
+	init();
+	m_Diff = 0;
+}
+
 void CCamera::SetCameraFocus()
 {
 	CObject* pObj = GET_CUR_LEVEL->FindObjectByName(L"Player");
@@ -82,7 +99,14 @@ void CCamera::SetCameraEffect(CAM_EFFECT _Effect, float _Duration)
 
 void CCamera::Move()
 {
-	m_LookAt.x += m_CamSpeed * DT;
+	if (KEY_PRESSED(KEY::W))
+		m_LookAt.y -= DT * m_CamSpeed;
+	if (KEY_PRESSED(KEY::S))
+		m_LookAt.y += DT * m_CamSpeed;
+	if (KEY_PRESSED(KEY::A))
+		m_LookAt.x -= DT * m_CamSpeed;
+	if (KEY_PRESSED(KEY::D))
+		m_LookAt.x += DT * m_CamSpeed;
 }
 
 void CCamera::CameraEffect()

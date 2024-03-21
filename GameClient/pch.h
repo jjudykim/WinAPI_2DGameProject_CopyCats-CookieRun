@@ -32,3 +32,7 @@ using std::wstring;
 #include <gdiplus.h>
 #pragma comment(lib, "GdiPlus.lib")
 using namespace Gdiplus;
+
+// File Path -> Name
+#include <shlwapi.h> 
+#pragma comment(lib, "shlwapi.lib") 

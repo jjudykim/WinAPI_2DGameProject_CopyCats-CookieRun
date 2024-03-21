@@ -49,7 +49,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	RECT wndRt = { 0, 0, m_Resolution.x, m_Resolution.y };
 	AdjustWindowRect(&wndRt, WS_OVERLAPPEDWINDOW, false);
 
-	SetWindowPos(m_hMainWnd, nullptr, 0, 0, wndRt.right - wndRt.left, wndRt.bottom - wndRt.top, 0);
+	SetWindowPos(m_hMainWnd, nullptr, 200, 80, wndRt.right - wndRt.left, wndRt.bottom - wndRt.top, 0);
 
 	CreateDefaultGDIObject();
 
@@ -138,5 +138,5 @@ void CEngine::ChangeWindowSize(Vec2D _Resolution, bool _bMenu)
 	RECT rt = { 0, 0, (LONG)_Resolution.x, (LONG)_Resolution.y };
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, _bMenu);
 
-	SetWindowPos(m_hMainWnd, nullptr, 0, 0, rt.right - rt.left, rt.bottom - rt.top, 0);
+	SetWindowPos(m_hMainWnd, nullptr, 200, 80, rt.right - rt.left, rt.bottom - rt.top, 0);
 }
