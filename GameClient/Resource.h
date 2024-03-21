@@ -69,6 +69,7 @@
 #define IDC_POSX_SPIN                   1037
 #define IDC_POSY_SPIN                   1038
 #define IDC_TEXTURE                     1038
+#define IDC_DRAW                        1038
 #define IDC_SIZEX_SPIN                  1039
 #define IDC_NEWTEX                      1039
 #define IDC_SIZEY_SPIN                  1040

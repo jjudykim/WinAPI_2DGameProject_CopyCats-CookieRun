@@ -150,6 +150,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 
 #include "CLevelMgr.h"
+#include "CHandleMgr.h"
 #include "CLevel_Editor.h"
 
 INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -173,8 +174,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case ID_EDITANIM:
             {
                 HWND AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITANIM), hWnd, EditAnimProc);
+                CHandleMgr::GetInst()->AddHandle(IDD_EDITANIM, AnimDlg);
                 if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }
+
                 AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITTEX), hWnd, EditAnimProc);
+                CHandleMgr::GetInst()->AddHandle(IDD_EDITTEX, AnimDlg);
                 if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }
             }
                 break;

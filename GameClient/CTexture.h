@@ -15,6 +15,7 @@ private:
 
 public:
     HDC GetDC() { return m_hDC; }
+    HBITMAP GetBit() { return m_hBit; }
     UINT GetWidth() { return m_Info.bmWidth; }
     UINT GetHeight() { return m_Info.bmHeight; }
 

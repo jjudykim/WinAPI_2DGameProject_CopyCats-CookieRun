@@ -133,6 +133,9 @@
     <Filter Include="03. Game\03. Manager\MouseMgr">
       <UniqueIdentifier>{6d254f21-816d-4f80-902b-e597e5589fe8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\HandleMgr">
+      <UniqueIdentifier>{26733928-56d6-4c6d-8869-198eb89c3d7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -285,6 +288,9 @@
     <ClInclude Include="CMouseMgr.h">
       <Filter>03. Game\03. Manager\MouseMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CHandleMgr.h">
+      <Filter>03. Game\03. Manager\HandleMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -415,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="CMouseMgr.cpp">
       <Filter>03. Game\03. Manager\MouseMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CHandleMgr.cpp">
+      <Filter>03. Game\03. Manager\HandleMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

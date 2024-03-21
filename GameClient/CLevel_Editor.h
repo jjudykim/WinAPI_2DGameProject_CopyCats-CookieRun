@@ -29,8 +29,9 @@ public:
     
     void SetEditTex(CTexture* _tex) { m_EditTex = _tex; }
     void SetDrawable(bool _drawable) { m_Drawable = _drawable; }
-    bool GetDrawable() { return m_Drawable; }
 
+    CTexture* GetEditTex() { return m_EditTex; }
+    bool GetDrawable() { return m_Drawable; }
     CDraw* GetPrevDraw() { return m_PrevDraw; }
 
     void SetDrawing(bool _drawing) { m_Drawing = _drawing; }

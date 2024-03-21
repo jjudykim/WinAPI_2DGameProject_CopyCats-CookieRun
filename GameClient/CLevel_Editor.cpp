@@ -9,14 +9,21 @@
 #include "CAssetMgr.h"
 #include "CTaskMgr.h"
 #include "CMouseMgr.h"
+#include "CHandleMgr.h"
 #include "CCamera.h"
 
 #include "CTexture.h"
 #include "CDraw.h"
 
+
+// global member
 wstring g_DialogText = L"";
-// 0 ~ 9 : EditControl, 10 ~ 19 : Spin Control 
+
+// 0 ~ 9 : Edit Control, 10 ~ 19 : Spin Control 
 HWND g_hDrawEdit[20] = {};
+HWND g_DrawCtrl = nullptr;
+RECT g_DrawSize = {};
+
 
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
@@ -63,7 +70,8 @@ void CLevel_Editor::tick()
 			if (!m_CurDraw->IsDrawing())
 			{
 				m_Drawing = false;
-				
+				m_PrevDraw = m_CurDraw;
+
 				// 그린 Draw 객체의 정보들을 이용해서 Edit Control 값들 세팅
 				wchar_t szBuff[256] = {};
 
@@ -81,11 +89,16 @@ void CLevel_Editor::tick()
 
 					SetWindowText(g_hDrawEdit[4], L"0.00");
 					SetWindowText(g_hDrawEdit[5], L"0.00");
+
+					if (g_DrawCtrl != NULL)
+					{
+						RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+						//DrawPNGImageOnPictureControl(g_DrawCtrl, m_EditTex);
+					}
 				}
 
 				m_Drawable = false;
 				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, false });
-				m_PrevDraw = m_CurDraw;
 				m_CurDraw = nullptr;
 			}
 		}
@@ -286,55 +299,64 @@ INT_PTR CALLBACK SelectAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	return (INT_PTR)FALSE;
 }
 
-
 INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
 	assert(pEditorLevel);
 
+	HWND hEditAnim = CHandleMgr::GetInst()->FindHandle(IDD_EDITANIM);
+
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
 	case WM_INITDIALOG:
 	{
-		g_hDrawEdit[0] = GetDlgItem(hDlg, IDC_POSX);
-		g_hDrawEdit[1] = GetDlgItem(hDlg, IDC_POSY);
-		g_hDrawEdit[2] = GetDlgItem(hDlg, IDC_SIZEX);
-		g_hDrawEdit[3] = GetDlgItem(hDlg, IDC_SIZEY);
-		g_hDrawEdit[4] = GetDlgItem(hDlg, IDC_OFFSETX);
-		g_hDrawEdit[5] = GetDlgItem(hDlg, IDC_OFFSETY);
-		g_hDrawEdit[6] = GetDlgItem(hDlg, IDC_COLPOSX);
-		g_hDrawEdit[7] = GetDlgItem(hDlg, IDC_COLPOSY);
-		g_hDrawEdit[8] = GetDlgItem(hDlg, IDC_COLSIZEX);
-		g_hDrawEdit[9] = GetDlgItem(hDlg, IDC_COLSIZEY);
-
-		g_hDrawEdit[10] = GetDlgItem(hDlg, IDC_POSX_SPIN);
-		g_hDrawEdit[11] = GetDlgItem(hDlg, IDC_POSY_SPIN);
-		g_hDrawEdit[12] = GetDlgItem(hDlg, IDC_SIZEX_SPIN);
-		g_hDrawEdit[13] = GetDlgItem(hDlg, IDC_SIZEY_SPIN);
-		g_hDrawEdit[14] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
-		g_hDrawEdit[15] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
-		g_hDrawEdit[16] = GetDlgItem(hDlg, IDC_COLPOSX_SPIN);
-		g_hDrawEdit[17] = GetDlgItem(hDlg, IDC_COLPOSY_SPIN);
-		g_hDrawEdit[18] = GetDlgItem(hDlg, IDC_COLSIZEX_SPIN);
-		g_hDrawEdit[19] = GetDlgItem(hDlg, IDC_COLSIZEY_SPIN);
-
-		for (int i = 0; i < 10; i++)
+		if (hEditAnim == nullptr || hEditAnim == hDlg)
 		{
-			SendMessage(g_hDrawEdit[10 + i], UDM_GETBUDDY, (WPARAM)g_hDrawEdit[i], 0);
+			g_hDrawEdit[0] = GetDlgItem(hDlg, IDC_POSX);
+			g_hDrawEdit[1] = GetDlgItem(hDlg, IDC_POSY);
+			g_hDrawEdit[2] = GetDlgItem(hDlg, IDC_SIZEX);
+			g_hDrawEdit[3] = GetDlgItem(hDlg, IDC_SIZEY);
+			g_hDrawEdit[4] = GetDlgItem(hDlg, IDC_OFFSETX);
+			g_hDrawEdit[5] = GetDlgItem(hDlg, IDC_OFFSETY);
+			g_hDrawEdit[6] = GetDlgItem(hDlg, IDC_COLPOSX);
+			g_hDrawEdit[7] = GetDlgItem(hDlg, IDC_COLPOSY);
+			g_hDrawEdit[8] = GetDlgItem(hDlg, IDC_COLSIZEX);
+			g_hDrawEdit[9] = GetDlgItem(hDlg, IDC_COLSIZEY);
+
+			g_hDrawEdit[10] = GetDlgItem(hDlg, IDC_POSX_SPIN);
+			g_hDrawEdit[11] = GetDlgItem(hDlg, IDC_POSY_SPIN);
+			g_hDrawEdit[12] = GetDlgItem(hDlg, IDC_SIZEX_SPIN);
+			g_hDrawEdit[13] = GetDlgItem(hDlg, IDC_SIZEY_SPIN);
+			g_hDrawEdit[14] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
+			g_hDrawEdit[15] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
+			g_hDrawEdit[16] = GetDlgItem(hDlg, IDC_COLPOSX_SPIN);
+			g_hDrawEdit[17] = GetDlgItem(hDlg, IDC_COLPOSY_SPIN);
+			g_hDrawEdit[18] = GetDlgItem(hDlg, IDC_COLSIZEX_SPIN);
+			g_hDrawEdit[19] = GetDlgItem(hDlg, IDC_COLSIZEY_SPIN);
+
+			for (int i = 0; i < 10; i++)
+			{
+				SendMessage(g_hDrawEdit[10 + i], UDM_GETBUDDY, (WPARAM)g_hDrawEdit[i], 0);
+			}
 		}
-			// LPNMUPDOWN lpnmud = (LPNMUPDOWN)lParam;
-			//if (lpnmud->hdr.code == UDN_DELTAPOS && lpnmud->hdr.idFrom == IDC_SPIN1) {
-			// Spin Control의 값이 변경됨. Edit Control 업데이트 로직 추가
-			// 예: lpnmud->iPos + lpnmud->iDelta를 사용하여 새 값을 계산하고, Edit Control 업데이트
-			//
+		else
+		{
+			g_DrawCtrl = GetDlgItem(hDlg, IDC_DRAW);
+			RECT rect;
+			GetWindowRect(g_DrawCtrl, &rect);
+			MapWindowPoints(HWND_DESKTOP, CEngine::GetInst()->GetMainWnd(), (LPPOINT)&rect, 2);
+			g_DrawSize = rect;
+		}
 	}
 	return (INT_PTR)TRUE;
 	break;
 
 	case WM_NOTIFY:
 	{
+		HWND hEditAnim = CHandleMgr::GetInst()->FindHandle(IDD_EDITANIM);
+
 		NMHDR* pNmhdr = (NMHDR*)lParam;
 		for (int i = 10; i < 20; ++i)
 		{
@@ -349,94 +371,94 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					{
 					case 10:
 					{
-						GetDlgItemText(hDlg, IDC_POSX, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
 						float posX = (float)_wtof(szBuff);
-						posX += ((float)lpnmud->iDelta  * -1.f);
+						posX += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", posX);
-						SetDlgItemText(hDlg, IDC_POSX, szBuff);
+						SetDlgItemText(hEditAnim, IDC_POSX, szBuff);
 					}
-						break;
+					break;
 					case 11:
 					{
-						GetDlgItemText(hDlg, IDC_POSY, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_POSY, szBuff, 256);
 						float posY = (float)_wtof(szBuff);
 						posY += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", posY);
-						SetDlgItemText(hDlg, IDC_POSY, szBuff);
+						SetDlgItemText(hEditAnim, IDC_POSY, szBuff);
 					}
-						break;
+					break;
 					case 12:
 					{
-						GetDlgItemText(hDlg, IDC_SIZEX, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_SIZEX, szBuff, 256);
 						float sizeX = (float)_wtof(szBuff);
 						sizeX += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", sizeX);
-						SetDlgItemText(hDlg, IDC_SIZEX, szBuff);
+						SetDlgItemText(hEditAnim, IDC_SIZEX, szBuff);
 					}
-						break;
+					break;
 					case 13:
 					{
-						GetDlgItemText(hDlg, IDC_SIZEY, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
 						float sizeY = (float)_wtof(szBuff);
 						sizeY += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", sizeY);
-						SetDlgItemText(hDlg, IDC_SIZEY, szBuff);
+						SetDlgItemText(hEditAnim, IDC_SIZEY, szBuff);
 					}
-						break;
+					break;
 					case 14:
 					{
-						GetDlgItemText(hDlg, IDC_OFFSETX, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff, 256);
 						float offsetX = (float)_wtof(szBuff);
 						offsetX += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", offsetX);
-						SetDlgItemText(hDlg, IDC_OFFSETX, szBuff);
+						SetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff);
 					}
-						break;
+					break;
 					case 15:
 					{
-						GetDlgItemText(hDlg, IDC_OFFSETY, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff, 256);
 						float offsetY = (float)_wtof(szBuff);
 						offsetY += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", offsetY);
-						SetDlgItemText(hDlg, IDC_OFFSETY, szBuff);
+						SetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff);
 					}
-						break;
+					break;
 					case 16:
 					{
-						GetDlgItemText(hDlg, IDC_COLPOSX, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_COLPOSX, szBuff, 256);
 						float colPosX = (float)_wtof(szBuff);
 						colPosX += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", colPosX);
-						SetDlgItemText(hDlg, IDC_COLPOSX, szBuff);
+						SetDlgItemText(hEditAnim, IDC_COLPOSX, szBuff);
 					}
-						break;
+					break;
 					case 17:
 					{
-						GetDlgItemText(hDlg, IDC_COLPOSY, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_COLPOSY, szBuff, 256);
 						float colPosY = (float)_wtof(szBuff);
 						colPosY += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", colPosY);
-						SetDlgItemText(hDlg, IDC_COLPOSY, szBuff);
+						SetDlgItemText(hEditAnim, IDC_COLPOSY, szBuff);
 					}
-						break;
+					break;
 					case 18:
 					{
-						GetDlgItemText(hDlg, IDC_COLSIZEX, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_COLSIZEX, szBuff, 256);
 						float colSizeX = (float)_wtof(szBuff);
 						colSizeX += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", colSizeX);
-						SetDlgItemText(hDlg, IDC_COLSIZEX, szBuff);
+						SetDlgItemText(hEditAnim, IDC_COLSIZEX, szBuff);
 					}
-						break;
+					break;
 					case 19:
 					{
-						GetDlgItemText(hDlg, IDC_COLSIZEY, szBuff, 256);
+						GetDlgItemText(hEditAnim, IDC_COLSIZEY, szBuff, 256);
 						float colSizeY = (float)_wtof(szBuff);
 						colSizeY += ((float)lpnmud->iDelta * -1.f);
 						swprintf_s(szBuff, 256, L"%.2f", colSizeY);
-						SetDlgItemText(hDlg, IDC_COLSIZEY, szBuff);
+						SetDlgItemText(hEditAnim, IDC_COLSIZEY, szBuff);
 					}
-						break;
+					break;
 					}
 				}
 				break;
@@ -444,31 +466,37 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		}
 	}
 	case WM_COMMAND:
+	{
+		HWND hEditAnim = CHandleMgr::GetInst()->FindHandle(IDD_EDITANIM);
+		HWND hEditTex = CHandleMgr::GetInst()->FindHandle(IDD_EDITTEX);
+
 		if (LOWORD(wParam) == IDPLAY)
 		{
 		}
 		else if (LOWORD(wParam) == IDSAVE)
 		{
 
-			DestroyWindow(hDlg);
+			DestroyWindow(hEditAnim);
+			DestroyWindow(hEditTex);
 			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == IDCANCEL)
 		{
-			DestroyWindow(hDlg);
+			DestroyWindow(hEditAnim);
+			DestroyWindow(hEditTex);
 			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == ID_TEXBTN)
 		{
 			DialogBox(CEngine::GetInst()->GetProcessInstance(),
-					  MAKEINTRESOURCE(IDD_TEXLIST),
-				      CEngine::GetInst()->GetMainWnd(), SelectTexProc);
+				MAKEINTRESOURCE(IDD_TEXLIST),
+				CEngine::GetInst()->GetMainWnd(), SelectTexProc);
 
 			SetDlgItemText(hDlg, IDC_TEX, g_DialogText.c_str());
 			pEditorLevel->SetEditTex(CAssetMgr::GetInst()->FindTexture(g_DialogText));
 			CCamera::GetInst()->SetCameraDefault();
 		}
-		
+
 		else if (LOWORD(wParam) == ID_ANIMBTN)
 		{
 			DialogBox(CEngine::GetInst()->GetProcessInstance(),
@@ -478,19 +506,21 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 		else if (LOWORD(wParam) == ID_LOWFRAME)
 		{
-			int Frame = GetDlgItemInt(hDlg, IDC_FRAME, nullptr, true);
+			int Frame = GetDlgItemInt(hEditAnim, IDC_FRAME, nullptr, true);
 			if (0 <= Frame - 1) --Frame;
-			SetDlgItemInt(hDlg, IDC_FRAME, Frame, true);
+			SetDlgItemInt(hEditAnim, IDC_FRAME, Frame, true);
 
 		}
 		else if (LOWORD(wParam) == ID_HIGHFRAME)
 		{
-			int Frame = GetDlgItemInt(hDlg, IDC_FRAME, nullptr, true);
+			int Frame = GetDlgItemInt(hEditAnim, IDC_FRAME, nullptr, true);
 			++Frame;
-			SetDlgItemInt(hDlg, IDC_FRAME, Frame, true);
+			SetDlgItemInt(hEditAnim, IDC_FRAME, Frame, true);
 		}
 		else if (LOWORD(wParam) == ID_DIRECTDRAW)
 		{
+			if (hEditTex == nullptr) hEditTex = CHandleMgr::GetInst()->FindHandle(IDD_EDITTEX);
+
 			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
 			if (PrevDraw)
 			{
@@ -502,10 +532,68 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		}
 		else if (LOWORD(wParam) == ID_APPLY)
 		{
+			if (hEditTex == nullptr) hEditTex = CHandleMgr::GetInst()->FindHandle(IDD_EDITTEX);
+		}
+	}
+		break;
+
+	case WM_DRAWITEM:
+	{
+		if (g_DrawCtrl == nullptr) break;
+
+		int destWidth = g_DrawSize.right - g_DrawSize.left;
+		int destHeight = g_DrawSize.bottom - g_DrawSize.top;
+
+		LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lParam;
+		Graphics graphics(pDIS->hDC);
+
+		CTexture* curTex = pEditorLevel->GetEditTex();
+		if (curTex == nullptr) break;
+		HDC curTexDC = curTex->GetDC();
+		HDC hMemDC = CreateCompatibleDC(curTexDC);
+		HBITMAP hMemBitmap = CreateCompatibleBitmap(curTexDC, destWidth, destHeight);
+		HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hMemBitmap);
+
+		wchar_t szBuff[256] = {};
+		GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
+		float srcX = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_POSY, szBuff, 256);
+		float srcY = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_SIZEX, szBuff, 256);
+		float srcWidth = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
+		float srcHeight = _wtof(szBuff);
+
+		StretchBlt(hMemDC, 0, 0, destWidth, destHeight, curTexDC, srcX, srcY, srcWidth, srcHeight, SRCCOPY);
+
+		Bitmap* bitmap = new Bitmap(hMemBitmap, NULL);
+
+		// 이미지 그리기
+		if (bitmap)
+		{
+			graphics.DrawImage(bitmap, 0, 0, bitmap->GetWidth(), bitmap->GetHeight());
+			Pen pen(Color(128, 0, 255, 0));
+			graphics.DrawLine(&pen, destWidth/2, 0, destWidth/2, destHeight);
+			graphics.DrawLine(&pen, 0, destHeight/2, destWidth, destHeight / 2);
+			delete bitmap;
+		}
+		else
+		{
+			assert(nullptr);
 		}
 
-		break;	
+		SelectObject(hMemDC, hOldBitmap);
+
+		DeleteDC(hMemDC);
+		DeleteObject(hMemBitmap);
+
+		return TRUE;
 	}
+		break;
+	}
+
+	
+
 	return (INT_PTR)FALSE;
 }
 	
