@@ -5,6 +5,7 @@
 #include "CTimeMgr.h"
 #include "CPathMgr.h"
 #include "CKeyMgr.h"
+#include "CMouseMgr.h"
 #include "CLevelMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CCollisionMgr.h"
@@ -61,6 +62,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	// Manager initializing ========
 	CPathMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
+	CMouseMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CLevelMgr::GetInst()->init();
 	CCamera::GetInst()->init();
@@ -75,6 +77,7 @@ void CEngine::progress()
 	// ===============
 	CTimeMgr::GetInst()->tick();
 	CKeyMgr::GetInst()->tick();
+	CMouseMgr::GetInst()->tick();
 	CDbgRenderMgr::GetInst()->tick();
 	CCamera::GetInst()->tick();
 

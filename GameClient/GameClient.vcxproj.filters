@@ -127,6 +127,12 @@
     <Filter Include="03. Game\06. Object\UI">
       <UniqueIdentifier>{b9d9ca75-d1b0-46ce-be2d-54884cd651ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Object\Draw">
+      <UniqueIdentifier>{f2fe534c-49ed-4eb3-9bb7-117c6a791bf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\03. Manager\MouseMgr">
+      <UniqueIdentifier>{6d254f21-816d-4f80-902b-e597e5589fe8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -273,6 +279,12 @@
     <ClInclude Include="CInvState.h">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
     </ClInclude>
+    <ClInclude Include="CDraw.h">
+      <Filter>03. Game\06. Object\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="CMouseMgr.h">
+      <Filter>03. Game\03. Manager\MouseMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -397,6 +409,12 @@
     </ClCompile>
     <ClCompile Include="CInvState.cpp">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CDraw.cpp">
+      <Filter>03. Game\06. Object\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="CMouseMgr.cpp">
+      <Filter>03. Game\03. Manager\MouseMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

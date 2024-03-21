@@ -4,6 +4,7 @@
 #include "CEngine.h"
 #include "CTaskMgr.h"
 #include "CJelly.h"
+#include "CDraw.h"
 #include "CComponent.h"
 #include "CAnimator.h"
 #include "CCamera.h"
@@ -83,6 +84,10 @@ void CObject::render()
 		CJelly* curJelly = dynamic_cast<CJelly*>(this);
 		if (curJelly != nullptr)
 			curJelly->render();
+
+		CDraw* curDraw = dynamic_cast<CDraw*>(this);
+		if (curDraw != nullptr)
+			curDraw->render();
 
 		return;
 	}

@@ -7,16 +7,22 @@
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
 #include "CAssetMgr.h"
+#include "CTaskMgr.h"
+#include "CMouseMgr.h"
 #include "CCamera.h"
 
 #include "CTexture.h"
+#include "CDraw.h"
 
 
 wstring tDialogText = L"";
 
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
-	, m_editTex(nullptr)
+	, m_EditTex(nullptr)
+	, m_CurDraw(nullptr)
+	, m_Drawable(false)
+	, m_Drawing(false)
 {
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCE(IDC_GAMECLIENT));
 }
@@ -31,6 +37,34 @@ void CLevel_Editor::begin()
 
 void CLevel_Editor::tick()
 {
+	CLevel::tick();
+
+	if (m_Drawable)
+	{
+		if (!m_Drawing)
+		{
+			if (CMouseMgr::GetInst()->IsLbtnDowned())
+			{
+				m_Drawing = true;
+				CObject* pObject = new CDraw;
+				pObject->SetPos(CMouseMgr::GetInst()->GetMouseDownPos());
+				pObject->SetScale(1, 1);
+				AddObject(LAYER_TYPE::DRAW, pObject);
+				m_CurDraw = dynamic_cast<CDraw*>(pObject);
+				
+			}
+		}
+
+		if (m_CurDraw != nullptr)
+		{
+			if (!m_CurDraw->IsDrawing())
+			{
+				m_Drawing = false;
+				m_CurDraw = nullptr;
+			}
+
+		}
+	}
 }
 
 void CLevel_Editor::render()
@@ -38,7 +72,7 @@ void CLevel_Editor::render()
 	Vec2D texPos;
 	texPos = CCamera::GetInst()->GetRenderPos(texPos);
 
-	if (m_editTex!= nullptr)
+	if (m_EditTex!= nullptr)
 	{
 		BLENDFUNCTION bf = {};
 
@@ -48,10 +82,12 @@ void CLevel_Editor::render()
 		bf.AlphaFormat = AC_SRC_ALPHA;
 
 		AlphaBlend(DC, texPos.x, texPos.y
-			, (int)m_editTex->GetWidth(), (int)m_editTex->GetHeight()
-			, m_editTex->GetDC(), 0, 0
-			, (int)m_editTex->GetWidth(), (int)m_editTex->GetHeight(), bf);
+			, (int)m_EditTex->GetWidth(), (int)m_EditTex->GetHeight()
+			, m_EditTex->GetDC(), 0, 0
+			, (int)m_EditTex->GetWidth(), (int)m_EditTex->GetHeight(), bf);
 	}
+
+	CLevel::render();
 }
 
 void CLevel_Editor::Enter()
@@ -288,10 +324,11 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			++Frame;
 			SetDlgItemInt(hDlg, IDC_FRAME, Frame, true);
 		}
-
 		else if (LOWORD(wParam) == ID_DIRECTDRAW)
 		{
-			
+			pEditorLevel->SetDrawable(true);
+			CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, true });
+			SetForegroundWindow(CEngine::GetInst()->GetMainWnd());
 		}
 		else if (LOWORD(wParam) == ID_APPLY)
 		{

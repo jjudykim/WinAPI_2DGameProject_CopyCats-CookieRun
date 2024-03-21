@@ -2,6 +2,7 @@
 #include "CTaskMgr.h"
 
 #include "CLevelMgr.h"
+#include "CMouseMgr.h"
 #include "CLevel.h"
 #include "CObject.h"
 
@@ -40,7 +41,7 @@ void CTaskMgr::ExectueTask()
 			GET_CUR_LEVEL->AddObject(Layer, pObj);
 			pObj->begin();
 		}
-			break;
+		break;
 
 		case TASK_TYPE::DELETE_OBJECT:
 		{
@@ -52,7 +53,7 @@ void CTaskMgr::ExectueTask()
 			pObj->m_bDead = true;
 			m_GC.push_back(pObj);
 		}
-			break;
+		break;
 
 		case TASK_TYPE::CHANGE_LEVEL:
 		{
@@ -62,7 +63,14 @@ void CTaskMgr::ExectueTask()
 			LEVEL_TYPE NextType = (LEVEL_TYPE)m_vecTask[i].Param1;
 			CLevelMgr::GetInst()->ChangeLevel(NextType);
 		}
-			break;
+		break;
+
+		case TASK_TYPE::CHANGE_CLICKABLE:
+		{
+			bool sign = (bool)m_vecTask[i].Param1;
+			CMouseMgr::GetInst()->SetUseClick(sign);
+		}
+		break;
 		}
 	}
 

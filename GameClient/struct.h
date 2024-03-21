@@ -89,6 +89,12 @@ public:
 		else { return false; }
 	}
 
+	bool operator != (Vec2D _Other)
+	{
+		if (x == _Other.x && y == _Other.y) { return false; }
+		else { return true; }
+	}
+
 	void operator += (Vec2D _Other)
 	{
 		x += _Other.x;

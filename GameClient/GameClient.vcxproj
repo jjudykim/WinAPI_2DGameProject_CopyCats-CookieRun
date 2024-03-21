@@ -148,6 +148,7 @@
     <ClInclude Include="CComponent.h" />
     <ClInclude Include="CDamageState.h" />
     <ClInclude Include="CDbgRenderMgr.h" />
+    <ClInclude Include="CDraw.h" />
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="CEntity.h" />
     <ClInclude Include="CFSM.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="func.h" />
     <ClInclude Include="GameClient.h" />
+    <ClInclude Include="CMouseMgr.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="struct.h" />
@@ -198,6 +200,7 @@
     <ClCompile Include="CComponent.cpp" />
     <ClCompile Include="CDamageState.cpp" />
     <ClCompile Include="CDbgRenderMgr.cpp" />
+    <ClCompile Include="CDraw.cpp" />
     <ClCompile Include="CEngine.cpp" />
     <ClCompile Include="CEntity.cpp" />
     <ClCompile Include="CFSM.cpp" />
@@ -228,6 +231,7 @@
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="CMouseMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameClient.rc" />
