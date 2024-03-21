@@ -6,6 +6,7 @@ CTexture::CTexture()
 	: m_hDC{}
 	, m_hBit{}
 	, m_Info{}
+	, m_Path{}
 {
 }
 
@@ -39,12 +40,14 @@ int CTexture::Load(const wstring& _strFilePath)
 	if (!wcscmp(szExt, L".bmp") || !wcscmp(szExt, L".BMP"))
 	{
 		m_hBit = (HBITMAP)LoadImage(nullptr, _strFilePath.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-
+		
 		if (m_hBit == nullptr)
 		{
 			LOG(LOG_TYPE::DBG_ERROR, L"비트맵 Asset 로딩 실패");
 			return E_FAIL;
 		}
+
+		m_Path = _strFilePath;
 	}
 	else if (!wcscmp(szExt, L".png") || !wcscmp(szExt, L".PNG"))
 	{
@@ -56,6 +59,7 @@ int CTexture::Load(const wstring& _strFilePath)
 		Bitmap* pBitmap = (Bitmap*)pImg->Clone();
 		Gdiplus::Status status = pBitmap->GetHBITMAP(Color(0, 0, 0, 0), &m_hBit);
 		assert(status == Gdiplus::Status::Ok);
+		m_Path = _strFilePath;
 	}
 	else
 	{

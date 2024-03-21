@@ -38,7 +38,8 @@ void CDraw::render()
 	Vec2D vPos = GetRenderPos();
 	Vec2D vScale = GetScale();
 
-	USE_PEN(DC, PEN_TYPE::PEN_BLUE);
+	USE_BRUSH(DC, BRUSH_TYPE::BRUSH_HOLLOW);
+	CSelectObj SelectPen(DC, CEngine::GetInst()->GetPen(PEN_TYPE::PEN_BLUE));
 
 	Rectangle(DC, (int)(vPos.x), (int)(vPos.y)
 		, (int)(vPos.x + vScale.x)

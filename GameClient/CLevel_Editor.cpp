@@ -478,12 +478,22 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			DestroyWindow(hEditAnim);
 			DestroyWindow(hEditTex);
+			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
+			if (PrevDraw)
+			{
+				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
+			}
 			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == IDCANCEL)
 		{
 			DestroyWindow(hEditAnim);
 			DestroyWindow(hEditTex);
+			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
+			if (PrevDraw)
+			{
+				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
+			}
 			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == ID_TEXBTN)
@@ -521,6 +531,12 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		{
 			if (hEditTex == nullptr) hEditTex = CHandleMgr::GetInst()->FindHandle(IDD_EDITTEX);
 
+			if (pEditorLevel->GetEditTex() == nullptr)
+			{
+				MessageBox(CEngine::GetInst()->GetMainWnd(), L"편집할 텍스쳐를 먼저 선택해야 합니다.", L"경고", MB_OK);
+				break;
+			}
+
 			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
 			if (PrevDraw)
 			{
@@ -547,12 +563,14 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		LPDRAWITEMSTRUCT pDIS = (LPDRAWITEMSTRUCT)lParam;
 		Graphics graphics(pDIS->hDC);
 
+		graphics.Clear(Color(243, 243, 243));
+
 		CTexture* curTex = pEditorLevel->GetEditTex();
 		if (curTex == nullptr) break;
-		HDC curTexDC = curTex->GetDC();
+		/*HDC curTexDC = curTex->GetDC();
 		HDC hMemDC = CreateCompatibleDC(curTexDC);
 		HBITMAP hMemBitmap = CreateCompatibleBitmap(curTexDC, destWidth, destHeight);
-		HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hMemBitmap);
+		HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hMemBitmap);*/
 
 		wchar_t szBuff[256] = {};
 		GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
@@ -564,28 +582,20 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
 		float srcHeight = _wtof(szBuff);
 
-		StretchBlt(hMemDC, 0, 0, destWidth, destHeight, curTexDC, srcX, srcY, srcWidth, srcHeight, SRCCOPY);
-
-		Bitmap* bitmap = new Bitmap(hMemBitmap, NULL);
-
-		// 이미지 그리기
-		if (bitmap)
+		Image* image = new Image(curTex->GetFullPath().c_str());
+		if (image && image->GetLastStatus() == Ok)
 		{
-			graphics.DrawImage(bitmap, 0, 0, bitmap->GetWidth(), bitmap->GetHeight());
+			graphics.DrawImage(image, Rect(0, 0, destWidth, destHeight), srcX, srcY, srcWidth, srcHeight, UnitPixel);
 			Pen pen(Color(128, 0, 255, 0));
-			graphics.DrawLine(&pen, destWidth/2, 0, destWidth/2, destHeight);
-			graphics.DrawLine(&pen, 0, destHeight/2, destWidth, destHeight / 2);
-			delete bitmap;
+			graphics.DrawLine(&pen, destWidth / 2, 0, destWidth / 2, destHeight);
+			graphics.DrawLine(&pen, 0, destHeight / 2, destWidth, destHeight / 2);
+
+			delete image;
 		}
 		else
 		{
-			assert(nullptr);
+			assert(nullptr); // 이미지 로드 실패 처리
 		}
-
-		SelectObject(hMemDC, hOldBitmap);
-
-		DeleteDC(hMemDC);
-		DeleteObject(hMemBitmap);
 
 		return TRUE;
 	}
