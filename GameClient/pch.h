@@ -36,3 +36,6 @@ using namespace Gdiplus;
 // File Path -> Name
 #include <shlwapi.h> 
 #pragma comment(lib, "shlwapi.lib") 
+
+// Common Controls
+#include <CommCtrl.h>

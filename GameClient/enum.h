@@ -73,7 +73,7 @@ enum class TASK_TYPE
 	SPAWN_OBJECT,     // 1 : Level, 2 : LAYER_TYPE, 3: Object Adress
 	DELETE_OBJECT,    // 1 : Object Adress
 	CHANGE_LEVEL,
-	CHANGE_CLICKABLE,        // 1 : true or false
+	CHANGE_CLICKABLE, // 1 : true or false
 };
 
 enum class COOKIE_TYPE

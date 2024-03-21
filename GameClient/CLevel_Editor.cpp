@@ -14,13 +14,15 @@
 #include "CTexture.h"
 #include "CDraw.h"
 
-
-wstring tDialogText = L"";
+wstring g_DialogText = L"";
+// 0 ~ 9 : EditControl, 10 ~ 19 : Spin Control 
+HWND g_hDrawEdit[20] = {};
 
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
 	, m_EditTex(nullptr)
 	, m_CurDraw(nullptr)
+	, m_PrevDraw(nullptr)
 	, m_Drawable(false)
 	, m_Drawing(false)
 {
@@ -47,7 +49,8 @@ void CLevel_Editor::tick()
 			{
 				m_Drawing = true;
 				CObject* pObject = new CDraw;
-				pObject->SetPos(CMouseMgr::GetInst()->GetMouseDownPos());
+				Vec2D MousePos = CMouseMgr::GetInst()->GetMouseDownPos();
+				pObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
 				pObject->SetScale(1, 1);
 				AddObject(LAYER_TYPE::DRAW, pObject);
 				m_CurDraw = dynamic_cast<CDraw*>(pObject);
@@ -60,9 +63,31 @@ void CLevel_Editor::tick()
 			if (!m_CurDraw->IsDrawing())
 			{
 				m_Drawing = false;
+				
+				// 그린 Draw 객체의 정보들을 이용해서 Edit Control 값들 세팅
+				wchar_t szBuff[256] = {};
+
+				if (g_hDrawEdit != NULL)
+				{
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().x);
+					SetWindowText(g_hDrawEdit[0], szBuff);
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().y);
+					SetWindowText(g_hDrawEdit[1], szBuff);
+
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x);
+					SetWindowText(g_hDrawEdit[2], szBuff);
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y);
+					SetWindowText(g_hDrawEdit[3], szBuff);
+
+					SetWindowText(g_hDrawEdit[4], L"0.00");
+					SetWindowText(g_hDrawEdit[5], L"0.00");
+				}
+
+				m_Drawable = false;
+				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, false });
+				m_PrevDraw = m_CurDraw;
 				m_CurDraw = nullptr;
 			}
-
 		}
 	}
 }
@@ -81,7 +106,7 @@ void CLevel_Editor::render()
 		bf.SourceConstantAlpha = 255;
 		bf.AlphaFormat = AC_SRC_ALPHA;
 
-		AlphaBlend(DC, texPos.x, texPos.y
+		AlphaBlend(DC, (int)texPos.x, (int)texPos.y
 			, (int)m_EditTex->GetWidth(), (int)m_EditTex->GetHeight()
 			, m_EditTex->GetDC(), 0, 0
 			, (int)m_EditTex->GetWidth(), (int)m_EditTex->GetHeight(), bf);
@@ -144,7 +169,7 @@ INT_PTR CALLBACK CreateTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			}
 			else
 			{
-				tDialogText = szBuff;
+				g_DialogText = szBuff;
 				EndDialog(hDlg, LOWORD(wParam));
 				return (INT_PTR)TRUE;
 			}
@@ -209,7 +234,7 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			}
 			
 			// 선택된 텍스쳐 반영하면서 끄기
-			tDialogText = szBuff;
+			g_DialogText = szBuff;
 			//SetDlgItemText(hDlg, IDC_TEX, szBuff);
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
@@ -273,11 +298,151 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 	{
 	case WM_INITDIALOG:
 	{
+		g_hDrawEdit[0] = GetDlgItem(hDlg, IDC_POSX);
+		g_hDrawEdit[1] = GetDlgItem(hDlg, IDC_POSY);
+		g_hDrawEdit[2] = GetDlgItem(hDlg, IDC_SIZEX);
+		g_hDrawEdit[3] = GetDlgItem(hDlg, IDC_SIZEY);
+		g_hDrawEdit[4] = GetDlgItem(hDlg, IDC_OFFSETX);
+		g_hDrawEdit[5] = GetDlgItem(hDlg, IDC_OFFSETY);
+		g_hDrawEdit[6] = GetDlgItem(hDlg, IDC_COLPOSX);
+		g_hDrawEdit[7] = GetDlgItem(hDlg, IDC_COLPOSY);
+		g_hDrawEdit[8] = GetDlgItem(hDlg, IDC_COLSIZEX);
+		g_hDrawEdit[9] = GetDlgItem(hDlg, IDC_COLSIZEY);
 
+		g_hDrawEdit[10] = GetDlgItem(hDlg, IDC_POSX_SPIN);
+		g_hDrawEdit[11] = GetDlgItem(hDlg, IDC_POSY_SPIN);
+		g_hDrawEdit[12] = GetDlgItem(hDlg, IDC_SIZEX_SPIN);
+		g_hDrawEdit[13] = GetDlgItem(hDlg, IDC_SIZEY_SPIN);
+		g_hDrawEdit[14] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
+		g_hDrawEdit[15] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
+		g_hDrawEdit[16] = GetDlgItem(hDlg, IDC_COLPOSX_SPIN);
+		g_hDrawEdit[17] = GetDlgItem(hDlg, IDC_COLPOSY_SPIN);
+		g_hDrawEdit[18] = GetDlgItem(hDlg, IDC_COLSIZEX_SPIN);
+		g_hDrawEdit[19] = GetDlgItem(hDlg, IDC_COLSIZEY_SPIN);
+
+		for (int i = 0; i < 10; i++)
+		{
+			SendMessage(g_hDrawEdit[10 + i], UDM_GETBUDDY, (WPARAM)g_hDrawEdit[i], 0);
+		}
+			// LPNMUPDOWN lpnmud = (LPNMUPDOWN)lParam;
+			//if (lpnmud->hdr.code == UDN_DELTAPOS && lpnmud->hdr.idFrom == IDC_SPIN1) {
+			// Spin Control의 값이 변경됨. Edit Control 업데이트 로직 추가
+			// 예: lpnmud->iPos + lpnmud->iDelta를 사용하여 새 값을 계산하고, Edit Control 업데이트
+			//
 	}
 	return (INT_PTR)TRUE;
 	break;
 
+	case WM_NOTIFY:
+	{
+		NMHDR* pNmhdr = (NMHDR*)lParam;
+		for (int i = 10; i < 20; ++i)
+		{
+			if (pNmhdr->hwndFrom == g_hDrawEdit[i])
+			{
+				LPNMUPDOWN lpnmud = (LPNMUPDOWN)lParam;
+				if (lpnmud->hdr.code == UDN_DELTAPOS)
+				{
+					wchar_t szBuff[256] = {};
+					int newVal = 0;
+					switch (i)
+					{
+					case 10:
+					{
+						GetDlgItemText(hDlg, IDC_POSX, szBuff, 256);
+						float posX = (float)_wtof(szBuff);
+						posX += ((float)lpnmud->iDelta  * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", posX);
+						SetDlgItemText(hDlg, IDC_POSX, szBuff);
+					}
+						break;
+					case 11:
+					{
+						GetDlgItemText(hDlg, IDC_POSY, szBuff, 256);
+						float posY = (float)_wtof(szBuff);
+						posY += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", posY);
+						SetDlgItemText(hDlg, IDC_POSY, szBuff);
+					}
+						break;
+					case 12:
+					{
+						GetDlgItemText(hDlg, IDC_SIZEX, szBuff, 256);
+						float sizeX = (float)_wtof(szBuff);
+						sizeX += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", sizeX);
+						SetDlgItemText(hDlg, IDC_SIZEX, szBuff);
+					}
+						break;
+					case 13:
+					{
+						GetDlgItemText(hDlg, IDC_SIZEY, szBuff, 256);
+						float sizeY = (float)_wtof(szBuff);
+						sizeY += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", sizeY);
+						SetDlgItemText(hDlg, IDC_SIZEY, szBuff);
+					}
+						break;
+					case 14:
+					{
+						GetDlgItemText(hDlg, IDC_OFFSETX, szBuff, 256);
+						float offsetX = (float)_wtof(szBuff);
+						offsetX += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", offsetX);
+						SetDlgItemText(hDlg, IDC_OFFSETX, szBuff);
+					}
+						break;
+					case 15:
+					{
+						GetDlgItemText(hDlg, IDC_OFFSETY, szBuff, 256);
+						float offsetY = (float)_wtof(szBuff);
+						offsetY += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", offsetY);
+						SetDlgItemText(hDlg, IDC_OFFSETY, szBuff);
+					}
+						break;
+					case 16:
+					{
+						GetDlgItemText(hDlg, IDC_COLPOSX, szBuff, 256);
+						float colPosX = (float)_wtof(szBuff);
+						colPosX += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", colPosX);
+						SetDlgItemText(hDlg, IDC_COLPOSX, szBuff);
+					}
+						break;
+					case 17:
+					{
+						GetDlgItemText(hDlg, IDC_COLPOSY, szBuff, 256);
+						float colPosY = (float)_wtof(szBuff);
+						colPosY += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", colPosY);
+						SetDlgItemText(hDlg, IDC_COLPOSY, szBuff);
+					}
+						break;
+					case 18:
+					{
+						GetDlgItemText(hDlg, IDC_COLSIZEX, szBuff, 256);
+						float colSizeX = (float)_wtof(szBuff);
+						colSizeX += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", colSizeX);
+						SetDlgItemText(hDlg, IDC_COLSIZEX, szBuff);
+					}
+						break;
+					case 19:
+					{
+						GetDlgItemText(hDlg, IDC_COLSIZEY, szBuff, 256);
+						float colSizeY = (float)_wtof(szBuff);
+						colSizeY += ((float)lpnmud->iDelta * -1.f);
+						swprintf_s(szBuff, 256, L"%.2f", colSizeY);
+						SetDlgItemText(hDlg, IDC_COLSIZEY, szBuff);
+					}
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDPLAY)
 		{
@@ -299,8 +464,8 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					  MAKEINTRESOURCE(IDD_TEXLIST),
 				      CEngine::GetInst()->GetMainWnd(), SelectTexProc);
 
-			SetDlgItemText(hDlg, IDC_TEX, tDialogText.c_str());
-			pEditorLevel->SetEditTex(CAssetMgr::GetInst()->FindTexture(tDialogText));
+			SetDlgItemText(hDlg, IDC_TEX, g_DialogText.c_str());
+			pEditorLevel->SetEditTex(CAssetMgr::GetInst()->FindTexture(g_DialogText));
 			CCamera::GetInst()->SetCameraDefault();
 		}
 		
@@ -326,6 +491,11 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		}
 		else if (LOWORD(wParam) == ID_DIRECTDRAW)
 		{
+			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
+			if (PrevDraw)
+			{
+				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
+			}
 			pEditorLevel->SetDrawable(true);
 			CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, true });
 			SetForegroundWindow(CEngine::GetInst()->GetMainWnd());
@@ -334,117 +504,6 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		{
 		}
 
-		else if (LOWORD(wParam) == ID_LOWPOSX)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_POSX, szBuff, 256);
-			float posX = (float)_wtof(szBuff);
-			posX -= 5.f;
-			swprintf_s(szBuff, 256, L"%f", posX);
-			SetDlgItemText(hDlg, IDC_POSX, szBuff);
-			
-		}
-		else if (LOWORD(wParam) == ID_HIGHPOSX)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_POSX, szBuff, 256);
-			float posX = (float)_wtof(szBuff);
-			posX += 5.f;
-			swprintf_s(szBuff, 256, L"%f", posX);
-			SetDlgItemText(hDlg, IDC_POSX, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_LOWPOSY)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_POSY, szBuff, 256);
-			float posY = (float)_wtof(szBuff);
-			posY -= 5.f;
-			swprintf_s(szBuff, 256, L"%f", posY);
-			SetDlgItemText(hDlg, IDC_POSY, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_HIGHPOSY)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_POSY, szBuff, 256);
-			float posY = (float)_wtof(szBuff);
-			posY += 5.f;
-			swprintf_s(szBuff, 256, L"%f", posY);
-			SetDlgItemText(hDlg, IDC_POSY, szBuff);
-		}
-
-		else if (LOWORD(wParam) == ID_LOWSIZEX)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_SIZEX, szBuff, 256);
-			float sizeX = (float)_wtof(szBuff);
-			sizeX -= 5.f;
-			swprintf_s(szBuff, 256, L"%f", sizeX);
-			SetDlgItemText(hDlg, IDC_SIZEX, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_HIGHSIZEX)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_SIZEX, szBuff, 256);
-			float sizeX = (float)_wtof(szBuff);
-			sizeX += 5.f;
-			swprintf_s(szBuff, 256, L"%f", sizeX);
-			SetDlgItemText(hDlg, IDC_SIZEX, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_LOWSIZEY)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_SIZEY, szBuff, 256);
-			float sizeY = (float)_wtof(szBuff);
-			sizeY -= 5.f;
-			swprintf_s(szBuff, 256, L"%f", sizeY);
-			SetDlgItemText(hDlg, IDC_SIZEY, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_HIGHSIZEY)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_SIZEY, szBuff, 256);
-			float sizeY = (float)_wtof(szBuff);
-			sizeY += 5.f;
-			swprintf_s(szBuff, 256, L"%f", sizeY);
-			SetDlgItemText(hDlg, IDC_SIZEY, szBuff);
-		}
-
-		else if (LOWORD(wParam) == ID_LOWOFFSETX)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_OFFSETX, szBuff, 256);
-			float offsetX = (float)_wtof(szBuff);
-			offsetX -= 5.f;
-			swprintf_s(szBuff, 256, L"%f", offsetX);
-			SetDlgItemText(hDlg, IDC_OFFSETX, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_HIGHOFFSETX)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_OFFSETX, szBuff, 256);
-			float offsetX = (float)_wtof(szBuff);
-			offsetX += 5.f;
-			swprintf_s(szBuff, 256, L"%f", offsetX);
-			SetDlgItemText(hDlg, IDC_OFFSETX, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_LOWOFFSETY)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_OFFSETY, szBuff, 256);
-			float offsetY = (float)_wtof(szBuff);
-			offsetY -= 5.f;
-			swprintf_s(szBuff, 256, L"%f", offsetY);
-			SetDlgItemText(hDlg, IDC_OFFSETY, szBuff);
-		}
-		else if (LOWORD(wParam) == ID_HIGHOFFSETY)
-		{
-			wchar_t szBuff[256] = {};
-			GetDlgItemText(hDlg, IDC_OFFSETY, szBuff, 256);
-			float offsetY = (float)_wtof(szBuff);
-			offsetY += 5.f;
-			swprintf_s(szBuff, 256, L"%f", offsetY);
-			SetDlgItemText(hDlg, IDC_OFFSETY, szBuff);
-		}
 		break;	
 	}
 	return (INT_PTR)FALSE;
@@ -513,7 +572,7 @@ bool OpenLoadFile(wstring _Path, wstring _FileType)
 
 			wstring SelectedFileName = L"texture\\";
 			SelectedFileName += PathFindFileNameW(ofn.lpstrFile);
-			CAssetMgr::GetInst()->LoadTexture(tDialogText, SelectedFileName);
+			CAssetMgr::GetInst()->LoadTexture(g_DialogText, SelectedFileName);
 		}
 		
 		return true;

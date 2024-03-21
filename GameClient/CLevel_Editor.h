@@ -12,6 +12,7 @@ private:
     CTexture*   m_EditTex;
 
     CDraw*      m_CurDraw;
+    CDraw*      m_PrevDraw;
     bool        m_Drawable;
     bool        m_Drawing;
 
@@ -29,6 +30,9 @@ public:
     void SetEditTex(CTexture* _tex) { m_EditTex = _tex; }
     void SetDrawable(bool _drawable) { m_Drawable = _drawable; }
     bool GetDrawable() { return m_Drawable; }
+
+    CDraw* GetPrevDraw() { return m_PrevDraw; }
+
     void SetDrawing(bool _drawing) { m_Drawing = _drawing; }
     bool GetDrawing() { return m_Drawing; }
 

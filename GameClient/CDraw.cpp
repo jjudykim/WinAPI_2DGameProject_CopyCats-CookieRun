@@ -21,6 +21,7 @@ void CDraw::tick()
 		if (CMouseMgr::GetInst()->IsLbtnDowned())
 		{
 			Vec2D CurPos = CMouseMgr::GetInst()->GetMousePos();
+			CurPos = CCamera::GetInst()->GetRealPos(CurPos);
 			Vec2D Drag = CurPos - this->GetPos();
 			this->SetScale(Drag);
 		}
@@ -34,7 +35,7 @@ void CDraw::tick()
 
 void CDraw::render()
 {
-	Vec2D vPos = GetPos();
+	Vec2D vPos = GetRenderPos();
 	Vec2D vScale = GetScale();
 
 	USE_PEN(DC, PEN_TYPE::PEN_BLUE);

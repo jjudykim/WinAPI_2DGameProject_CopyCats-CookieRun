@@ -174,8 +174,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 HWND AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITANIM), hWnd, EditAnimProc);
                 if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }
-                /*AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITTEX), hWnd, EditAnimProc);
-                if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }*/
+                AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITTEX), hWnd, EditAnimProc);
+                if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }
             }
                 break;
             default:
