@@ -77,9 +77,9 @@ void CLevel_Editor::tick()
 
 				if (g_hDrawEdit != NULL)
 				{
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().x);
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().x + (m_CurDraw->GetScale().x / 2.f));
 					SetWindowText(g_hDrawEdit[0], szBuff);
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().y);
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().y + (m_CurDraw->GetScale().y / 2.f));
 					SetWindowText(g_hDrawEdit[1], szBuff);
 
 					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x);
@@ -90,10 +90,19 @@ void CLevel_Editor::tick()
 					SetWindowText(g_hDrawEdit[4], L"0.00");
 					SetWindowText(g_hDrawEdit[5], L"0.00");
 
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
+					SetWindowText(g_hDrawEdit[6], szBuff);
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
+					SetWindowText(g_hDrawEdit[7], szBuff);
+
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
+					SetWindowText(g_hDrawEdit[8], szBuff);
+					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
+					SetWindowText(g_hDrawEdit[9], szBuff);
+
 					if (g_DrawCtrl != NULL)
 					{
 						RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-						//DrawPNGImageOnPictureControl(g_DrawCtrl, m_EditTex);
 					}
 				}
 
@@ -330,7 +339,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			g_hDrawEdit[12] = GetDlgItem(hDlg, IDC_SIZEX_SPIN);
 			g_hDrawEdit[13] = GetDlgItem(hDlg, IDC_SIZEY_SPIN);
 			g_hDrawEdit[14] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
-			g_hDrawEdit[15] = GetDlgItem(hDlg, IDC_OFFSETX_SPIN);
+			g_hDrawEdit[15] = GetDlgItem(hDlg, IDC_OFFSETY_SPIN);
 			g_hDrawEdit[16] = GetDlgItem(hDlg, IDC_COLPOSX_SPIN);
 			g_hDrawEdit[17] = GetDlgItem(hDlg, IDC_COLPOSY_SPIN);
 			g_hDrawEdit[18] = GetDlgItem(hDlg, IDC_COLSIZEX_SPIN);
@@ -549,6 +558,38 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		else if (LOWORD(wParam) == ID_APPLY)
 		{
 			if (hEditTex == nullptr) hEditTex = CHandleMgr::GetInst()->FindHandle(IDD_EDITTEX);
+			if (pEditorLevel->GetEditTex() == nullptr)
+			{
+				MessageBox(CEngine::GetInst()->GetMainWnd(), L"편집할 텍스쳐를 먼저 선택해야 합니다.", L"경고", MB_OK);
+				return TRUE;
+			}
+			int textLength = -1;
+			for (int i = 0; i < 6; i++)
+			{
+				textLength = GetWindowTextLength(g_hDrawEdit[i]);
+				if (textLength == 0)
+				{
+					MessageBox(CEngine::GetInst()->GetMainWnd(), L"데이터 수치가 입력되거나 직접 지정해야 합니다.", L"경고", MB_OK);
+					return TRUE;
+				}
+			}
+
+			RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+			
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
+			float PosX = _wtof(szBuff);
+			GetDlgItemText(hEditAnim, IDC_POSY, szBuff, 256);
+			float PosY = _wtof(szBuff);
+			GetDlgItemText(hEditAnim, IDC_SIZEX, szBuff, 256);
+			float SizeX = _wtof(szBuff);
+			GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
+			float SizeY = _wtof(szBuff);
+			if (pEditorLevel->GetPrevDraw() != nullptr)
+			{
+				pEditorLevel->GetPrevDraw()->SetPos(Vec2D(PosX - (SizeX / 2.f), PosY - (SizeY / 2.f)));
+				pEditorLevel->GetPrevDraw()->SetScale(Vec2D(SizeX, SizeY));
+			}
 		}
 	}
 		break;
@@ -581,14 +622,39 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		float srcWidth = _wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
 		float srcHeight = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff, 256);
+		float srcOffsetX = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff, 256);
+		float srcOffsetY = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_COLPOSX, szBuff, 256);
+		float ColPosX = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_COLPOSY, szBuff, 256);
+		float ColPosY = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_COLSIZEX, szBuff, 256);
+		float ColSizeX = _wtof(szBuff);
+		GetDlgItemText(hEditAnim, IDC_COLSIZEY, szBuff, 256);
+		float ColSizeY = _wtof(szBuff);
 
 		Image* image = new Image(curTex->GetFullPath().c_str());
 		if (image && image->GetLastStatus() == Ok)
 		{
-			graphics.DrawImage(image, Rect(0, 0, destWidth, destHeight), srcX, srcY, srcWidth, srcHeight, UnitPixel);
-			Pen pen(Color(128, 0, 255, 0));
-			graphics.DrawLine(&pen, destWidth / 2, 0, destWidth / 2, destHeight);
-			graphics.DrawLine(&pen, 0, destHeight / 2, destWidth, destHeight / 2);
+			//graphics.DrawImage(image, Rect(0, 0, destWidth, destHeight), srcX, srcY, srcWidth, srcHeight, UnitPixel);
+			graphics.DrawImage(image, Rect(0, 0, destWidth, destHeight)
+												, srcX - (srcWidth / 2.f) + srcOffsetX
+												, srcY - (srcHeight / 2.f) + srcOffsetY
+												, srcWidth, srcHeight, UnitPixel);
+
+			float ratioX = destWidth / srcWidth;
+			float ratioY = destHeight / srcHeight;
+
+			Pen GreenPen(Color(255, 0, 255, 0));
+			Pen RedPen(Color(255, 255, 0, 0));
+			graphics.DrawRectangle(&RedPen, Rect((ColPosX - (ColSizeX / 2.f)) * ratioX
+												,(ColPosY - (ColSizeY / 2.f))* ratioY
+												, ColSizeX * ratioX, ColSizeY * ratioY));
+			graphics.DrawLine(&GreenPen, destWidth / 2, 0, destWidth / 2, destHeight);
+			graphics.DrawLine(&GreenPen, 0, destHeight / 2, destWidth, destHeight / 2);
+			
 
 			delete image;
 		}

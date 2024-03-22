@@ -4,14 +4,6 @@
 class CAnimator;
 class CTexture;
 
-struct AniFrm
-{
-    Vec2D StartPos;
-    Vec2D SliceSize;
-    Vec2D Offset;
-    float Duration;
-};
-
 class CAnimation :
     public CEntity
 {

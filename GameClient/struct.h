@@ -176,6 +176,15 @@ struct DbgLog
 	float			Age;
 };
 
+struct AniFrm
+{
+	Vec2D StartPos;
+	Vec2D SliceSize;
+	Vec2D Offset;
+	float Duration;
+};
+
+
 struct DbgObjInfo
 {
 	Vec2D			ObjPosition;

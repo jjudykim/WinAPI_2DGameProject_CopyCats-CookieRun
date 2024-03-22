@@ -9,12 +9,14 @@ class CLevel_Editor :
 {
 private:
     HMENU       m_hMenu;
-    CTexture*   m_EditTex;
-
-    CDraw*      m_CurDraw;
-    CDraw*      m_PrevDraw;
-    bool        m_Drawable;
-    bool        m_Drawing;
+    
+    // Animation Editor
+    CTexture*       m_EditTex;
+    CDraw*          m_CurDraw;
+    CDraw*          m_PrevDraw;
+    vector<AniFrm>  m_vecFrm;
+    bool            m_Drawable;
+    bool            m_Drawing;
 
 public:
     virtual void begin() override;
