@@ -36,6 +36,21 @@ void CAnimation::Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, 
 	}
 }
 
+void CAnimation::Create(CTexture* _AtlasTex, int _FrameCount, const AniFrm& _frm)
+{
+	m_Atlas = _AtlasTex;
+
+	for (int i = 0; i < _FrameCount; ++i)
+	{
+		AniFrm frm = {};
+		frm.Duration = _frm.Duration;
+		frm.StartPos = _frm.StartPos;
+		frm.SliceSize = _frm.SliceSize;
+
+		m_vecFrm.push_back(frm);
+	}
+}
+
 void CAnimation::finaltick()
 {
 	if (m_bFinish)

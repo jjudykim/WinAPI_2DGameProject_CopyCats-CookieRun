@@ -28,3 +28,8 @@ HWND CHandleMgr::FindHandle(const int& _Key)
 
 	return iter->second;
 }
+
+void CHandleMgr::DeleteHandle(const int& _Key)
+{
+	m_mapHandle.erase(_Key);
+}

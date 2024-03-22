@@ -484,7 +484,8 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		}
 		else if (LOWORD(wParam) == IDSAVE)
 		{
-
+			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITANIM);
+			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITTEX);
 			DestroyWindow(hEditAnim);
 			DestroyWindow(hEditTex);
 			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
@@ -496,6 +497,8 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		}
 		else if (LOWORD(wParam) == IDCANCEL)
 		{
+			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITANIM);
+			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITTEX);
 			DestroyWindow(hEditAnim);
 			DestroyWindow(hEditTex);
 			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
@@ -591,6 +594,20 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 				pEditorLevel->GetPrevDraw()->SetScale(Vec2D(SizeX, SizeY));
 			}
 		}
+		else if (LOWORD(wParam) == ID_ADDFRAME)
+		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hEditAnim, IDC_ANIM, szBuff, 256);
+			if (szBuff[0] == L'\0')
+			{
+				MessageBox(CEngine::GetInst()->GetMainWnd(), L"애니메이션을 지정하거나 새로 생성해야 합니다.", L"경고", MB_OK);
+				return TRUE;
+			}
+			
+			wstring AnimName = szBuff;
+		}
+		break;
+		
 	}
 		break;
 
@@ -608,10 +625,6 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 		CTexture* curTex = pEditorLevel->GetEditTex();
 		if (curTex == nullptr) break;
-		/*HDC curTexDC = curTex->GetDC();
-		HDC hMemDC = CreateCompatibleDC(curTexDC);
-		HBITMAP hMemBitmap = CreateCompatibleBitmap(curTexDC, destWidth, destHeight);
-		HBITMAP hOldBitmap = (HBITMAP)SelectObject(hMemDC, hMemBitmap);*/
 
 		wchar_t szBuff[256] = {};
 		GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
@@ -638,7 +651,6 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		Image* image = new Image(curTex->GetFullPath().c_str());
 		if (image && image->GetLastStatus() == Ok)
 		{
-			//graphics.DrawImage(image, Rect(0, 0, destWidth, destHeight), srcX, srcY, srcWidth, srcHeight, UnitPixel);
 			graphics.DrawImage(image, Rect(0, 0, destWidth, destHeight)
 												, srcX - (srcWidth / 2.f) + srcOffsetX
 												, srcY - (srcHeight / 2.f) + srcOffsetY

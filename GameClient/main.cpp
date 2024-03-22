@@ -173,6 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
             case ID_EDITANIM:
             {
+                if (CHandleMgr::GetInst()->FindHandle(IDD_EDITANIM) != nullptr) break;
                 HWND AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITANIM), hWnd, EditAnimProc);
                 CHandleMgr::GetInst()->AddHandle(IDD_EDITANIM, AnimDlg);
                 if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }

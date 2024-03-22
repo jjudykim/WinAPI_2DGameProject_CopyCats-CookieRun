@@ -10,5 +10,6 @@ public:
 	void init();
 	void AddHandle(int, HWND);
 	HWND FindHandle(const int& _Key);
+	void DeleteHandle(const int& _Key);
 };
 

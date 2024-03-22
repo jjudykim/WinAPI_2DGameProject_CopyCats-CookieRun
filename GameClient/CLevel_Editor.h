@@ -15,6 +15,8 @@ private:
     CDraw*          m_CurDraw;
     CDraw*          m_PrevDraw;
     vector<AniFrm>  m_vecFrm;
+
+    bool            m_CreateAnim;
     bool            m_Drawable;
     bool            m_Drawing;
 
