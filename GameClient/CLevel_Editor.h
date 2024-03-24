@@ -50,8 +50,9 @@ public:
     void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     const int& GetAnimFrmCount() { return m_vecFrm.size(); }
     AniFrm& GetAnimFrm(int _index) { return m_vecFrm[_index]; }
-    void SetAnimFrm(int _index, const Vec2D& _StartPos, const Vec2D& _SliceSize, const Vec2D& _Offset)
+    void SetAnimFrm(int _index, const Vec2D& _StartPos, const Vec2D& _SliceSize, const Vec2D& _Offset, const int& _Duration)
     {
+        m_vecFrm[_index].Duration = _Duration;
         m_vecFrm[_index].StartPos = _StartPos;
         m_vecFrm[_index].SliceSize = _SliceSize;
         m_vecFrm[_index].Offset = _Offset;

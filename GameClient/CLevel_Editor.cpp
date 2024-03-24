@@ -280,59 +280,6 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 }
 
 
-INT_PTR CALLBACK SelectAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
-	assert(pEditorLevel);
-
-	HWND hListBox = GetDlgItem(hDlg, IDD_ANIMLIST);
-
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-	{
-		// 생성된 애니메이션 목록 불러오기
-		const vector<wstring>& vKey = pEditorLevel->GetLoadedTextureKey();
-		for (size_t i = 0; i < vKey.size(); ++i)
-		{
-			SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)vKey[i].c_str());
-		}
-	}
-	return (INT_PTR)TRUE;
-	break;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == ID_LOADANIM)
-		{
-			if (OpenLoadFile(L"animation", L"anim"))
-			{
-				SendMessage(hListBox, LB_RESETCONTENT, 0, 0);
-				const vector<wstring>& vKey = pEditorLevel->GetLoadedTextureKey();
-				for (size_t i = 0; i < vKey.size(); ++i)
-				{
-					SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)vKey[i].c_str());
-				}
-			}
-
-			
-
-		}
-		else if (LOWORD(wParam) == IDSELECT)
-		{
-		}
-		else if (LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-
-	return (INT_PTR)FALSE;
-}
-
 INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
@@ -569,14 +516,37 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			if (OpenLoadFile(L"animation", L"anim"))
 			{
-				CAnimation* anim = pEditorLevel->GetEditAnim();
+				AniFrm FirstFrm = pEditorLevel->GetEditAnim()->GetFrame(0);
+				Vec2D ColPos = pEditorLevel->GetEditAnim()->GetColliderPos();
+				Vec2D ColSize = pEditorLevel->GetEditAnim()->GetColliderSize();
 
-				pEditorLevel->SetEditTex(anim->GetAtlas());
-				for (int i = 0; i < anim->GetFrameCount(); ++i)
-				{
-					pEditorLevel->AddAnimFrm(anim->GetFrame(i));
-				}
-				anim->GetColliderPos();
+				wchar_t szBuff[256] = {};
+
+				swprintf_s(szBuff, 256, L"%d", FirstFrm.Duration);
+				int FPS = _wtof(szBuff) / 0.5f * pEditorLevel->GetEditAnim()->GetFrameCount();
+				SetDlgItemInt(hEditAnim, IDC_FRAME, FPS, true);
+
+				swprintf_s(szBuff, 256, L"%.2f", FirstFrm.StartPos.x);
+				SetDlgItemText(hEditAnim, IDC_POSX, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", FirstFrm.StartPos.y);
+				SetDlgItemText(hEditAnim, IDC_POSY, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", FirstFrm.SliceSize.x);
+				SetDlgItemText(hEditAnim, IDC_SIZEX, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", FirstFrm.SliceSize.y);
+				SetDlgItemText(hEditAnim, IDC_SIZEY, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", FirstFrm.Offset.x);
+				SetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", FirstFrm.Offset.y);
+				SetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff);
+
+				swprintf_s(szBuff, 256, L"%.2f", ColPos.x);
+				SetDlgItemText(hEditAnim, IDC_COLPOSX, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", ColPos.y);
+				SetDlgItemText(hEditAnim, IDC_COLPOSY, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", ColSize.x);
+				SetDlgItemText(hEditAnim, IDC_COLSIZEX, szBuff);
+				swprintf_s(szBuff, 256, L"%.2f", ColSize.y);
+				SetDlgItemText(hEditAnim, IDC_COLSIZEY, szBuff);
 
 				RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			}
@@ -673,6 +643,8 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 			
+
+
 			wchar_t szBuff[256] = {};
 			GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
 			float PosX = _wtof(szBuff);
@@ -686,6 +658,10 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			float OffsetX = _wtof(szBuff);
 			GetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff, 256);
 			float OffsetY = _wtof(szBuff);
+
+			int Duration = GetDlgItemInt(hEditAnim, IDC_FPS, nullptr, true);
+			Duration = 0.5f / Duration;
+
 			if (pEditorLevel->GetPrevDraw() != nullptr)
 			{
 				pEditorLevel->GetPrevDraw()->SetPos(Vec2D(PosX - (SizeX / 2.f), PosY - (SizeY / 2.f)));
@@ -696,7 +672,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			if (szBuff[0] != '\0')
 			{
 				int index = _wtoi(szBuff);
-				pEditorLevel->SetAnimFrm(index, Vec2D(PosX, PosY), Vec2D(SizeX, SizeY), Vec2D(OffsetX, OffsetY));
+				pEditorLevel->SetAnimFrm(index, Vec2D(PosX, PosY), Vec2D(SizeX, SizeY), Vec2D(OffsetX, OffsetY), Duration);
 			}
 		}
 		else if (LOWORD(wParam) == ID_ADDFRAME)
@@ -738,7 +714,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					{
 						anim->SetName(AnimName);
 						anim->SetAtlasTexture(pEditorLevel->GetEditTex());
-
+						
 						pEditorLevel->SetEditAnim(anim);
 
 						delete anim;
