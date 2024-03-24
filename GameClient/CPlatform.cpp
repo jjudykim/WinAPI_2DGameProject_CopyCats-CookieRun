@@ -3,7 +3,7 @@
 
 #include "CCollider.h"
 #include "CRigidBody.h"
-#include "CAssetMgr.h"
+#include "CResourceMgr.h"
 
 
 CPlatform::CPlatform()
@@ -25,7 +25,7 @@ CPlatform::CPlatform(UINT _typeIndex)
 	{
 		tPath = L"texture\\Ep1_grounded_Platform.png";
 	}
-	m_PlatformImg = CAssetMgr::GetInst()->LoadTexture(L"Grounded_Platform_Img", tPath);
+	m_PlatformImg = CResourceMgr::GetInst()->LoadTexture(L"Grounded_Platform_Img", tPath);
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Collider->SetScale(Vec2D(124.f, 120.f));
 	m_Collider->SetOffsetPos(Vec2D(0.f, -30.f));

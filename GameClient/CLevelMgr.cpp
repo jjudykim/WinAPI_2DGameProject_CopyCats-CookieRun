@@ -25,7 +25,6 @@ CLevelMgr::~CLevelMgr()
 void CLevelMgr::init()
 {
 	m_arrLevel[(UINT)LEVEL_TYPE::EDITOR] = new CLevel_Editor;
-	m_arrLevel[(UINT)LEVEL_TYPE::STAGE_01] = new CLevel_Stage01;
 	m_arrLevel[(UINT)LEVEL_TYPE::GAME] = new CLevel_Game;
 
 	m_CurrentLevelType = LEVEL_TYPE::GAME;

@@ -19,6 +19,6 @@ public:
     CAsset();
     ~CAsset();
 
-    friend class CAssetMgr;
+    friend class CResourceMgr;
 };
 

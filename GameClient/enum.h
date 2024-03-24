@@ -28,12 +28,7 @@ enum class LEVEL_TYPE
 {
 	LOGO_START,
 	EDITOR,
-
 	GAME,
-	STAGE_01,
-	STAGE_02,
-	STAGE_03,
-
 	END,
 };
 

@@ -55,7 +55,6 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CreateDefaultGDIObject();
 
 	// GDI+ √ ±‚»≠
-	
 	GdiplusStartupInput gdiplusStartupInput;
 	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 

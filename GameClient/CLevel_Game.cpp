@@ -159,7 +159,7 @@ void CLevel_Game::SpawnStageObject(StageObjInfo& _ObjInfo)
 	pObject->SetScale(_ObjInfo._scale);
 	pObject->SetSpeed(_ObjInfo._speed);
 
-	pObject->SetImage(CAssetMgr::GetInst()->LoadTexture(_ObjInfo._imageName, _ObjInfo._path));
+	pObject->SetImage(CResourceMgr::GetInst()->LoadTexture(_ObjInfo._imageName, _ObjInfo._path));
 	pObject->SetAtlasInfo(_ObjInfo._atlas, _ObjInfo._slicePos, _ObjInfo._sliceSize);
 
 	task.Type = TASK_TYPE::SPAWN_OBJECT;

@@ -36,7 +36,7 @@ CPlayer::CPlayer()
 
 	CookieInfo m_curCookie = AngelCookie;
 
-	CTexture* pAtlas = CAssetMgr::GetInst()->LoadTexture(L"PlayerAtlasTex", m_curCookie._path);
+	CTexture* pAtlas = CResourceMgr::GetInst()->LoadTexture(L"PlayerAtlasTex", m_curCookie._path);
 
 	m_Animator->CreateAnimation(L"RUNNING", pAtlas, Vec2D(0.f + m_curCookie._dividerSize, m_curCookie._frmSize.y + m_curCookie._dividerSize * 2), 
 														  Vec2D(m_curCookie._frmSize.x, m_curCookie._frmSize.y), m_curCookie._dividerSize, 4, 5);

@@ -21,6 +21,7 @@ public:
 	void ChangeLevel(LEVEL_TYPE _NextLevelType);
 
 public:
+	CLevel* GetSelectLevel(LEVEL_TYPE _SelectLevel) { return m_arrLevel[(UINT)_SelectLevel]; }
 	CLevel* GetCurrentLevel() { return m_pCurrentLevel; }
 	LEVEL_TYPE GetCurrentLevelType() { return m_CurrentLevelType; }
 };

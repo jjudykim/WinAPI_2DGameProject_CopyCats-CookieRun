@@ -2,7 +2,7 @@
 #include "CEntity.h"
 
 #include "CEngine.h"
-#include "CAssetMgr.h"
+#include "CResourceMgr.h"
 #include "CCamera.h"
 #include "CTexture.h"
 

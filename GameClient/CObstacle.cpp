@@ -23,7 +23,7 @@ CObstacle::CObstacle(UINT _typeIndex)
 		tPath = L"texture\\Ep1_jump_1.png";
 		tColliderScale = Vec2D(80.f, 100.f);
 	}
-	m_ObstacleImg = CAssetMgr::GetInst()->LoadTexture(L"Ep1_jump_1", tPath);
+	m_ObstacleImg = CResourceMgr::GetInst()->LoadTexture(L"Ep1_jump_1", tPath);
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Collider->SetScale(tColliderScale);
 }

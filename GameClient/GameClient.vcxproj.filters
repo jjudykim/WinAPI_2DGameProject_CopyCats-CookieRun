@@ -43,9 +43,6 @@
     <Filter Include="03. Game\03. Manager\DbgRenderMgr">
       <UniqueIdentifier>{9fa66160-5fff-41f2-82a9-8bb3f9b7726b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\03. Manager\AssetMgr">
-      <UniqueIdentifier>{89e9cb1f-0334-4f81-a954-070cacfc1715}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Game\03. Manager\PathMgr">
       <UniqueIdentifier>{ebdce0bf-c901-4c11-b0ec-d27c67601123}</UniqueIdentifier>
     </Filter>
@@ -136,6 +133,9 @@
     <Filter Include="03. Game\03. Manager\HandleMgr">
       <UniqueIdentifier>{26733928-56d6-4c6d-8869-198eb89c3d7b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\ResourceMgr">
+      <UniqueIdentifier>{89e9cb1f-0334-4f81-a954-070cacfc1715}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -201,8 +201,8 @@
     <ClInclude Include="CAsset.h">
       <Filter>03. Game\08. Asset</Filter>
     </ClInclude>
-    <ClInclude Include="CAssetMgr.h">
-      <Filter>03. Game\03. Manager\AssetMgr</Filter>
+    <ClInclude Include="CResourceMgr.h">
+      <Filter>03. Game\03. Manager\ResourceMgr</Filter>
     </ClInclude>
     <ClInclude Include="CTexture.h">
       <Filter>03. Game\08. Asset\Texture</Filter>
@@ -338,8 +338,8 @@
     <ClCompile Include="CAsset.cpp">
       <Filter>03. Game\08. Asset</Filter>
     </ClCompile>
-    <ClCompile Include="CAssetMgr.cpp">
-      <Filter>03. Game\03. Manager\AssetMgr</Filter>
+    <ClCompile Include="CResourceMgr.cpp">
+      <Filter>03. Game\03. Manager\ResourceMgr</Filter>
     </ClCompile>
     <ClCompile Include="CTexture.cpp">
       <Filter>03. Game\08. Asset\Texture</Filter>

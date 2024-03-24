@@ -99,3 +99,25 @@ void CAnimation::render()
 				 , (int)frm.SliceSize.x, (int)frm.SliceSize.y, bf);
 }
 
+void CAnimation::render(CTexture* _AtlasTex, const AniFrm& _Frm)
+{
+	if (_AtlasTex == nullptr) return;
+
+	Vec2D vRenderPos = {};
+	vRenderPos.x = CEngine::GetInst()->GetResolution().x / 2.f;
+	vRenderPos.y = CEngine::GetInst()->GetResolution().y / 2.f;
+
+	BLENDFUNCTION bf = {};
+
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.SourceConstantAlpha = 255;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+
+	AlphaBlend(DC, (int)(vRenderPos.x - _Frm.SliceSize.x / 2.f + _Frm.Offset.x)
+		, (int)(vRenderPos.y - _Frm.SliceSize.y / 2.f + _Frm.Offset.y)
+		, (int)_Frm.SliceSize.x, (int)_Frm.SliceSize.y
+		, m_Atlas->GetDC()
+		, (int)_Frm.StartPos.x, (int)_Frm.StartPos.y
+		, (int)_Frm.SliceSize.x, (int)_Frm.SliceSize.y, bf);
+}

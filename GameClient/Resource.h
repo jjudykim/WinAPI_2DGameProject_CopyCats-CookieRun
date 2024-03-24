@@ -32,6 +32,8 @@
 #define IDC_MAXFRAME                    1008
 #define IDC_EDIT6                       1009
 #define IDC_DURATION                    1009
+#define IDC_TIME                        1009
+#define IDC_FPS                         1009
 #define IDC_POSX                        1010
 #define IDC_POSY                        1011
 #define ID_LOWPOSX                      1012
@@ -61,6 +63,7 @@
 #define IDSAVE                          1031
 #define ID_LOADANIM                     1032
 #define IDC_SIZEY2                      1032
+#define IDPLAY2                         1032
 #define IDC_TEXLIST                     1033
 #define IDSELECT                        1034
 #define ID_DELFRAME                     1034

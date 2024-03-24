@@ -6,7 +6,7 @@
 
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
-#include "CAssetMgr.h"
+#include "CResourceMgr.h"
 #include "CTaskMgr.h"
 #include "CMouseMgr.h"
 #include "CHandleMgr.h"
@@ -14,13 +14,16 @@
 
 #include "CTexture.h"
 #include "CDraw.h"
+#include "CAnimator.h"
+#include "CAnimation.h"
 
 
-// global member
+// global
 wstring g_DialogText = L"";
 
 // 0 ~ 9 : Edit Control, 10 ~ 19 : Spin Control 
 HWND g_hDrawEdit[20] = {};
+
 HWND g_DrawCtrl = nullptr;
 RECT g_DrawSize = {};
 
@@ -28,10 +31,12 @@ RECT g_DrawSize = {};
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
 	, m_EditTex(nullptr)
+	, m_EditAnim(nullptr)
 	, m_CurDraw(nullptr)
 	, m_PrevDraw(nullptr)
 	, m_Drawable(false)
 	, m_Drawing(false)
+	, m_CreatingAnim(false)
 {
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCE(IDC_GAMECLIENT));
 }
@@ -90,16 +95,18 @@ void CLevel_Editor::tick()
 					SetWindowText(g_hDrawEdit[4], L"0.00");
 					SetWindowText(g_hDrawEdit[5], L"0.00");
 
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
-					SetWindowText(g_hDrawEdit[6], szBuff);
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
-					SetWindowText(g_hDrawEdit[7], szBuff);
+					if (!m_CreatingAnim)
+					{
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
+						SetWindowText(g_hDrawEdit[6], szBuff);
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
+						SetWindowText(g_hDrawEdit[7], szBuff);
 
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
-					SetWindowText(g_hDrawEdit[8], szBuff);
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
-					SetWindowText(g_hDrawEdit[9], szBuff);
-
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
+						SetWindowText(g_hDrawEdit[8], szBuff);
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
+						SetWindowText(g_hDrawEdit[9], szBuff);
+					}
 					if (g_DrawCtrl != NULL)
 					{
 						RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
@@ -157,7 +164,7 @@ vector<wstring> CLevel_Editor::GetLoadedTextureKey()
 {
 	vector<wstring> vKey;
 
-	const map<wstring, CTexture*>& tMap = CAssetMgr::GetInst()->m_mapTex;
+	const map<wstring, CTexture*>& tMap = CResourceMgr::GetInst()->m_mapTex;
 	map<wstring, CTexture*>::const_iterator iter = tMap.begin();
 	
 	for (; iter != tMap.end(); ++iter)
@@ -185,7 +192,7 @@ INT_PTR CALLBACK CreateTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		{
 			wchar_t szBuff[256] = {};
 			GetDlgItemText(hDlg, IDC_NEWTEX, szBuff, 256);
-			if (CAssetMgr::GetInst()->FindTexture(szBuff) != nullptr)
+			if (CResourceMgr::GetInst()->FindTexture(szBuff) != nullptr)
 			{
 				MessageBox(nullptr, szBuff, L"이미 존재하는 Texture입니다.", MB_OK);
 			}
@@ -275,16 +282,23 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 INT_PTR CALLBACK SelectAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
+	assert(pEditorLevel);
+
+	HWND hListBox = GetDlgItem(hDlg, IDD_ANIMLIST);
+
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
 	case WM_INITDIALOG:
 	{
-		CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-		CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
-		assert(pEditorLevel);
-
 		// 생성된 애니메이션 목록 불러오기
+		const vector<wstring>& vKey = pEditorLevel->GetLoadedTextureKey();
+		for (size_t i = 0; i < vKey.size(); ++i)
+		{
+			SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)vKey[i].c_str());
+		}
 	}
 	return (INT_PTR)TRUE;
 	break;
@@ -292,7 +306,18 @@ INT_PTR CALLBACK SelectAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	case WM_COMMAND:
 		if (LOWORD(wParam) == ID_LOADANIM)
 		{
-			OpenLoadFile(L"animation", L"anim");
+			if (OpenLoadFile(L"animation", L"anim"))
+			{
+				SendMessage(hListBox, LB_RESETCONTENT, 0, 0);
+				const vector<wstring>& vKey = pEditorLevel->GetLoadedTextureKey();
+				for (size_t i = 0; i < vKey.size(); ++i)
+				{
+					SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)vKey[i].c_str());
+				}
+			}
+
+			
+
 		}
 		else if (LOWORD(wParam) == IDSELECT)
 		{
@@ -481,9 +506,25 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 		if (LOWORD(wParam) == IDPLAY)
 		{
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hEditAnim, IDC_FPS, szBuff, 256);
+			float AnimFPS = (float)_wtof(szBuff);
+
+			for (int i = 0; i < pEditorLevel->GetAnimFrmCount(); ++i)
+			{
+				AniFrm& frm = pEditorLevel->GetAnimFrm(i);
+				frm.Duration = 0.5f / AnimFPS;
+			}
+
+
 		}
 		else if (LOWORD(wParam) == IDSAVE)
 		{
+			
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
+			OpenSaveFile(szBuff);
+
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITANIM);
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITTEX);
 			DestroyWindow(hEditAnim);
@@ -493,6 +534,8 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			{
 				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
 			}
+			pEditorLevel->SetCreatingAnimState(false);
+
 			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == IDCANCEL)
@@ -506,6 +549,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			{
 				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
 			}
+			pEditorLevel->SetCreatingAnimState(false);
 			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == ID_TEXBTN)
@@ -515,29 +559,83 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 				CEngine::GetInst()->GetMainWnd(), SelectTexProc);
 
 			SetDlgItemText(hDlg, IDC_TEX, g_DialogText.c_str());
-			pEditorLevel->SetEditTex(CAssetMgr::GetInst()->FindTexture(g_DialogText));
+			pEditorLevel->SetEditTex(CResourceMgr::GetInst()->FindTexture(g_DialogText));
 			CCamera::GetInst()->SetCameraDefault();
 		}
 
 		else if (LOWORD(wParam) == ID_ANIMBTN)
 		{
-			DialogBox(CEngine::GetInst()->GetProcessInstance(),
-				MAKEINTRESOURCE(IDD_ANIMLIST),
-				CEngine::GetInst()->GetMainWnd(), SelectAnimProc);
+			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
+			if (PrevDraw)
+			{
+				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
+			}
+
+			if (OpenLoadFile(L"animation", L"anim"))
+			{
+				CAnimation* anim = pEditorLevel->GetEditAnim();
+
+				pEditorLevel->SetEditTex(anim->GetAtlas());
+				for (int i = 0; i < anim->GetFrameCount(); ++i)
+				{
+					pEditorLevel->AddAnimFrm(anim->GetFrame(i));
+				}
+				anim->GetColliderPos();
+
+				RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+			}
 		}
 
 		else if (LOWORD(wParam) == ID_LOWFRAME)
 		{
-			int Frame = GetDlgItemInt(hEditAnim, IDC_FRAME, nullptr, true);
-			if (0 <= Frame - 1) --Frame;
-			SetDlgItemInt(hEditAnim, IDC_FRAME, Frame, true);
+			int FrameIndex = GetDlgItemInt(hEditAnim, IDC_FRAME, nullptr, true);
+			if (0 <= FrameIndex - 1) --FrameIndex;
+			SetDlgItemInt(hEditAnim, IDC_FRAME, FrameIndex, true);
 
+			const AniFrm& curFrm = pEditorLevel->GetAnimFrm(FrameIndex);
+			wchar_t szBuff[256] = {};
+
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.StartPos.x);
+			SetDlgItemText(hEditAnim, IDC_POSX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.StartPos.y);
+			SetDlgItemText(hEditAnim, IDC_POSY, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.SliceSize.x);
+			SetDlgItemText(hEditAnim, IDC_SIZEX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.SliceSize.y);
+			SetDlgItemText(hEditAnim, IDC_SIZEY, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.Offset.x);
+			SetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.Offset.y);
+			SetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff);
+
+			RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		else if (LOWORD(wParam) == ID_HIGHFRAME)
 		{
-			int Frame = GetDlgItemInt(hEditAnim, IDC_FRAME, nullptr, true);
-			++Frame;
-			SetDlgItemInt(hEditAnim, IDC_FRAME, Frame, true);
+			int FrameIndex = GetDlgItemInt(hEditAnim, IDC_FRAME, nullptr, true);
+			if (FrameIndex < pEditorLevel->GetAnimFrmCount() - 1)
+			{
+				++FrameIndex;
+			}
+			SetDlgItemInt(hEditAnim, IDC_FRAME, FrameIndex, true);
+
+			const AniFrm& curFrm = pEditorLevel->GetAnimFrm(FrameIndex);
+			wchar_t szBuff[256] = {};
+
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.StartPos.x);
+			SetDlgItemText(hEditAnim, IDC_POSX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.StartPos.y);
+			SetDlgItemText(hEditAnim, IDC_POSY, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.SliceSize.x);
+			SetDlgItemText(hEditAnim, IDC_SIZEX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.SliceSize.y);
+			SetDlgItemText(hEditAnim, IDC_SIZEY, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.Offset.x);
+			SetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.Offset.y);
+			SetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff);
+
+			RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		else if (LOWORD(wParam) == ID_DIRECTDRAW)
 		{
@@ -588,10 +686,21 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			float SizeX = _wtof(szBuff);
 			GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
 			float SizeY = _wtof(szBuff);
+			GetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff, 256);
+			float OffsetX = _wtof(szBuff);
+			GetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff, 256);
+			float OffsetY = _wtof(szBuff);
 			if (pEditorLevel->GetPrevDraw() != nullptr)
 			{
 				pEditorLevel->GetPrevDraw()->SetPos(Vec2D(PosX - (SizeX / 2.f), PosY - (SizeY / 2.f)));
 				pEditorLevel->GetPrevDraw()->SetScale(Vec2D(SizeX, SizeY));
+			}
+
+			GetDlgItemText(hEditAnim, IDC_FRAME, szBuff, 256);
+			if (szBuff[0] != '\0')
+			{
+				int index = _wtoi(szBuff);
+				pEditorLevel->SetAnimFrm(index, Vec2D(PosX, PosY), Vec2D(SizeX, SizeY), Vec2D(OffsetX, OffsetY));
 			}
 		}
 		else if (LOWORD(wParam) == ID_ADDFRAME)
@@ -603,8 +712,88 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 				MessageBox(CEngine::GetInst()->GetMainWnd(), L"애니메이션을 지정하거나 새로 생성해야 합니다.", L"경고", MB_OK);
 				return TRUE;
 			}
-			
 			wstring AnimName = szBuff;
+			
+			GetDlgItemText(hEditAnim, IDC_FPS, szBuff, 256);
+			if (szBuff[0] != L'\0')
+			{
+				float FPS = (float)_wtof(szBuff);
+				if (FPS <= 0.0f)
+				{
+					MessageBox(CEngine::GetInst()->GetMainWnd(), L"애니메이션의 FPS를 다시 설정하세요 (0 이상, 높을수록 재생속도 빠름)", L"경고", MB_OK);
+					return TRUE;
+				}
+				else
+				{
+					AniFrm curFrm = {};
+
+					GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
+					curFrm.StartPos.x = (float)_wtof(szBuff);
+					GetDlgItemText(hEditAnim, IDC_POSY, szBuff, 256);
+					curFrm.StartPos.y = (float)_wtof(szBuff);
+					GetDlgItemText(hEditAnim, IDC_SIZEX, szBuff, 256);
+					curFrm.SliceSize.x = (float)_wtof(szBuff);
+					GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
+					curFrm.SliceSize.y = (float)_wtof(szBuff);
+					GetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff, 256);
+					curFrm.Offset.x = (float)_wtof(szBuff);
+					GetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff, 256);
+					curFrm.Offset.y = (float)_wtof(szBuff);
+					
+					pEditorLevel->AddAnimFrm(curFrm);
+
+					SetDlgItemInt(hEditAnim, IDC_MAXFRAME, pEditorLevel->GetAnimFrmCount(), true);
+					SetDlgItemInt(hEditAnim, IDC_FRAME, pEditorLevel->GetAnimFrmCount() - 1, true);
+
+					MessageBox(CEngine::GetInst()->GetMainWnd(), L"※ 애니메이션 프레임이 추가되었습니다 ※ \n", L"알림", MB_OK);
+
+					pEditorLevel->SetCreatingAnimState(true);
+					CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
+					if (PrevDraw)
+					{
+						CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
+					}
+					return TRUE;
+				}
+			}
+			else
+			{
+				MessageBox(CEngine::GetInst()->GetMainWnd(), L"애니메이션의 FPS를 설정하세요 (0 이상, 높을수록 재생속도 빠름)", L"경고", MB_OK);
+				return TRUE;
+			}
+		}
+		else if (LOWORD(wParam) == ID_DELFRAME)
+		{
+			if (pEditorLevel->GetAnimFrmCount() < 1) return TRUE;
+			else if (pEditorLevel->GetAnimFrmCount() == 1)
+			{
+				MessageBox(CEngine::GetInst()->GetMainWnd(), L"현재 애니메이션을 구성하는 마지막 프레임입니다", L"경고", MB_OK);
+				return TRUE;
+			}
+			int index = GetDlgItemInt(hEditAnim, IDC_FRAME, nullptr, true);
+			pEditorLevel->DeleteAnimFrm(index);
+			if (index > 0) --index;
+			
+			SetDlgItemInt(hEditAnim, IDC_FRAME, index, true);
+			SetDlgItemInt(hEditAnim, IDC_MAXFRAME, pEditorLevel->GetAnimFrmCount(), true);
+
+			const AniFrm& curFrm = pEditorLevel->GetAnimFrm(index);
+			wchar_t szBuff[256] = {};
+
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.StartPos.x);
+			SetDlgItemText(hEditAnim, IDC_POSX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.StartPos.y);
+			SetDlgItemText(hEditAnim, IDC_POSY, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.SliceSize.x);
+			SetDlgItemText(hEditAnim, IDC_SIZEX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.SliceSize.y);
+			SetDlgItemText(hEditAnim, IDC_SIZEY, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.Offset.x);
+			SetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff);
+			swprintf_s(szBuff, 256, L"%.2f", curFrm.Offset.y);
+			SetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff);
+
+			RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		}
 		break;
 		
@@ -685,9 +874,10 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 	return (INT_PTR)FALSE;
 }
 	
-void OpenSaveFile(wstring _Path, wstring _FileType)
+void OpenSaveFile(const wstring& _Key)
 {
 	wchar_t szSelect[256] = {};
+	wcsncpy_s(szSelect, _Key.c_str(), sizeof(szSelect) / sizeof(wchar_t));
 
 	OPENFILENAME ofn = {};
 	ofn.lStructSize = sizeof(ofn);
@@ -695,7 +885,7 @@ void OpenSaveFile(wstring _Path, wstring _FileType)
 	ofn.lpstrFile = szSelect;
 	ofn.lpstrFile[0] = '\0';
 	ofn.nMaxFile = sizeof(szSelect);
-	wstring filter = L"\0*." + _FileType;
+	wstring filter = L"\0*.anim";
 	ofn.lpstrFilter = filter.c_str();
 	ofn.nFilterIndex = 0;
 	ofn.lpstrFileTitle = NULL;
@@ -703,14 +893,25 @@ void OpenSaveFile(wstring _Path, wstring _FileType)
 
 	// 탐색창 초기 위치 지정
 	wstring strInitPath = CPathMgr::GetInst()->GetContentPath();
-	strInitPath += (_Path + L"\\");
+	strInitPath += L"animation\\";
 	ofn.lpstrInitialDir = strInitPath.c_str();
 
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	if (GetSaveFileName(&ofn))
 	{
-		//m_EditTile->SaveToFile(szSelect);
+		wstring SelectedFilePath = L"animation\\";
+		wstring SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
+		SelectedFilePath += SelectedFileName;
+
+		size_t pos = SelectedFileName.find(L".anim");
+		SelectedFileName = SelectedFileName.substr(0, pos);
+
+		CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+		CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
+		assert(pEditorLevel);
+
+		CResourceMgr::GetInst()->SaveAnimation(pEditorLevel->GetEditAnim(), SelectedFileName, SelectedFilePath);
 	}
 }
 
@@ -748,9 +949,27 @@ bool OpenLoadFile(wstring _Path, wstring _FileType)
 
 			wstring SelectedFileName = L"texture\\";
 			SelectedFileName += PathFindFileNameW(ofn.lpstrFile);
-			CAssetMgr::GetInst()->LoadTexture(g_DialogText, SelectedFileName);
+			CResourceMgr::GetInst()->LoadTexture(g_DialogText, SelectedFileName);
 		}
-		
+		else if (_FileType == L"anim")
+		{
+			wstring SelectedFilePath = L"animation\\";
+			wstring SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
+			SelectedFilePath += SelectedFileName;
+
+			size_t pos = SelectedFileName.find(L".anim");
+			SelectedFileName = SelectedFileName.substr(0, pos);
+			
+			CAnimation* pAnim = CResourceMgr::GetInst()->LoadAnimation(SelectedFileName, SelectedFilePath);
+			if (pAnim != nullptr)
+			{
+				CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+				CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
+				assert(pEditorLevel);
+
+				pEditorLevel->SetEditAnim(pAnim);
+			}
+		}
 		return true;
 	}
 
