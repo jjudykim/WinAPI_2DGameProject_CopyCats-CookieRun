@@ -37,6 +37,7 @@ public:
     }
 
 public:
+    void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     AniFrm& GetFrame(int _Idx) { return m_vecFrm[_Idx]; }
     int GetFrameCount() { return m_vecFrm.size(); }
     CTexture* GetAtlas() { return m_Atlas; }

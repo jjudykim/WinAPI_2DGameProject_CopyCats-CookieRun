@@ -522,7 +522,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		{
 			
 			wchar_t szBuff[256] = {};
-			GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
+			GetDlgItemText(hEditAnim, IDC_ANIM, szBuff, 256);
 			OpenSaveFile(szBuff);
 
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITANIM);
@@ -530,10 +530,6 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			DestroyWindow(hEditAnim);
 			DestroyWindow(hEditTex);
 			CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
-			if (PrevDraw)
-			{
-				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
-			}
 			pEditorLevel->SetCreatingAnimState(false);
 
 			return (INT_PTR)TRUE;
@@ -705,11 +701,14 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 		}
 		else if (LOWORD(wParam) == ID_ADDFRAME)
 		{
+			CAnimation* anim = new CAnimation;
+
 			wchar_t szBuff[256] = {};
 			GetDlgItemText(hEditAnim, IDC_ANIM, szBuff, 256);
 			if (szBuff[0] == L'\0')
 			{
 				MessageBox(CEngine::GetInst()->GetMainWnd(), L"애니메이션을 지정하거나 새로 생성해야 합니다.", L"경고", MB_OK);
+				delete anim;
 				return TRUE;
 			}
 			wstring AnimName = szBuff;
@@ -718,12 +717,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			if (szBuff[0] != L'\0')
 			{
 				float FPS = (float)_wtof(szBuff);
-				if (FPS <= 0.0f)
-				{
-					MessageBox(CEngine::GetInst()->GetMainWnd(), L"애니메이션의 FPS를 다시 설정하세요 (0 이상, 높을수록 재생속도 빠름)", L"경고", MB_OK);
-					return TRUE;
-				}
-				else
+				if (0.0f < FPS)
 				{
 					AniFrm curFrm = {};
 
@@ -739,13 +733,23 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					curFrm.Offset.x = (float)_wtof(szBuff);
 					GetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff, 256);
 					curFrm.Offset.y = (float)_wtof(szBuff);
-					
-					pEditorLevel->AddAnimFrm(curFrm);
 
-					SetDlgItemInt(hEditAnim, IDC_MAXFRAME, pEditorLevel->GetAnimFrmCount(), true);
-					SetDlgItemInt(hEditAnim, IDC_FRAME, pEditorLevel->GetAnimFrmCount() - 1, true);
+					if (pEditorLevel->GetEditAnim() == nullptr)
+					{
+						anim->SetName(AnimName);
+						anim->SetAtlasTexture(pEditorLevel->GetEditTex());
+
+						pEditorLevel->SetEditAnim(anim);
+
+						delete anim;
+					}
+					pEditorLevel->GetEditAnim()->AddAnimFrm(curFrm);
+
+					SetDlgItemInt(hEditAnim, IDC_MAXFRAME, pEditorLevel->GetEditAnim()->GetFrameCount(), true);
+					SetDlgItemInt(hEditAnim, IDC_FRAME, pEditorLevel->GetEditAnim()->GetFrameCount() - 1, true);
 
 					MessageBox(CEngine::GetInst()->GetMainWnd(), L"※ 애니메이션 프레임이 추가되었습니다 ※ \n", L"알림", MB_OK);
+
 
 					pEditorLevel->SetCreatingAnimState(true);
 					CDraw* PrevDraw = pEditorLevel->GetPrevDraw();
@@ -753,6 +757,13 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					{
 						CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)PrevDraw });
 					}
+					delete anim;
+					return TRUE;
+				}
+				else
+				{
+					MessageBox(CEngine::GetInst()->GetMainWnd(), L"애니메이션의 FPS를 다시 설정하세요 (0 이상, 높을수록 재생속도 빠름)", L"경고", MB_OK);
+					delete anim;
 					return TRUE;
 				}
 			}
@@ -817,25 +828,25 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 		wchar_t szBuff[256] = {};
 		GetDlgItemText(hEditAnim, IDC_POSX, szBuff, 256);
-		float srcX = _wtof(szBuff);
+		float srcX = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_POSY, szBuff, 256);
-		float srcY = _wtof(szBuff);
+		float srcY = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_SIZEX, szBuff, 256);
-		float srcWidth = _wtof(szBuff);
+		float srcWidth = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_SIZEY, szBuff, 256);
-		float srcHeight = _wtof(szBuff);
+		float srcHeight = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_OFFSETX, szBuff, 256);
-		float srcOffsetX = _wtof(szBuff);
+		float srcOffsetX = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_OFFSETY, szBuff, 256);
-		float srcOffsetY = _wtof(szBuff);
+		float srcOffsetY = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_COLPOSX, szBuff, 256);
-		float ColPosX = _wtof(szBuff);
+		float ColPosX = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_COLPOSY, szBuff, 256);
-		float ColPosY = _wtof(szBuff);
+		float ColPosY = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_COLSIZEX, szBuff, 256);
-		float ColSizeX = _wtof(szBuff);
+		float ColSizeX = (float)_wtof(szBuff);
 		GetDlgItemText(hEditAnim, IDC_COLSIZEY, szBuff, 256);
-		float ColSizeY = _wtof(szBuff);
+		float ColSizeY = (float)_wtof(szBuff);
 
 		Image* image = new Image(curTex->GetFullPath().c_str());
 		if (image && image->GetLastStatus() == Ok)

@@ -82,6 +82,7 @@ void CResourceMgr::SaveAnimation(CAnimation* _TargetAnim, const wstring& _Key, c
 
 	if (pFile == nullptr)
 	{
+		LOG(LOG_TYPE::DBG_ERROR, L"애니메이션 저장 실패");
 		return;
 	}
 
@@ -89,8 +90,42 @@ void CResourceMgr::SaveAnimation(CAnimation* _TargetAnim, const wstring& _Key, c
 	fwprintf_s(pFile, L"%s\n\n", _Key.c_str());
 
 	fwprintf_s(pFile, L"[ATLAS_TEXTURE]\n");
-	if ()
+	
+	if (_TargetAnim->GetAtlas() == nullptr)
+	{
+		fwprintf_s(pFile, L"[ATLAS_KEY]\t%s\n", L"None");
+		fwprintf_s(pFile, L"[ATLAS_PATH]\t%s\n", L"None");
+	}
+	else
+	{
+		fwprintf_s(pFile, L"[ATLAS_KEY]\t%s\n", _TargetAnim->GetAtlas()->GetKey().c_str());
+		fwprintf_s(pFile, L"[ATLAS_PATH\t%s\n]", _TargetAnim->GetAtlas()->GetRelativePath().c_str());
+	}
+	fwprintf_s(pFile, L"\n");
 
+	fwprintf_s(pFile, L"[COLLIDER_INFO]\n");
+	if (_TargetAnim->GetColliderPos() != 0.f) fwprintf_s(pFile, L"[COLLIDER_POS]\t%f  %f\n", _TargetAnim->GetColliderPos().x , _TargetAnim->GetColliderPos().y);
+	else fwprintf_s(pFile, L"[COLLIDER_POS]\t%f  %f\n", 0.0f, 0.0f);
+	if (_TargetAnim->GetColliderSize() != 0.f) fwprintf_s(pFile, L"[COLLIDER_SIZE]\t%f  %f\n", _TargetAnim->GetColliderSize().x, _TargetAnim->GetColliderSize().y);
+	else fwprintf_s(pFile, L"[COLLIDER_SIZE]\t%f  %f\n", 0.0f, 0.0f);
+
+
+	fwprintf_s(pFile, L"[FRAME_COUNT]\n");
+	fwprintf_s(pFile, L"%d\n\n", _TargetAnim->GetFrameCount());
+
+	// 각각의 프레임 정보를 저장
+	for (int i = 0; i < _TargetAnim->GetFrameCount(); ++i)
+	{
+		AniFrm frm = _TargetAnim->GetFrame(i);
+		fwprintf_s(pFile, L"[FRAME_INDEX]\t%d\n", i);
+		fwprintf_s(pFile, L"[START_POS] \t%f  %f\n", frm.StartPos.x, frm.StartPos.y);
+		fwprintf_s(pFile, L"[SLICE_SIZE]\t\t%f  %f\n", frm.SliceSize.x, frm.SliceSize.y);
+		fwprintf_s(pFile, L"[OFFSET]\t\t%f  %f\n", frm.Offset.x, frm.Offset.y);
+		fwprintf_s(pFile, L"[DURATION]  \t%f\n", frm.Duration);
+		fwprintf_s(pFile, L"\n");
+	}
+
+	fclose(pFile);
 }
 
 CAnimation* CResourceMgr::LoadAnimation(const wstring& _Key, const wstring& _strRelativePath)

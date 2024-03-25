@@ -109,9 +109,6 @@
     <Filter Include="03. Game\09. Module\SelectObject">
       <UniqueIdentifier>{e51f5625-5bf3-4bbd-8dd0-fb09ac56343a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\09. Module\Animation">
-      <UniqueIdentifier>{6a3f38ee-b434-43f0-ae85-c551bdf8f373}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Game\09. Module\State">
       <UniqueIdentifier>{1b414ea9-2c7d-4e49-b114-be688fe4e75f}</UniqueIdentifier>
     </Filter>
@@ -135,6 +132,9 @@
     </Filter>
     <Filter Include="03. Game\03. Manager\ResourceMgr">
       <UniqueIdentifier>{89e9cb1f-0334-4f81-a954-070cacfc1715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\08. Asset\Animation">
+      <UniqueIdentifier>{6a3f38ee-b434-43f0-ae85-c551bdf8f373}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -196,7 +196,7 @@
       <Filter>03. Game\07. Component\Animator</Filter>
     </ClInclude>
     <ClInclude Include="CAnimation.h">
-      <Filter>03. Game\09. Module\Animation</Filter>
+      <Filter>03. Game\08. Asset\Animation</Filter>
     </ClInclude>
     <ClInclude Include="CAsset.h">
       <Filter>03. Game\08. Asset</Filter>
@@ -333,7 +333,7 @@
       <Filter>03. Game\07. Component\Animator</Filter>
     </ClCompile>
     <ClCompile Include="CAnimation.cpp">
-      <Filter>03. Game\09. Module\Animation</Filter>
+      <Filter>03. Game\08. Asset\Animation</Filter>
     </ClCompile>
     <ClCompile Include="CAsset.cpp">
       <Filter>03. Game\08. Asset</Filter>

@@ -6,7 +6,7 @@ void DrawDebugRect(PEN_TYPE _Type, Vec2D _Pos, Vec2D _Scale, float _Time);
 void DrawDebugCircle(PEN_TYPE _Type, Vec2D _Pos, Vec2D _Scale, float _Time);
 void DrawDebugLine(PEN_TYPE _Type, Vec2D _Pos, Vec2D _Scale, float _Time);
 
-void OpenSaveFile(wstring _Path, wstring _FileType);
+void OpenSaveFile(const wstring&_Path);
 bool OpenLoadFile(wstring _Path, wstring _FileType);
 
 template<typename T1, typename T2>

@@ -47,7 +47,7 @@ public:
     bool GetDrawing() { return m_Drawing; }
     bool GetCreatingAnimState() { return m_CreatingAnim; }
 
-    void AddAnimFrm(const AniFrm& _frm) { m_vecFrm.push_back(_frm); }
+    void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     const int& GetAnimFrmCount() { return m_vecFrm.size(); }
     AniFrm& GetAnimFrm(int _index) { return m_vecFrm[_index]; }
     void SetAnimFrm(int _index, const Vec2D& _StartPos, const Vec2D& _SliceSize, const Vec2D& _Offset)
