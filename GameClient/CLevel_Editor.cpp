@@ -288,9 +288,8 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				{
 					SendMessage(hListBox, LB_ADDSTRING, 0, (LPARAM)vKey[i].c_str());
 				}
-				return (INT_PTR)TRUE;
 			}
-
+			return (INT_PTR)TRUE;
 		}
 		else if (LOWORD(wParam) == IDSELECT)
 		{
@@ -310,6 +309,7 @@ INT_PTR CALLBACK SelectTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		}
 		else if (LOWORD(wParam) == IDCANCEL)
 		{
+			g_DialogText = L"";
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
