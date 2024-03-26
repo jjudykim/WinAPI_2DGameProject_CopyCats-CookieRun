@@ -182,6 +182,22 @@ struct AniFrm
 	Vec2D SliceSize;
 	Vec2D Offset;
 	float Duration;
+
+	AniFrm()
+		: StartPos(0)
+		, SliceSize(0)
+		, Offset(0)
+		, Duration(0.f)
+	{
+	}
+	
+	AniFrm(const AniFrm& _Other)
+		: StartPos(_Other.StartPos)
+		, SliceSize(_Other.SliceSize)
+		, Offset(_Other.Offset)
+		, Duration(_Other.Duration)
+	{
+	}
 };
 
 

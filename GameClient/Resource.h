@@ -64,6 +64,7 @@
 #define ID_LOADANIM                     1032
 #define IDC_SIZEY2                      1032
 #define IDPLAY2                         1032
+#define IDSTOP                          1032
 #define IDC_TEXLIST                     1033
 #define IDSELECT                        1034
 #define ID_DELFRAME                     1034

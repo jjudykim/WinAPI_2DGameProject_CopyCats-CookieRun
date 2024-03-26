@@ -15,6 +15,7 @@ CAnimation::CAnimation()
 	, m_CurFrmIdx(0)
 	, m_bFinish(false)
 {
+	m_vecFrm.reserve(10);
 }
 
 CAnimation::~CAnimation()
@@ -99,13 +100,14 @@ void CAnimation::render()
 				 , (int)frm.SliceSize.x, (int)frm.SliceSize.y, bf);
 }
 
-void CAnimation::render(CTexture* _AtlasTex, const AniFrm& _Frm)
+void CAnimation::render(int)
 {
-	if (_AtlasTex == nullptr) return;
+	if (m_Atlas == nullptr)
+		return;
 
-	Vec2D vRenderPos = {};
-	vRenderPos.x = CEngine::GetInst()->GetResolution().x / 2.f;
-	vRenderPos.y = CEngine::GetInst()->GetResolution().y / 2.f;
+	const AniFrm& frm = m_vecFrm[m_CurFrmIdx];
+	Vec2D StartPos = Vec2D(CEngine::GetInst()->GetResolution().x / 4.f, CEngine::GetInst()->GetResolution().y / 2.f);
+	Vec2D vRenderPos = CCamera::GetInst()->GetRenderPos(StartPos);
 
 	BLENDFUNCTION bf = {};
 
@@ -114,10 +116,10 @@ void CAnimation::render(CTexture* _AtlasTex, const AniFrm& _Frm)
 	bf.SourceConstantAlpha = 255;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
-	AlphaBlend(DC, (int)(vRenderPos.x - _Frm.SliceSize.x / 2.f + _Frm.Offset.x)
-		, (int)(vRenderPos.y - _Frm.SliceSize.y / 2.f + _Frm.Offset.y)
-		, (int)_Frm.SliceSize.x, (int)_Frm.SliceSize.y
+	AlphaBlend(DC, (int)(vRenderPos.x - frm.SliceSize.x / 2.f + frm.Offset.x)
+		, (int)(vRenderPos.y - frm.SliceSize.y / 2.f + frm.Offset.y)
+		, (int)frm.SliceSize.x, (int)frm.SliceSize.y
 		, m_Atlas->GetDC()
-		, (int)_Frm.StartPos.x, (int)_Frm.StartPos.y
-		, (int)_Frm.SliceSize.x, (int)_Frm.SliceSize.y, bf);
+		, (int)(frm.StartPos.x - frm.SliceSize.x / 2.f), (int)(frm.StartPos.y - frm.SliceSize.y / 2.f)
+		, (int)frm.SliceSize.x, (int)frm.SliceSize.y, bf);
 }

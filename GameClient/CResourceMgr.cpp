@@ -99,7 +99,7 @@ void CResourceMgr::SaveAnimation(CAnimation* _TargetAnim, const wstring& _Key, c
 	else
 	{
 		fwprintf_s(pFile, L"[ATLAS_KEY]\t%s\n", _TargetAnim->GetAtlas()->GetKey().c_str());
-		fwprintf_s(pFile, L"[ATLAS_PATH\t%s\n]", _TargetAnim->GetAtlas()->GetRelativePath().c_str());
+		fwprintf_s(pFile, L"[ATLAS_PATH]\t%s\n", _TargetAnim->GetAtlas()->GetRelativePath().c_str());
 	}
 	fwprintf_s(pFile, L"\n");
 
@@ -109,7 +109,7 @@ void CResourceMgr::SaveAnimation(CAnimation* _TargetAnim, const wstring& _Key, c
 	if (_TargetAnim->GetColliderSize() != 0.f) fwprintf_s(pFile, L"[COLLIDER_SIZE]\t%f  %f\n", _TargetAnim->GetColliderSize().x, _TargetAnim->GetColliderSize().y);
 	else fwprintf_s(pFile, L"[COLLIDER_SIZE]\t%f  %f\n", 0.0f, 0.0f);
 
-
+	fwprintf_s(pFile, L"\n\n");
 	fwprintf_s(pFile, L"[FRAME_COUNT]\n");
 	fwprintf_s(pFile, L"%d\n\n", _TargetAnim->GetFrameCount());
 
@@ -174,20 +174,16 @@ CAnimation* CResourceMgr::LoadAnimation(const wstring& _Key, const wstring& _str
 		}
 		else if (strRead == L"[COLLIDER_INFO]")
 		{
-			Vec2D ColliderInfo = {};
+			fwscanf_s(pFile, L"%s", szReadBuff, 256);
+			fwscanf_s(pFile, L"%f%f", &pAnim->m_ColliderInfo[0].x, &pAnim->m_ColliderInfo[0].y);
 
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
-			fwscanf_s(pFile, L"%f%f", ColliderInfo.x, ColliderInfo.y);
-			pAnim->m_ColliderInfo[0] = ColliderInfo;
-
-			fwscanf_s(pFile, L"%s", szReadBuff, 256);
-			fwscanf_s(pFile, L"%f%f", ColliderInfo.x, ColliderInfo.y);
-			pAnim->m_ColliderInfo[1] = ColliderInfo;
+			fwscanf_s(pFile, L"%f%f", &pAnim->m_ColliderInfo[1].x, &pAnim->m_ColliderInfo[1].y);
 		}
 		else if (strRead == L"[FRAME_COUNT]")
 		{
 			int frmCount = 0;
-			fwscanf_s(pFile, L"%d", frmCount);
+			fwscanf_s(pFile, L"%d", &frmCount);
 
 			for (int i = 0; i < frmCount; ++i)
 			{
@@ -210,6 +206,7 @@ CAnimation* CResourceMgr::LoadAnimation(const wstring& _Key, const wstring& _str
 	}
 	fclose(pFile);
 
+	m_mapAnim.insert(make_pair(_Key, pAnim));
 	return pAnim;
 }
 

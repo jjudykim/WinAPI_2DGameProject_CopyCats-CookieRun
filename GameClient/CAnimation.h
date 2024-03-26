@@ -22,7 +22,7 @@ public:
     void Create(CTexture* _AtlasTex, Vec2D _StartPos, Vec2D _SliceSize, int _DividerSize, int _FrameCount, int _FPS);
     void Create(CTexture* _AtlasTex, int _FrameCount, const AniFrm& _frm);
     bool IsFinish() { return m_bFinish; }
-    void SetAtlasTexture(CTexture* _Atlas) { m_Atlas = m_Atlas; }
+    void SetAtlasTexture(CTexture* _Atlas) { m_Atlas = _Atlas; }
     void SetColliderInfo(Vec2D _Pos, Vec2D _Size) 
     { 
         m_ColliderInfo[0] = _Pos;
@@ -38,16 +38,33 @@ public:
 
 public:
     void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
-    AniFrm& GetFrame(int _Idx) { return m_vecFrm[_Idx]; }
     int GetFrameCount() { return m_vecFrm.size(); }
     CTexture* GetAtlas() { return m_Atlas; }
     Vec2D GetColliderPos() { return m_ColliderInfo[0]; }
     Vec2D GetColliderSize() { return m_ColliderInfo[1]; }
 
+    void ConvertFPSToDuration(int FPS)
+    {
+        for (int i = 0; i < m_vecFrm.size(); ++i)
+        {
+            m_vecFrm[i].Duration = 0.5f / (float)FPS;
+        }
+        
+    }
+
+    AniFrm GetFrame(int _Idx) { return m_vecFrm[_Idx]; }
+    void SetFrame(int _Idx, AniFrm _frm) { m_vecFrm.at(_Idx) = _frm; }
+    void DeleteFrm(int _index) 
+    {
+        vector<AniFrm>::iterator iter = m_vecFrm.begin();
+        iter += _index;
+        m_vecFrm.erase(iter);
+    }
+
 public:
     void finaltick();
     void render();
-    void render(CTexture* _AtlasTex, const AniFrm& _Frm);
+    void render(int);
 
 public:
     CLONE(CAnimation);
