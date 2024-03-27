@@ -3,6 +3,7 @@
 #include "CFSM.h"
 
 class CObject;
+class CAnimation;
 
 class CState :
     public CEntity

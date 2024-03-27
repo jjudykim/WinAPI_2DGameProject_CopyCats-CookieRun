@@ -291,6 +291,9 @@
     <ClInclude Include="CHandleMgr.h">
       <Filter>03. Game\03. Manager\HandleMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerState.h">
+      <Filter>03. Game\09. Module\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -424,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="CHandleMgr.cpp">
       <Filter>03. Game\03. Manager\HandleMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerState.cpp">
+      <Filter>03. Game\09. Module\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

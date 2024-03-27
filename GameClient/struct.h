@@ -219,8 +219,7 @@ struct CookieInfo
 {
 	COOKIE_TYPE _type;
 	Vec2D       _frmSize;
-	int			_dividerSize;
-	wstring		_path;
+	wstring		_nameStr;
 };
 
 struct JellyInfo

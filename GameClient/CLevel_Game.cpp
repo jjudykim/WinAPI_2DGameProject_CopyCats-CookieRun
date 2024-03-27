@@ -36,7 +36,6 @@ void CLevel_Game::begin()
 	m_SpawnPosX = 0;
 	m_DeletePosX = m_ResolutionWidth;
 
-
 }
 
 void CLevel_Game::tick()
@@ -45,7 +44,6 @@ void CLevel_Game::tick()
 
 	if (m_Cookie == nullptr)
 		return;
-
 
 	// TODO: test
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
@@ -90,25 +88,18 @@ void CLevel_Game::tick()
 	}
 
 
-	// Cookie Debug Info
-	if (m_QuaterSecond >= 0.25f)
-	{
-		m_LogPos = m_Cookie->GetPos();
-		m_QuaterSecond = 0.f;
-	}
-	DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
-						L"posX : " + std::to_wstring(m_LogPos.x) +
-						L" posY : " + std::to_wstring(m_LogPos.y) };
-	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+	//// Cookie Debug Info
+	//if (m_QuaterSecond >= 0.25f)
+	//{
+	//	m_LogPos = m_Cookie->GetPos();
+	//	m_QuaterSecond = 0.f;
+	//}
+	//DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
+	//					L"posX : " + std::to_wstring(m_LogPos.x) +
+	//					L" posY : " + std::to_wstring(m_LogPos.y) };
+	//CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
-	/*DbgRenderInfo cookieDbg = { DBG_SHAPE::RECT,
-								CCamera::GetInst()->GetRenderPos(m_Cookie->GetPos()),
-								m_Cookie->GetScale(),
-								PEN_TYPE::PEN_BLUE,
-								0, 0};
-
-	CDbgRenderMgr::GetInst()->AddDbgRenderInfo(cookieDbg);*/
-	m_QuaterSecond += DT;
+	//m_QuaterSecond += DT;
 }
 
 
@@ -116,7 +107,6 @@ void CLevel_Game::Enter()
 {
 	m_ResolutionWidth = CEngine::GetInst()->GetResolution().x;
 	
-
 	// 현재 스테이지 맵 데이터 불러오기
 	m_CurStage = new CStage();
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
@@ -131,6 +121,8 @@ void CLevel_Game::Enter()
 	pObject->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
 	pObject->SetScale(100.f, 200.f);
 	pObject->SetSpeed(400.f);
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+	pPlayer->SetCurCookie(COOKIE_TYPE::ANGEL_COOKIE);
 	m_Cookie = pObject;
 	AddObject(LAYER_TYPE::PLAYER, pObject);
 

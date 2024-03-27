@@ -14,7 +14,8 @@ private:
     float       m_SpawnPosX;
     float       m_DeletePosX;
 
-    CObject*    m_Cookie;
+    CObject*                       m_Cookie;
+    map<COOKIE_TYPE, CookieInfo>   m_mapCookie;
     float       m_QuaterSecond;
     Vec2D       m_LogPos;
 

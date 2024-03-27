@@ -11,36 +11,38 @@
 
 #include "CCollider.h"
 #include "CRigidBody.h"
+#include "CFSM.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+
+// State header
+#include "CRunState.h"
+#include "CJumpState.h"
+#include "CSlideState.h"
+#include "CDamageState.h"
+#include "CInvState.h"
 
 CPlayer::CPlayer()
 	: m_DoubleJumpCount(2)
 	, m_CurJumpCount(0)
+	, m_State(COOKIE_STATE::NONE)
 {
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
 	m_RigidBody = (CRigidBody*)AddComponent(new CRigidBody);
+	m_FSM = (CFSM*)AddComponent(new CFSM);
 
 	m_Collider->SetName(L"Cookie's Collider");
 	m_Collider->SetOffsetPos(Vec2D(13.5f, 70.f));
 	m_Collider->SetScale(Vec2D(70.f, 135.f));
 
-	CookieInfo BraveCookie = { COOKIE_TYPE::BRAVE_COOKIE,
-								Vec2D(270, 270), 2,
-								L"texture\\BraveCookie_Atlas.png"};
-	
-	CookieInfo AngelCookie = { COOKIE_TYPE::ANGEL_COOKIE,
-								Vec2D(320, 320), 2,
-								L"texture\\AngelCookie_Atlas.png" };
+	// FSM State Setting
+	m_FSM->AddState(L"Run", new CRunState);
+	//m_FSM->AddState(L"Jump", new CJumpState);
 
-	CookieInfo m_curCookie = AngelCookie;
-
-	CTexture* pAtlas = CResourceMgr::GetInst()->LoadTexture(L"PlayerAtlasTex", m_curCookie._path);
-
-	m_Animator->CreateAnimation(L"RUNNING", pAtlas, Vec2D(0.f + m_curCookie._dividerSize, m_curCookie._frmSize.y + m_curCookie._dividerSize * 2), 
-														  Vec2D(m_curCookie._frmSize.x, m_curCookie._frmSize.y), m_curCookie._dividerSize, 4, 5);
-	m_Animator->Play(L"RUNNING", true);
+	// Cookie Info Setting
+	CookieInfo BraveCookie = { COOKIE_TYPE::BRAVE_COOKIE, Vec2D(270, 270), L"Brave_Cookie" };
+	CookieInfo AngelCookie = { COOKIE_TYPE::ANGEL_COOKIE, Vec2D(320, 320), L"Angel_Cookie" };
 }
 
 CPlayer::~CPlayer()

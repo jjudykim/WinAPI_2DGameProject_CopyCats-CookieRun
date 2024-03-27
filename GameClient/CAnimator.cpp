@@ -2,6 +2,7 @@
 #include "CAnimator.h"
 
 #include "CAnimation.h"
+#include "CResourceMgr.h"
 
 CAnimator::CAnimator()
 	: m_CurAnim(nullptr)
@@ -58,8 +59,26 @@ CAnimation* CAnimator::FindAnimation(const wstring& _AnimName)
 	return iter->second;
 }
 
-void CAnimator::LoadAnimation(const wstring& _strRelativeFilePath)
+void CAnimator::LoadAnimation(const wstring& _Key, const wstring& _strRelativeFilePath)
 {
+	CAnimation* pNewAnim = new CAnimation;
+
+	if (FAILED(CResourceMgr::GetInst()->LoadAnimation(_Key, _strRelativeFilePath)))
+	{
+		delete pNewAnim;
+		LOG(LOG_TYPE::DBG_ERROR, L"애니메이션 로딩 실패");
+		return;
+	}
+
+	if (nullptr != FindAnimation(pNewAnim->GetName()))
+	{
+		delete pNewAnim;
+		LOG(LOG_TYPE::DBG_ERROR, L"중복된 애니메이션");
+		return;
+	}
+
+	pNewAnim->m_Animator = this;
+	m_mapAnim.insert(make_pair(pNewAnim->GetName(), pNewAnim));
 }
 
 void CAnimator::Play(const wstring& _AnimName, bool _Repeat)

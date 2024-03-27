@@ -3,8 +3,11 @@
 
 #include "CState.h"
 
+map<wstring, BlackboardData> CFSM::m_mapGlobalData;
+
 CFSM::CFSM()
 {
+	
 }
 
 CFSM::~CFSM()
@@ -57,4 +60,10 @@ void CFSM::SetBlackboardData(const wstring& _DataKey, DATA_TYPE _Type, void* _pD
 {
 	BlackboardData data = { _Type, _pData };
 	m_mapData.insert(make_pair(_DataKey, data));
+}
+
+void CFSM::SetGlobalData(const wstring& _DataKey, DATA_TYPE _Type, void* _pData)
+{
+	BlackboardData data = { _Type, _pData };
+	m_mapGlobalData.insert(make_pair(_DataKey, data));
 }

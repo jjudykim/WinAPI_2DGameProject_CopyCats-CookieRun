@@ -219,3 +219,13 @@ CAnimation* CResourceMgr::FindAnimation(const wstring& _Key)
 
 	return iter->second;
 }
+
+CookieInfo CResourceMgr::FindCookieInfo(const wstring& _Key)
+{
+	map<wstring, CookieInfo>::iterator iter = m_mapCookieInfo.find(_Key);
+
+	if (m_mapCookieInfo.end() == iter)
+		return CookieInfo{};
+
+	return iter->second;
+}

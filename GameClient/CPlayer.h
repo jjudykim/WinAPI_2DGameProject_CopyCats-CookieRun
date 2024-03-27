@@ -1,9 +1,7 @@
 #pragma once
 #include "CObject.h"
 
-class CCollider;
-class CAnimator;
-class CRigidBody;
+#include "CFSM.h"
 
 class CPlayer :
     public CObject
@@ -12,9 +10,15 @@ private:
     int m_DoubleJumpCount;
     int m_CurJumpCount;
 
-    CCollider*  m_Collider;
-    CAnimator*  m_Animator;
-    CRigidBody* m_RigidBody;
+    // Component
+    CCollider*   m_Collider;
+    CAnimator*   m_Animator;
+    CRigidBody*  m_RigidBody;
+    CFSM*        m_FSM;
+
+    
+    CookieInfo   m_CurCookie;
+    COOKIE_STATE m_State;
 
 public:
     virtual void begin();
@@ -27,6 +31,9 @@ public:
 private:
     void RestoreJumpCount() { m_CurJumpCount = 0; }
 
+public:
+    void SetCurCookie(COOKIE_TYPE _cookieType) { m_CurCookie._type = _cookieType; }
+    CookieInfo GetCurCookie() { return m_CurCookie; }
 public:
     CLONE_DISABLE(CPlayer)
 

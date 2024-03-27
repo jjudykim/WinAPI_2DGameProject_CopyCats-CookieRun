@@ -80,6 +80,19 @@ enum class COOKIE_TYPE
 	END,
 };
 
+enum class COOKIE_STATE : int
+{
+	NONE		= 0,
+	INVINCIBLE	= 1 << 0,
+	BOOST		= 1 << 1,
+	GIANT		= 1 << 2,
+	ATTRACT     = 1 << 3,
+	COINMAGIC   = 1 << 4,
+	GUMMYPARTY  = 1 << 5,
+
+	END         = 1 << 7,
+};
+
 enum class JELLY_TYPE
 {
 	NORMAL_JELLY,

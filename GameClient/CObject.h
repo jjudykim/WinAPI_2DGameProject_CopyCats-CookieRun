@@ -7,8 +7,10 @@
 #include "CTexture.h"
 
 class CComponent;
-class CAnimator;
 class CCollider;
+class CAnimator;
+class CRigidBody;
+class CFSM;
 
 class CObject
 	: public CEntity

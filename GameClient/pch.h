@@ -13,6 +13,7 @@ using std::list;
 using std::map;
 using std::make_pair;
 
+#include <iostream>
 #include <string>
 using std::string;
 using std::wstring;

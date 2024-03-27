@@ -999,7 +999,8 @@ bool OpenLoadFile(wstring _Path, wstring _FileType)
 		else if (_FileType == L"anim")
 		{
 			wstring SelectedFilePath = L"animation\\";
-			wstring SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
+			size_t FilePathPos = wstring(ofn.lpstrFile).find(SelectedFilePath);
+			wstring SelectedFileName = wstring(ofn.lpstrFile).substr(FilePathPos + SelectedFilePath.length());
 			SelectedFilePath += SelectedFileName;
 
 			size_t pos = SelectedFileName.find(L".anim");

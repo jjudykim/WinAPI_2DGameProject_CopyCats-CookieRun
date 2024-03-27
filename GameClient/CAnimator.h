@@ -21,7 +21,7 @@ public:
 public:
     void CreateAnimation(const wstring& _AnimName, CTexture* _Atlas, Vec2D _StartPos, Vec2D _SliceSize, int _DividerSize, int _FrameCount, int _FPS);
     CAnimation* FindAnimation(const wstring& _AnimName);
-    void LoadAnimation(const wstring& _strRelativeFilePath);
+    void LoadAnimation(const wstring& _Key, const wstring& _strRelativeFilePath);
     void Play(const wstring& _AnimName, bool _Repeat);
 
 public:

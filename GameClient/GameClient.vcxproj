@@ -140,6 +140,7 @@
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CAsset.h" />
+    <ClInclude Include="CPlayerState.h" />
     <ClInclude Include="CResourceMgr.h" />
     <ClInclude Include="CBackground.h" />
     <ClInclude Include="CCamera.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CAsset.cpp" />
+    <ClCompile Include="CPlayerState.cpp" />
     <ClCompile Include="CResourceMgr.cpp" />
     <ClCompile Include="CBackground.cpp" />
     <ClCompile Include="CCamera.cpp" />
