@@ -135,6 +135,7 @@ CAnimation* CResourceMgr::LoadAnimation(const wstring& _Key, const wstring& _str
 
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
 	strFilePath += _strRelativePath;
+	strFilePath += L".anim";
 
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, strFilePath.c_str(), L"r");
@@ -206,6 +207,7 @@ CAnimation* CResourceMgr::LoadAnimation(const wstring& _Key, const wstring& _str
 	}
 	fclose(pFile);
 
+	pAnim->SetName(_Key);
 	m_mapAnim.insert(make_pair(_Key, pAnim));
 	return pAnim;
 }
@@ -245,13 +247,17 @@ void CResourceMgr::LoadCookieInfo()
 			{
 				CookieInfo info = {};
 
-				do { fwscanf_s(pFile, L"%s", szReadBuff, 256); } while (wcscmp(szReadBuff, L"[COOKIE_TYPE]"));
-
-				fwscanf_s(pFile, L"%d", static_cast<COOKIE_TYPE>(info._type));
+				do { fwscanf_s(pFile, L"%s", szReadBuff, 256); }
+				while (wcscmp(szReadBuff, L"[COOKIE_TYPE]"));
+				int type = 0;
+				fwscanf_s(pFile, L"%d", &type);
+				info._type = static_cast<COOKIE_TYPE>(type);
 				fwscanf_s(pFile, L"%s", szReadBuff, 256);
-				fwscanf_s(pFile, L"%f%f", info._frmSize.x, info._frmSize.y);
+				fwscanf_s(pFile, L"%f%f", &info._frmSize.x, &info._frmSize.y);
 				fwscanf_s(pFile, L"%s", szReadBuff, 256);
-				fwscanf_s(pFile, L"%s", info._nameStr);
+				fwscanf_s(pFile, L"%s", szReadBuff, 256);
+				wstring strRead = szReadBuff;
+				info._nameStr = strRead;
 
 				m_mapCookieInfo.insert(make_pair((UINT)info._type, info));
 			}

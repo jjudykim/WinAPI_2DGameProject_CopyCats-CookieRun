@@ -61,9 +61,9 @@ CAnimation* CAnimator::FindAnimation(const wstring& _AnimName)
 
 void CAnimator::LoadAnimation(const wstring& _Key, const wstring& _strRelativeFilePath)
 {
-	CAnimation* pNewAnim = new CAnimation;
+	CAnimation* pNewAnim = CResourceMgr::GetInst()->LoadAnimation(_Key, _strRelativeFilePath);
 
-	if (FAILED(CResourceMgr::GetInst()->LoadAnimation(_Key, _strRelativeFilePath)))
+	if (pNewAnim == nullptr)
 	{
 		delete pNewAnim;
 		LOG(LOG_TYPE::DBG_ERROR, L"애니메이션 로딩 실패");

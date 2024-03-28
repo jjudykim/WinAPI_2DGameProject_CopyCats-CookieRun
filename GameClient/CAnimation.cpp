@@ -96,7 +96,7 @@ void CAnimation::render()
 				 , (int)(vRenderPos.y - frm.SliceSize.y / 2.f + frm.Offset.y)
 				 , (int)frm.SliceSize.x, (int)frm.SliceSize.y
 				 , m_Atlas->GetDC()
-				 , (int)frm.StartPos.x, (int)frm.StartPos.y
+				 , (int)(frm.StartPos.x - frm.SliceSize.x / 2.f), (int)(frm.StartPos.y - frm.SliceSize.y / 2.f)
 				 , (int)frm.SliceSize.x, (int)frm.SliceSize.y, bf);
 }
 
@@ -117,9 +117,9 @@ void CAnimation::render(int)
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	AlphaBlend(DC, (int)(vRenderPos.x - frm.SliceSize.x / 2.f + frm.Offset.x)
-		, (int)(vRenderPos.y - frm.SliceSize.y / 2.f + frm.Offset.y)
-		, (int)frm.SliceSize.x, (int)frm.SliceSize.y
-		, m_Atlas->GetDC()
-		, (int)(frm.StartPos.x - frm.SliceSize.x / 2.f), (int)(frm.StartPos.y - frm.SliceSize.y / 2.f)
-		, (int)frm.SliceSize.x, (int)frm.SliceSize.y, bf);
+				 , (int)(vRenderPos.y - frm.SliceSize.y / 2.f + frm.Offset.y)
+				 , (int)frm.SliceSize.x, (int)frm.SliceSize.y
+				 , m_Atlas->GetDC()
+				 , (int)(frm.StartPos.x - frm.SliceSize.x / 2.f), (int)(frm.StartPos.y - frm.SliceSize.y / 2.f)
+				 , (int)frm.SliceSize.x, (int)frm.SliceSize.y, bf);
 }

@@ -51,6 +51,7 @@ CPlayer::~CPlayer()
 void CPlayer::begin()
 {
 	m_RigidBody->SetGroundDelegate(this, (DELEGATE)&CPlayer::RestoreJumpCount);
+	m_FSM->ChangeState(L"Run");
 }
 
 void CPlayer::tick()

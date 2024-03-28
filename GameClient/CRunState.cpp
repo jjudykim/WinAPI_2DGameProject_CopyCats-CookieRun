@@ -22,11 +22,12 @@ void CRunState::Enter()
 {
 	CPlayerState::Enter();
 
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += L"animation\\";
+	wstring strFilePath = L"animation\\";
+	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr + L"\\";
 	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr;
 
-	GetOwnerAnimator()->LoadAnimation(L"Running", strFilePath);
+	GetOwnerAnimator()->LoadAnimation(L"Running", strFilePath + L"_Running");
+	CAnimator* anim = GetOwnerAnimator();
 	GetOwnerAnimator()->Play(L"Running", true);
 }
 

@@ -224,7 +224,7 @@ struct CookieInfo
 	CookieInfo()
 		: _type(COOKIE_TYPE::END)
 		, _frmSize(0)
-		, _nameStr(nullptr)
+		, _nameStr(L"")
 	{
 	}
 
