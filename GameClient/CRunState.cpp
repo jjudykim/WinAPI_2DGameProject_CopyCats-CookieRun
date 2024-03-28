@@ -20,16 +20,19 @@ CRunState::~CRunState()
 
 void CRunState::Enter()
 {
+	CPlayerState::Enter();
+
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
 	strFilePath += L"animation\\";
-	strFilePath += GetCurCookie()._nameStr;
+	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"Running", strFilePath);
+	GetOwnerAnimator()->Play(L"Running", true);
 }
 
 void CRunState::FinalTick()
 {
-	GetOwnerAnimator()->Play(L"Running", true);
+	
 }
 
 void CRunState::Exit()

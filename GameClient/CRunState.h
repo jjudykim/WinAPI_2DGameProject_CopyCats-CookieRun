@@ -2,7 +2,7 @@
 #include "CPlayerState.h"
 
 class CRunState
-	: public CState
+	: public CPlayerState
 {
 private:
 

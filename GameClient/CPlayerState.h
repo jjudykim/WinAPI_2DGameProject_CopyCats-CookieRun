@@ -1,15 +1,16 @@
 #pragma once
 #include "CState.h"
 
+#include "CPlayer.h"
+
 class CAnimator;
 
 class CPlayerState :
     public CState
 {
-    CookieInfo            m_CurCookie;
-    CAnimator*            m_OwnerAnimator;
+    CPlayer*              m_pOwner;
+    CAnimator*            m_pOwnerAnimator;
     wstring               m_AnimPath;
-    Vec2D                 m_PlayerScale;
 
 public:
     virtual void Enter() override;
@@ -17,11 +18,10 @@ public:
     virtual void Exit() override;
 
 public:
-    void SetCookieInfo(CookieInfo& _info) { m_CurCookie = _info; }
-    void SetOwnerAnimator(CAnimator* _animator) { m_OwnerAnimator = _animator; }
+    void SetOwnerAnimator(CAnimator* _animator) { m_pOwnerAnimator = _animator; }
 
-    CookieInfo GetCurCookie() { return m_CurCookie; }
-    CAnimator* GetOwnerAnimator() { return m_OwnerAnimator; }
+    CPlayer* GetCurPlayer() { return m_pOwner; }
+    CAnimator* GetOwnerAnimator() { return m_pOwnerAnimator; }
 
 public:
     CPlayerState();

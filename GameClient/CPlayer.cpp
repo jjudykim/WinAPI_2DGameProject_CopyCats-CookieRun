@@ -40,9 +40,7 @@ CPlayer::CPlayer()
 	m_FSM->AddState(L"Run", new CRunState);
 	//m_FSM->AddState(L"Jump", new CJumpState);
 
-	// Cookie Info Setting
-	CookieInfo BraveCookie = { COOKIE_TYPE::BRAVE_COOKIE, Vec2D(270, 270), L"Brave_Cookie" };
-	CookieInfo AngelCookie = { COOKIE_TYPE::ANGEL_COOKIE, Vec2D(320, 320), L"Angel_Cookie" };
+	CResourceMgr::GetInst()->LoadCookieInfo();
 }
 
 CPlayer::~CPlayer()

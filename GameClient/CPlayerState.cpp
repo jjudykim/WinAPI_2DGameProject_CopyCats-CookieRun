@@ -19,8 +19,8 @@ CPlayerState::~CPlayerState()
 
 void CPlayerState::Enter()
 {
-	m_CurCookie = dynamic_cast<CPlayer*>(GetObj())->GetCurCookie();
-	m_OwnerAnimator = GetObj()->GetComponent<CAnimator>();
+	m_pOwner = dynamic_cast<CPlayer*>(GetObj());
+	m_pOwnerAnimator = GetObj()->GetComponent<CAnimator>();
 }
 
 void CPlayerState::FinalTick()

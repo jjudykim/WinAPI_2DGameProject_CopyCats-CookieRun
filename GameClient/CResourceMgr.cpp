@@ -220,9 +220,49 @@ CAnimation* CResourceMgr::FindAnimation(const wstring& _Key)
 	return iter->second;
 }
 
-CookieInfo CResourceMgr::FindCookieInfo(const wstring& _Key)
+void CResourceMgr::LoadCookieInfo()
 {
-	map<wstring, CookieInfo>::iterator iter = m_mapCookieInfo.find(_Key);
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += L"CookieInfo.info";
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, strFilePath.c_str(), L"r");
+
+	if (nullptr == pFile) { return; }
+
+	wchar_t szReadBuff[256] = {};
+
+	while (EOF != fwscanf_s(pFile, L"%s", szReadBuff, 256))
+	{
+		wstring strRead = szReadBuff;
+
+		if (strRead == L"[COOKIE_COUNT]")
+		{
+			int Count = 0;
+			fwscanf_s(pFile, L"%d", &Count);
+
+			for (int i = 0; i < Count; ++i)
+			{
+				CookieInfo info = {};
+
+				do { fwscanf_s(pFile, L"%s", szReadBuff, 256); } while (wcscmp(szReadBuff, L"[COOKIE_TYPE]"));
+
+				fwscanf_s(pFile, L"%d", static_cast<COOKIE_TYPE>(info._type));
+				fwscanf_s(pFile, L"%s", szReadBuff, 256);
+				fwscanf_s(pFile, L"%f%f", info._frmSize.x, info._frmSize.y);
+				fwscanf_s(pFile, L"%s", szReadBuff, 256);
+				fwscanf_s(pFile, L"%s", info._nameStr);
+
+				m_mapCookieInfo.insert(make_pair((UINT)info._type, info));
+			}
+		}
+	}
+	fclose(pFile);
+}
+
+CookieInfo CResourceMgr::FindCookieInfo(const UINT& _Key)
+{
+	map<UINT, CookieInfo>::iterator iter = m_mapCookieInfo.find(_Key);
 
 	if (m_mapCookieInfo.end() == iter)
 		return CookieInfo{};

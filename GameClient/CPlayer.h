@@ -32,8 +32,8 @@ private:
     void RestoreJumpCount() { m_CurJumpCount = 0; }
 
 public:
-    void SetCurCookie(COOKIE_TYPE _cookieType) { m_CurCookie._type = _cookieType; }
-    CookieInfo GetCurCookie() { return m_CurCookie; }
+    void SetCurCookie(COOKIE_TYPE _cookieType) { m_CurCookie = m_CurCookie = CResourceMgr::GetInst()->FindCookieInfo((UINT)_cookieType); }
+    const CookieInfo& GetCurCookie() { return m_CurCookie; }
 public:
     CLONE_DISABLE(CPlayer)
 

@@ -220,6 +220,19 @@ struct CookieInfo
 	COOKIE_TYPE _type;
 	Vec2D       _frmSize;
 	wstring		_nameStr;
+
+	CookieInfo()
+		: _type(COOKIE_TYPE::END)
+		, _frmSize(0)
+		, _nameStr(nullptr)
+	{
+	}
+
+	CookieInfo(COOKIE_TYPE _type, Vec2D _size, wstring _name)
+		: _type(_type)
+		, _frmSize(_size)
+		, _nameStr(_name)
+	{}
 };
 
 struct JellyInfo

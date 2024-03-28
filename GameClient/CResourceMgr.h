@@ -12,7 +12,7 @@ private:
 	map<wstring, CTexture*>		m_mapTex;
 	map<wstring, CSound*>		m_mapSound;
 	map<wstring, CAnimation*>	m_mapAnim;
-	map<wstring, CookieInfo>	m_mapCookieInfo;
+	map<UINT, CookieInfo>		m_mapCookieInfo;
 
 public:
 	void init();
@@ -25,8 +25,8 @@ public:
 	CAnimation* LoadAnimation(const wstring& _Key, const wstring& _strRelativePath);
 	CAnimation* FindAnimation(const wstring& _Key);
 
-	void AddCookieInfo(const wstring& _Key, CookieInfo);
-	CookieInfo FindCookieInfo(const wstring& _Key);
+	void LoadCookieInfo();
+	CookieInfo FindCookieInfo(const UINT& _Key);
 
 	friend class CLevel_Editor;
 };
