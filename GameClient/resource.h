@@ -15,9 +15,9 @@
 #define IDR_MAINFRAME                   128
 #define IDI_ICON1                       130
 #define IDD_TEXLIST                     131
-#define IDD_ANIMLIST                    132
 #define IDD_EDITTEX                     133
 #define IDD_ADDTEX                      134
+#define IDD_EDITSTAGE_STATIC            135
 #define IDC_TEX                         1000
 #define ID_TEXBTN                       1001
 #define IDC_ANIM                        1002
@@ -61,7 +61,6 @@
 #define ID_APPLY                        1029
 #define IDPLAY                          1030
 #define IDSAVE                          1031
-#define ID_LOADANIM                     1032
 #define IDC_SIZEY2                      1032
 #define IDPLAY2                         1032
 #define IDSTOP                          1032
@@ -77,16 +76,32 @@
 #define IDC_SIZEX_SPIN                  1039
 #define IDC_NEWTEX                      1039
 #define IDC_SIZEY_SPIN                  1040
+#define IDC_COMBO1                      1040
 #define IDC_OFFSETX_SPIN                1041
+#define IDC_COMBO2                      1041
 #define IDC_OFFSETY_SPIN                1042
+#define IDC_COMBO3                      1042
 #define IDC_COLPOSX_SPIN                1043
+#define IDC_BUTTON1                     1043
 #define IDC_COLPOSY_SPIN                1044
+#define IDC_LIST1                       1044
 #define IDC_COLSIZEX_SPIN               1045
+#define IDC_EDIT1                       1045
 #define IDC_COLSIZEY_SPIN               1046
+#define IDC_EDIT2                       1046
+#define IDC_EDIT3                       1047
+#define IDC_SPIN1                       1048
+#define IDC_SPIN2                       1049
+#define IDC_BUTTON2                     1050
+#define IDC_BUTTON3                     1051
 #define ID_EDITMODE_ANIMATIONEDITMODE   32771
 #define ID_EDITMODE_STAGEEDITMODE       32772
 #define ID_EDITANIM                     32773
 #define ID_EDITSTAGE                    32774
+#define ID_STAGEEDITMODE_STATICOBJECTEDITMPDE 32775
+#define ID_STAGEEDITMODE_DYNAMICOBJECTEDITMODE 32776
+#define ID_EDITSTAGE_DYNAMIC            32777
+#define ID_EDITSTAGE_STATIC             32778
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -94,9 +109,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        135
-#define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1040
+#define _APS_NEXT_RESOURCE_VALUE        136
+#define _APS_NEXT_COMMAND_VALUE         32779
+#define _APS_NEXT_CONTROL_VALUE         1051
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

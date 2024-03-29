@@ -10,6 +10,7 @@ class CPlayerState :
 {
     CPlayer*              m_pOwner;
     CAnimator*            m_pOwnerAnimator;
+    CRigidBody*           m_pOwnerRigidBody;
     CCollider*            m_pOwnerCollider;
     wstring               m_AnimPath;
 
@@ -24,6 +25,7 @@ public:
 
     CPlayer* GetCurPlayer() { return m_pOwner; }
     CAnimator* GetOwnerAnimator() { return m_pOwnerAnimator; }
+    CRigidBody* GetOwnerRigidBody() { return m_pOwnerRigidBody; }
 
 public:
     CPlayerState();

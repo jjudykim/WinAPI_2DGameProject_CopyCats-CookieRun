@@ -12,6 +12,7 @@
 #include "CEngine.h"
 #include "CObject.h"
 #include "CPlayer.h"
+#include "CPet.h"
 #include "CBackground.h"
 #include "CPlatform.h"
 #include "CObstacle.h"
@@ -91,12 +92,19 @@ void CLevel_Game::tick()
 	if (m_QuaterSecond >= 0.25f)
 	{
 		m_LogPos = m_Cookie->GetPos();
+		m_LogPetPos = m_Pet->GetPos();
 		m_QuaterSecond = 0.f;
 	}
 	DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
 						L"posX : " + std::to_wstring(m_LogPos.x) +
 						L" posY : " + std::to_wstring(m_LogPos.y) };
+
+	DbgObjInfo info2 = { m_Pet->GetPos(), m_Pet->GetScale(),
+						L"posX : " + std::to_wstring(m_LogPetPos.x) +
+						L"posY : " + std::to_wstring(m_LogPetPos.y) };
+
 	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info2);
 
 	m_QuaterSecond += DT;
 }
@@ -125,6 +133,17 @@ void CLevel_Game::Enter()
 	
 	m_Cookie = pObject;
 	AddObject(LAYER_TYPE::PLAYER, pObject);
+
+	pObject = new CPet;
+	pObject->SetName(L"Pet");
+	CPet* pPet = dynamic_cast<CPet*>(pObject);
+	pPet->SetCurPet(PET_TYPE::GOLD_DROP);
+	pObject->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
+	pObject->SetScale(pPet->GetCurPet()._frmSize.x, pPet->GetCurPet()._frmSize.y);
+	pObject->SetSpeed(400.f);
+
+	m_Pet = pObject;
+	AddObject(LAYER_TYPE::PET, pObject);
 
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);

@@ -13,6 +13,7 @@ private:
 	map<wstring, CSound*>		m_mapSound;
 	map<wstring, CAnimation*>	m_mapAnim;
 	map<UINT, CookieInfo>		m_mapCookieInfo;
+	map<UINT, PetInfo>			m_mapPetInfo;
 
 public:
 	void init();
@@ -27,6 +28,9 @@ public:
 
 	void LoadCookieInfo();
 	CookieInfo FindCookieInfo(const UINT& _Key);
+
+	void LoadPetInfo();
+	PetInfo FindPetInfo(const UINT& _Key);
 
 	friend class CLevel_Editor;
 };

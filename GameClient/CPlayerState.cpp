@@ -5,6 +5,7 @@
 #include "CPlayer.h"
 
 #include "CCollider.h"
+#include "CRigidBody.h"
 #include "CAnimation.h"
 #include "CAnimator.h"
 
@@ -21,6 +22,7 @@ void CPlayerState::Set()
 {
 	m_pOwner = dynamic_cast<CPlayer*>(GetObj());
 	m_pOwnerAnimator = GetObj()->GetComponent<CAnimator>();
+	m_pOwnerRigidBody = GetObj()->GetComponent<CRigidBody>();
 	m_pOwnerCollider = GetObj()->GetComponent<CCollider>();
 }
 

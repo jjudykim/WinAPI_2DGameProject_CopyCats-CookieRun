@@ -15,8 +15,10 @@ private:
     float       m_DeletePosX;
 
     CObject*    m_Cookie;
+    CObject*    m_Pet;
     float       m_QuaterSecond;
     Vec2D       m_LogPos;
+    Vec2D       m_LogPetPos;
 
 public:
     virtual void begin() override;

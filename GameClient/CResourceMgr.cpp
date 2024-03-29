@@ -275,3 +275,56 @@ CookieInfo CResourceMgr::FindCookieInfo(const UINT& _Key)
 
 	return iter->second;
 }
+
+void CResourceMgr::LoadPetInfo()
+{
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += L"PetInfo.info";
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, strFilePath.c_str(), L"r");
+
+	if (nullptr == pFile) { return; }
+
+	wchar_t szReadBuff[256] = {};
+
+	while (EOF != fwscanf_s(pFile, L"%s", szReadBuff, 256))
+	{
+		wstring strRead = szReadBuff;
+
+		if (strRead == L"[PET_COUNT]")
+		{
+			int Count = 0;
+			fwscanf_s(pFile, L"%d", &Count);
+
+			for (int i = 0; i < Count; ++i)
+			{
+				PetInfo info = {};
+
+				do { fwscanf_s(pFile, L"%s", szReadBuff, 256); } while (wcscmp(szReadBuff, L"[PET_TYPE]"));
+				int type = 0;
+				fwscanf_s(pFile, L"%d", &type);
+				info._type = static_cast<PET_TYPE>(type);
+				fwscanf_s(pFile, L"%s", szReadBuff, 256);
+				fwscanf_s(pFile, L"%f%f", &info._frmSize.x, &info._frmSize.y);
+				fwscanf_s(pFile, L"%s", szReadBuff, 256);
+				fwscanf_s(pFile, L"%s", szReadBuff, 256);
+				wstring strRead = szReadBuff;
+				info._nameStr = strRead;
+
+				m_mapPetInfo.insert(make_pair((UINT)info._type, info));
+			}
+		}
+	}
+	fclose(pFile);
+}
+
+PetInfo CResourceMgr::FindPetInfo(const UINT& _Key)
+{
+	map<UINT, PetInfo>::iterator iter = m_mapPetInfo.find(_Key);
+
+	if (m_mapPetInfo.end() == iter)
+		return PetInfo{};
+
+	return iter->second;
+}

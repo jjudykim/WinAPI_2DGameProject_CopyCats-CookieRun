@@ -235,6 +235,26 @@ struct CookieInfo
 	{}
 };
 
+struct PetInfo
+{
+	PET_TYPE _type;
+	Vec2D	 _frmSize;
+	wstring	 _nameStr;
+
+	PetInfo()
+		: _type(PET_TYPE::END)
+		, _frmSize(0)
+		, _nameStr(L"")
+	{
+	}
+
+	PetInfo(PET_TYPE _type, Vec2D _size, wstring _name)
+		: _type(_type)
+		, _frmSize(_size)
+		, _nameStr(_name)
+	{}
+};
+
 struct JellyInfo
 {
 	JELLY_TYPE	_type;

@@ -33,7 +33,7 @@ private:
 
 public:
     void AddForce(Vec2D _vForce) { m_Force += _vForce; }
-
+    void SetUseGravity(bool _use) { m_UseGravity = _use; }
     void SetGravityVelocity(Vec2D _Velocity) { m_VelocityByGravity = _Velocity; }
     void SetJumpSpeed(float _Speed) { m_JumpSpeed = _Speed; }
 

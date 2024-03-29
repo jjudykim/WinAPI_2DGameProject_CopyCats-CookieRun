@@ -141,6 +141,9 @@
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CAsset.h" />
     <ClInclude Include="CDoubleJumpState.h" />
+    <ClInclude Include="CPet.h" />
+    <ClInclude Include="CPetRunState.h" />
+    <ClInclude Include="CPetState.h" />
     <ClInclude Include="CPlayerState.h" />
     <ClInclude Include="CResourceMgr.h" />
     <ClInclude Include="CBackground.h" />
@@ -196,6 +199,9 @@
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CAsset.cpp" />
     <ClCompile Include="CDoubleJumpState.cpp" />
+    <ClCompile Include="CPet.cpp" />
+    <ClCompile Include="CPetRunState.cpp" />
+    <ClCompile Include="CPetState.cpp" />
     <ClCompile Include="CPlayerState.cpp" />
     <ClCompile Include="CResourceMgr.cpp" />
     <ClCompile Include="CBackground.cpp" />

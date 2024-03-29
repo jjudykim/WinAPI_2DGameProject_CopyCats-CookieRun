@@ -42,17 +42,19 @@ void CRigidBody::finaltick()
 	Vec2D vObjPos = GetOwner()->GetPos();
 
 	Walk(vObjPos);
-
-	if (!m_Ground)
+	if (m_UseGravity == true)
 	{
-		Vec2D vJumpSpeed = Vec2D(0.f, 1.0f) * m_GravityAccel * DT;
-		m_VelocityByGravity += vJumpSpeed;
-		vObjPos += m_VelocityByGravity * DT;
-	}
-	else
-	{
-		GetOwner()->SetPos(Vec2D(vObjPos.x, 465.f));
-		return;
+		if (!m_Ground)
+		{
+			Vec2D vJumpSpeed = Vec2D(0.f, 1.0f) * m_GravityAccel * DT;
+			m_VelocityByGravity += vJumpSpeed;
+			vObjPos += m_VelocityByGravity * DT;
+		}
+		else
+		{
+			GetOwner()->SetPos(Vec2D(vObjPos.x, 465.f));
+			return;
+		}
 	}
 	GetOwner()->SetPos(vObjPos);
 	DrawDebugLine(PEN_TYPE::PEN_BLUE, GetOwner()->GetRenderPos(), GetOwner()->GetRenderPos() + m_VelocityByGravity, 0.f);

@@ -4,9 +4,10 @@
 #include "CObject.h"
 
 #include "CPathMgr.h"
+
 #include "CAnimator.h"
 #include "CAnimation.h"
-
+#include "CRigidBody.h"
 
 CRunState::CRunState()
 {
@@ -27,6 +28,8 @@ void CRunState::Set()
 	strFilePath += L"\\" + GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"Run", strFilePath + L"_Run.anim");
+
+	GetOwnerRigidBody()->SetUseGravity(true);
 }
 
 void CRunState::Enter()

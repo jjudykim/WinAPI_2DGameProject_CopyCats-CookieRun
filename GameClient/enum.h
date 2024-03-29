@@ -56,6 +56,7 @@ enum class LAYER_TYPE
 	JELLY,
 	PLAYER,
 	DRAW,
+	PET,
 
 	UI = 10,
 	END = 11,
@@ -77,6 +78,16 @@ enum class COOKIE_TYPE
 	ANGEL_COOKIE,
 	SEAFAIRY_COOKIE,
 	KUMIHO_COOKIE,
+	END,
+};
+
+enum class PET_TYPE
+{
+	GOLD_DROP,
+	GINGER_GHOST,
+	FOXY_BEAD,
+	MR_FASOLLASI,
+	ONION_FISH,
 	END,
 };
 

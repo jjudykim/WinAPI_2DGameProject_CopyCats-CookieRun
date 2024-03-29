@@ -136,6 +136,12 @@
     <Filter Include="03. Game\08. Asset\Animation">
       <UniqueIdentifier>{6a3f38ee-b434-43f0-ae85-c551bdf8f373}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Object\Pet">
+      <UniqueIdentifier>{171af09c-fd4a-4fc6-9297-d966fcb32c64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\09. Module\State\PetState">
+      <UniqueIdentifier>{2489acd7-33cc-4e7d-895b-ed32398d6bc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -291,11 +297,20 @@
     <ClInclude Include="CHandleMgr.h">
       <Filter>03. Game\03. Manager\HandleMgr</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayerState.h">
-      <Filter>03. Game\09. Module\State</Filter>
-    </ClInclude>
     <ClInclude Include="CDoubleJumpState.h">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CPet.h">
+      <Filter>03. Game\06. Object\Pet</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CPetState.h">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
+    </ClInclude>
+    <ClInclude Include="CPetRunState.h">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -431,11 +446,20 @@
     <ClCompile Include="CHandleMgr.cpp">
       <Filter>03. Game\03. Manager\HandleMgr</Filter>
     </ClCompile>
-    <ClCompile Include="CPlayerState.cpp">
-      <Filter>03. Game\09. Module\State</Filter>
-    </ClCompile>
     <ClCompile Include="CDoubleJumpState.cpp">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CPet.cpp">
+      <Filter>03. Game\06. Object\Pet</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CPetState.cpp">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
+    </ClCompile>
+    <ClCompile Include="CPetRunState.cpp">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

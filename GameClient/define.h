@@ -36,6 +36,9 @@
 #define COOKIE_DEFAULT_POSX 200.f
 #define COOKIE_DEFAULT_POSY 465.f
 
+#define PET_DEFAULT_POSX 110.f
+#define PET_DEFAULT_POSY 450.f
+
 #define KEY_CHECK(Key, State) CKeyMgr::GetInst()->GetKeyState(Key) == State
 
 #define KEY_TAP(Key)		KEY_CHECK(Key, KEY_STATE::TAP)
