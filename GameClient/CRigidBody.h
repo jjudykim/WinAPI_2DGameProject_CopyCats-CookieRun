@@ -41,6 +41,7 @@ public:
     void Jump();
 
     bool GetUseGravity() { return m_UseGravity; }
+    bool GetIsGround() { return m_Ground; }
     Vec2D GetGraivtyVelocity() { return m_VelocityByGravity; }
 
     void SetGroundDelegate(CObject* _Inst, DELEGATE _MemFunc)

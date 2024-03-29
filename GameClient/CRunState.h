@@ -5,6 +5,7 @@ class CRunState
 	: public CPlayerState
 {
 private:
+	bool PlayingAnim;
 
 private:
 	virtual void Set() override;

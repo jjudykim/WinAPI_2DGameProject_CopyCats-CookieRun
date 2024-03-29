@@ -53,7 +53,7 @@ void CPlayer::begin()
 	m_FSM->AddState(L"Run", new CRunState);
 	m_FSM->AddState(L"Jump", new CJumpState);
 	m_FSM->AddState(L"DoubleJump", new CDoubleJumpState);
-
+	m_FSM->AddState(L"Slide", new CSlideState);
 	m_FSM->SetState();
 
 	m_FSM->ChangeState(L"Run");
@@ -78,6 +78,14 @@ void CPlayer::tick()
 			}
 			m_RigidBody->Jump();
 		}
+	}
+	else if (KEY_TAP(KEY::DOWN) && m_RigidBody->GetIsGround())
+	{
+		m_FSM->ChangeState(L"Slide");
+	}
+	else if (KEY_RELEASED(KEY::DOWN))
+	{
+		m_FSM->ChangeState(L"Run");
 	}
 }
 

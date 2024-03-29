@@ -24,6 +24,7 @@ public:
     void LoadAnimation(const wstring& _Key, const wstring& _strRelativeFilePath);
     void Play(const wstring& _AnimName, bool _Repeat);
 
+    CAnimation* GetCurAnim() { return m_CurAnim; }
 public:
     CLONE(CAnimator);
     CAnimator();

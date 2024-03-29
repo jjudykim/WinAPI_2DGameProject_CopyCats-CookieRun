@@ -28,7 +28,7 @@ void CRunState::Set()
 	strFilePath += L"\\" + GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"Run", strFilePath + L"_Run.anim");
-
+	GetOwnerAnimator()->LoadAnimation(L"UpFromSlide", strFilePath + L"_UpFromSlide.anim");
 	GetOwnerRigidBody()->SetUseGravity(true);
 }
 
@@ -36,15 +36,30 @@ void CRunState::Enter()
 {
 	CPlayerState::Enter();
 
-	GetOwnerAnimator()->Play(L"Run", true);
+	if (GetFSM()->FindState(L"Slide") == GetFSM()->GetPrevState()) 
+	{ 
+		GetOwnerAnimator()->Play(L"UpFromSlide", false); 
+	}
+	else
+	{
+		GetOwnerAnimator()->Play(L"Run", true);
+	}
 }
 
 void CRunState::FinalTick()
 {
-	
+	if (GetOwnerAnimator() != nullptr)
+	{
+		if (GetOwnerAnimator()->GetCurAnim()->IsFinish() && !PlayingAnim)
+		{
+			GetOwnerAnimator()->Play(L"Run", true);
+			PlayingAnim = true;
+		}
+	}
 }
 
 void CRunState::Exit()
 {
+	PlayingAnim = false;
 }
 

@@ -30,10 +30,12 @@ private:
     map<wstring, BlackboardData>                m_mapData;
     map<wstring, CState*>                       m_mapState;
     CState*                                     m_CurState;
+    CState*                                     m_PrevState;
 
 public:
     void AddState(const wstring& _strStateName, CState* _State);
     void SetState();
+    CState* GetPrevState() { return m_PrevState; }
     CState* FindState(const wstring& _strStateName);
     void ChangeState(const wstring& _strNextStateName);
     void SetBlackboardData(const wstring& _DataKey, DATA_TYPE _Type, void* _pData);

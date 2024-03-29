@@ -55,6 +55,8 @@ void CFSM::ChangeState(const wstring& _strNextStateName)
 	if (m_CurState && (_strNextStateName == m_CurState->GetName()))
 		return;
 
+	m_PrevState = m_CurState;
+
 	if (m_CurState != nullptr)
 		m_CurState->Exit();
 

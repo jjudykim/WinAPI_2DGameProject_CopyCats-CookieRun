@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CJumpState.h"
 
+#include "CRigidBody.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
 
@@ -27,6 +28,7 @@ void CJumpState::Enter()
 {
 	CPlayerState::Enter();
 
+	GetOwnerRigidBody()->SetUseGravity(true);
 	GetOwnerAnimator()->Play(L"Jump", false);
 }
 
