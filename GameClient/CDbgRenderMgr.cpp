@@ -114,7 +114,7 @@ void CDbgRenderMgr::render()
 	{
 		Vec2D tPos = CCamera::GetInst()->GetRenderPos(infoIter->ObjPosition);
 		TextOut(DC, (int)tPos.x
-			, (int)tPos.y + infoIter->ObjScale.y
+			, (int)tPos.y - 10
 			, infoIter->strLog.c_str()
 			, (int)infoIter->strLog.length());
 

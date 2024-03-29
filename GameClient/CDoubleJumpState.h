@@ -1,8 +1,8 @@
 #pragma once
 #include "CPlayerState.h"
 
-class CRunState
-	: public CPlayerState
+class CDoubleJumpState :
+    public CPlayerState
 {
 private:
 
@@ -13,9 +13,9 @@ private:
 	virtual void Exit() override;
 
 
-	CLONE_DISABLE(CRunState);
+	CLONE_DISABLE(CDoubleJumpState);
 public:
-	CRunState();
-	~CRunState();
+	CDoubleJumpState();
+	~CDoubleJumpState();
 };
 

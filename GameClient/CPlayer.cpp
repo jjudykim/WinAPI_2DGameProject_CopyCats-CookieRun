@@ -18,6 +18,7 @@
 // State header
 #include "CRunState.h"
 #include "CJumpState.h"
+#include "CDoubleJumpState.h"
 #include "CSlideState.h"
 #include "CDamageState.h"
 #include "CInvState.h"
@@ -36,10 +37,6 @@ CPlayer::CPlayer()
 	m_Collider->SetOffsetPos(Vec2D(13.5f, 70.f));
 	m_Collider->SetScale(Vec2D(70.f, 135.f));
 
-	// FSM State Setting
-	m_FSM->AddState(L"Run", new CRunState);
-	//m_FSM->AddState(L"Jump", new CJumpState);
-
 	CResourceMgr::GetInst()->LoadCookieInfo();
 }
 
@@ -51,6 +48,14 @@ CPlayer::~CPlayer()
 void CPlayer::begin()
 {
 	m_RigidBody->SetGroundDelegate(this, (DELEGATE)&CPlayer::RestoreJumpCount);
+
+	// FSM State Setting
+	m_FSM->AddState(L"Run", new CRunState);
+	m_FSM->AddState(L"Jump", new CJumpState);
+	m_FSM->AddState(L"DoubleJump", new CDoubleJumpState);
+
+	m_FSM->SetState();
+
 	m_FSM->ChangeState(L"Run");
 }
 
@@ -62,8 +67,16 @@ void CPlayer::tick()
 	{
 		if (m_DoubleJumpCount > m_CurJumpCount)
 		{
+			++m_CurJumpCount;
+			if (m_CurJumpCount == 2)
+			{
+				m_FSM->ChangeState(L"DoubleJump");
+			}
+			else
+			{
+				m_FSM->ChangeState(L"Jump");
+			}
 			m_RigidBody->Jump();
-			m_CurJumpCount += 1;
 		}
 	}
 }

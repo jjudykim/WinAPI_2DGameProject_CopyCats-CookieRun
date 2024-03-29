@@ -135,7 +135,7 @@ CAnimation* CResourceMgr::LoadAnimation(const wstring& _Key, const wstring& _str
 
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
 	strFilePath += _strRelativePath;
-	strFilePath += L".anim";
+	//strFilePath += L".anim";
 
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, strFilePath.c_str(), L"r");

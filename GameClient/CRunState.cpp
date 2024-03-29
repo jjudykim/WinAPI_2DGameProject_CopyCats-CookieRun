@@ -18,17 +18,22 @@ CRunState::~CRunState()
 }
 
 
+void CRunState::Set()
+{
+	CPlayerState::Set();
+
+	wstring strFilePath = L"animation\\";
+	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr;
+	strFilePath += L"\\" + GetCurPlayer()->GetCurCookie()._nameStr;
+
+	GetOwnerAnimator()->LoadAnimation(L"Run", strFilePath + L"_Run.anim");
+}
+
 void CRunState::Enter()
 {
 	CPlayerState::Enter();
 
-	wstring strFilePath = L"animation\\";
-	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr + L"\\";
-	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr;
-
-	GetOwnerAnimator()->LoadAnimation(L"Running", strFilePath + L"_Running");
-	CAnimator* anim = GetOwnerAnimator();
-	GetOwnerAnimator()->Play(L"Running", true);
+	GetOwnerAnimator()->Play(L"Run", true);
 }
 
 void CRunState::FinalTick()

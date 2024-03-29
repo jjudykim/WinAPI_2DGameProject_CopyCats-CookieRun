@@ -82,24 +82,23 @@ void CLevel_Game::tick()
 			if (tPosX <= m_DeletePosX)
 			{
 				vecObj[j]->Destroy();
-
+				LOG(LOG_TYPE::DBG_LOG, L"Stage Obejct Deleted");
 			}
 		}
 	}
 
+	// Cookie Debug Info
+	if (m_QuaterSecond >= 0.25f)
+	{
+		m_LogPos = m_Cookie->GetPos();
+		m_QuaterSecond = 0.f;
+	}
+	DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
+						L"posX : " + std::to_wstring(m_LogPos.x) +
+						L" posY : " + std::to_wstring(m_LogPos.y) };
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
-	//// Cookie Debug Info
-	//if (m_QuaterSecond >= 0.25f)
-	//{
-	//	m_LogPos = m_Cookie->GetPos();
-	//	m_QuaterSecond = 0.f;
-	//}
-	//DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
-	//					L"posX : " + std::to_wstring(m_LogPos.x) +
-	//					L" posY : " + std::to_wstring(m_LogPos.y) };
-	//CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
-
-	//m_QuaterSecond += DT;
+	m_QuaterSecond += DT;
 }
 
 
@@ -118,11 +117,12 @@ void CLevel_Game::Enter()
 
 	CObject* pObject = new CPlayer;
 	pObject->SetName(L"Player");
-	pObject->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
-	pObject->SetScale(100.f, 200.f);
-	pObject->SetSpeed(400.f);
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
 	pPlayer->SetCurCookie(COOKIE_TYPE::ANGEL_COOKIE);
+	pObject->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
+	pObject->SetScale(pPlayer->GetCurCookie()._frmSize.x, pPlayer->GetCurCookie()._frmSize.y);
+	pObject->SetSpeed(400.f);
+	
 	m_Cookie = pObject;
 	AddObject(LAYER_TYPE::PLAYER, pObject);
 

@@ -33,6 +33,7 @@ private:
 
 public:
     void AddState(const wstring& _strStateName, CState* _State);
+    void SetState();
     CState* FindState(const wstring& _strStateName);
     void ChangeState(const wstring& _strNextStateName);
     void SetBlackboardData(const wstring& _DataKey, DATA_TYPE _Type, void* _pData);

@@ -10,9 +10,11 @@ class CPlayerState :
 {
     CPlayer*              m_pOwner;
     CAnimator*            m_pOwnerAnimator;
+    CCollider*            m_pOwnerCollider;
     wstring               m_AnimPath;
 
 public:
+    virtual void Set() override;
     virtual void Enter() override;
     virtual void FinalTick() override;
     virtual void Exit() override;

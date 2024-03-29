@@ -22,6 +22,7 @@ protected:
     }
 
 public:
+    virtual void Set() = 0;
     virtual void Enter() = 0;
     virtual void FinalTick() = 0;
     virtual void Exit() = 0;

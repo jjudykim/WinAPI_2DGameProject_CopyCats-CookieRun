@@ -30,6 +30,14 @@ void CFSM::AddState(const wstring& _strStateName, CState* _State)
 	m_mapState.insert(make_pair(_strStateName, _State));
 }
 
+void CFSM::SetState()
+{
+	for (const auto& pair : m_mapState)
+	{
+		pair.second->Set();
+	}
+}
+
 CState* CFSM::FindState(const wstring& _strStateName)
 {
 	map<wstring, CState*>::iterator iter = m_mapState.find(_strStateName);
