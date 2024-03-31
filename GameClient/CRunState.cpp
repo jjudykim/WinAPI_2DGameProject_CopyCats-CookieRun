@@ -10,6 +10,7 @@
 #include "CRigidBody.h"
 
 CRunState::CRunState()
+	: m_PlayingAnim(false)
 {
 	
 }
@@ -50,16 +51,16 @@ void CRunState::FinalTick()
 {
 	if (GetOwnerAnimator() != nullptr)
 	{
-		if (GetOwnerAnimator()->GetCurAnim()->IsFinish() && !PlayingAnim)
+		if (GetOwnerAnimator()->GetCurAnim()->IsFinish() && !m_PlayingAnim)
 		{
 			GetOwnerAnimator()->Play(L"Run", true);
-			PlayingAnim = true;
+			m_PlayingAnim = true;
 		}
 	}
 }
 
 void CRunState::Exit()
 {
-	PlayingAnim = false;
+	m_PlayingAnim = false;
 }
 

@@ -12,6 +12,8 @@ CResourceMgr::~CResourceMgr()
 {
 	Safe_Del_Map(m_mapTex);
 	Safe_Del_Map(m_mapSound);
+	m_mapCookieInfo.clear();
+	m_mapPetInfo.clear();
 }
 
 void CResourceMgr::init()

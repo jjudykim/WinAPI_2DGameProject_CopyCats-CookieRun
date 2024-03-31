@@ -30,7 +30,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     
     // 메모리 누수 체크
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
+    // _CrtSetBreakAlloc(790);
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -154,6 +154,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 #include "CLevel_Editor.h"
 
 INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -181,6 +182,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 AnimDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITTEX), hWnd, EditAnimProc);
                 CHandleMgr::GetInst()->AddHandle(IDD_EDITTEX, AnimDlg);
                 if (AnimDlg != nullptr) { ShowWindow(AnimDlg, SW_SHOW); }
+            }
+                break;
+            case ID_EDITSTAGE_STATIC:
+            {
+                if (CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC) != nullptr) break;
+                HWND StageDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITSTAGE_STATIC), hWnd, EditStaticStgProc);
+                CHandleMgr::GetInst()->AddHandle(IDD_EDITSTAGE_STATIC, StageDlg);
+                if (StageDlg != nullptr) { ShowWindow(StageDlg, SW_SHOW); }
             }
                 break;
             default:

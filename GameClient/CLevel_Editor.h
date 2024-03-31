@@ -39,7 +39,6 @@ public:
     vector<wstring> GetLoadedTextureKey();
 
     // Animation Editor
-
     void ResetAllAnimationOption();
 
     void SetEditTex(CTexture* _tex) { m_EditTex = _tex; }
@@ -58,6 +57,9 @@ public:
     bool GetDrawing() { return m_Drawing; }
     bool GetCreatingAnimState() { return m_CreatingAnim; }
     bool GetPlayingAnimState() { return m_PlayingAnim; }
+
+
+    // Stage Editor
 
     //void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     //const int& GetAnimFrmCount() { return m_vecFrm.size(); }

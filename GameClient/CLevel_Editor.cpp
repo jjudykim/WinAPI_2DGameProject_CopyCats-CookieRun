@@ -918,6 +918,55 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 	return (INT_PTR)FALSE;
 }
+
+INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
+	assert(pEditorLevel);
+
+	HWND hEditSTStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC);
+
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+	{
+		hEditSTStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC);
+
+		HWND hCombo = GetDlgItem(hDlg, IDC_EPISODE);
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"亲格 1");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"亲格 2");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"亲格 3");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"亲格 4");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"亲格 5");
+		return (INT_PTR)TRUE;
+	}
+		break;
+
+	case WM_COMMAND:
+	{
+		if (LOWORD(wParam) == IDC_EPISODE)
+		{
+
+		}
+		else if (LOWORD(wParam) == IDSAVE)
+		{
+
+		}
+		if (LOWORD(wParam) == IDCANCEL)
+		{
+			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_STATIC);
+			DestroyWindow(hEditSTStage);
+			return (INT_PTR)TRUE;
+		}
+	}
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
+
 	
 void OpenSaveFile(const wstring& _Key)
 {
@@ -1021,3 +1070,5 @@ bool OpenLoadFile(wstring _Path, wstring _FileType)
 
 	return false;
 }
+
+
