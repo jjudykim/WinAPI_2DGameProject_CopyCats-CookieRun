@@ -133,7 +133,7 @@ enum class ITEM_TYPE
 	// Get Ability
 	GET_MAGNETISM,
 	GET_DASH,
-	GET_LARGE,
+	GET_GIANT,
 
 	// Change Obstacle To Jelly
 	CHANGE_TO_COIN,
@@ -155,14 +155,41 @@ enum class PLT_TYPE
 {
 	GROUNDED,
 	FLOATED,
+	END,
 };
 
 enum class OBS_TYPE
 {
-	JUMP_NOTI,
-	JUMP,
-	DBJUMP,
-	DOWN,
+	JUMP_A,
+	JUMP_B,
+	JUMP_UP,
+	JUMP_DOWN,
+	DBJUMP_A,
+	DBJUMP_B,
+	DBJUMP_DOWN,
+	DBJUMP_UP,
+	SLIDE_A,
+	SLIDE_B,
+	END,
+};
 
+enum class EPISODE_TYPE
+{
+	EP1,
+	EP2,
+	EP3,
+	EP4,
+	EP5,
+	END,
+};
+
+enum class STAGE_TYPE
+{
+	STG1,
+	STG2,
+	STG3,
+	STG4,
+	STG5,
+	STG6,
 	END,
 };

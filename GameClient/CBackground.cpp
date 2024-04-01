@@ -68,7 +68,6 @@ void CBackground::tick()
 
 void CBackground::render()
 {
-
 	AtlasInfo info = GetAtlasInfo();
 
 	BLENDFUNCTION bf = {};

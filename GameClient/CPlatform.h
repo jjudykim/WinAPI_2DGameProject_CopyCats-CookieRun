@@ -7,7 +7,7 @@ class CPlatform :
 private:
     bool        m_Edge;
     PLT_TYPE    m_type;
-    CTexture*   m_PlatformImg;
+    CTexture*   m_texture;
     CCollider*  m_Collider;
 
 public:
@@ -21,6 +21,8 @@ public:
     CLONE(CPlatform)
 
 public:
+    void SetPLTType(PLT_TYPE _type) { m_type = _type; }
+    void SetTexture(CTexture* _tex) { m_texture = _tex; }
     void SetEdge(bool _b) { m_Edge = _b; }
 
 public:

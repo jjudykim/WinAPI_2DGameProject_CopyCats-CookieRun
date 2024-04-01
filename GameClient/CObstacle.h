@@ -5,9 +5,8 @@ class CObstacle :
 {
 private:
     OBS_TYPE    m_type;
-    CTexture*   m_ObstacleImg;
-    CAnimator*  m_Animator;
-
+    CTexture* m_ObstacleImg;
+    CAnimator* m_Animator;
     CCollider* m_Collider;
 
 public:
@@ -16,6 +15,8 @@ public:
     virtual void render() override;
 
 public:
+    void SetOBSType(OBS_TYPE _type) { m_type = _type; }
+
     virtual CObstacle* Clone() { return new CObstacle(*this); }
 
 public:

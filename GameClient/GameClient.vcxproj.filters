@@ -142,6 +142,9 @@
     <Filter Include="03. Game\09. Module\State\PetState">
       <UniqueIdentifier>{2489acd7-33cc-4e7d-895b-ed32398d6bc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\StageMgr">
+      <UniqueIdentifier>{46afaeb6-f62e-44fa-8fd3-ad573503c664}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -312,6 +315,9 @@
     <ClInclude Include="CPetRunState.h">
       <Filter>03. Game\09. Module\State\PetState</Filter>
     </ClInclude>
+    <ClInclude Include="CStageMgr.h">
+      <Filter>03. Game\03. Manager\StageMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -460,6 +466,9 @@
     </ClCompile>
     <ClCompile Include="CPetRunState.cpp">
       <Filter>03. Game\09. Module\State\PetState</Filter>
+    </ClCompile>
+    <ClCompile Include="CStageMgr.cpp">
+      <Filter>03. Game\03. Manager\StageMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,14 +2,41 @@
 #include "CStage.h"
 
 #include "CBackground.h"
+#include "CPlatform.h"
+#include "CObstacle.h"
 
 CStage::CStage()
 {
+	for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
+	{
+		m_arrBG[i] = new CBackground;
+		m_arrBG[i]->SetBGType(static_cast<BG_TYPE>(i));
+	}
+	
+	for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
+	{
+		m_arrPLT[i] = new CPlatform;
+		m_arrPLT[i]->SetPLTType(static_cast<PLT_TYPE>(i));
+	}
+
+	for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
+	{
+		m_arrOBS[i] = new CObstacle;
+		m_arrOBS[i]->SetOBSType(static_cast<OBS_TYPE>(i));
+	}
 }
 
 CStage::~CStage()
 {
 	m_vecStageInfo.clear();
+}
+
+void CStage::Enter()
+{
+}
+
+void CStage::Exit()
+{
 }
 
 int CStage::LoadFromFile(const wstring& _FullPath)

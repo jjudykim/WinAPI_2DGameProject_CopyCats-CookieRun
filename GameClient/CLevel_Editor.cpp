@@ -936,13 +936,26 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		hEditSTStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC);
 
 		HWND hCombo = GetDlgItem(hDlg, IDC_EPISODE);
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 1");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP1_Escape From The Oven");
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 2");
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 3");
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 4");
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 5");
-
 		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
+
+		hCombo = GetDlgItem(hDlg, IDC_STAGE);
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"1ST STAGE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"2ND STAGE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"3RD STAGE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"4TH STAGE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"5TH STAGE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"6TH STAGE");
+		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
+
+		hCombo = GetDlgItem(hDlg, IDC_OBJTYPE);
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"OBSTACLE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"PLATFORM");
+
 		return (INT_PTR)TRUE;
 	}
 		break;
@@ -951,7 +964,14 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	{
 		if (LOWORD(wParam) == IDC_EPISODE)
 		{
+			
+		}
+		else if (LOWORD(wParam) == IDC_STAGE)
+		{
 
+		}
+		else if (LOWORD(wParam) == IDC_LOAD)
+		{
 		}
 		else if (LOWORD(wParam) == IDSAVE)
 		{
@@ -1049,9 +1069,16 @@ bool OpenLoadFile(wstring _Path, wstring _FileType)
 				MAKEINTRESOURCE(IDD_ADDTEX),
 				CEngine::GetInst()->GetMainWnd(), CreateTexProc);
 
-			wstring SelectedFileName = L"texture\\";
-			SelectedFileName += PathFindFileNameW(ofn.lpstrFile);
-			CResourceMgr::GetInst()->LoadTexture(g_DialogText, SelectedFileName);
+			wstring SelectedFilePath = L"texture\\";
+			size_t FilePathPos = wstring(ofn.lpstrFile).find(SelectedFilePath);
+			wstring SelectedFileName = wstring(ofn.lpstrFile).substr(FilePathPos + SelectedFilePath.length());
+			SelectedFilePath += SelectedFileName;
+
+			SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
+			size_t pos = SelectedFileName.find(L".png");
+			SelectedFileName = SelectedFileName.substr(0, pos);
+
+			CResourceMgr::GetInst()->LoadTexture(g_DialogText, SelectedFilePath);
 		}
 		else if (_FileType == L"anim")
 		{

@@ -7,7 +7,7 @@
 
 
 CPlatform::CPlatform()
-	: m_PlatformImg(nullptr)
+	: m_texture(nullptr)
 	, m_Collider(nullptr)
 	, m_Edge(false)
 {
@@ -25,7 +25,7 @@ CPlatform::CPlatform(UINT _typeIndex)
 	{
 		tPath = L"texture\\Ep1_grounded_Platform.png";
 	}
-	m_PlatformImg = CResourceMgr::GetInst()->LoadTexture(L"Grounded_Platform_Img", tPath);
+	m_texture = CResourceMgr::GetInst()->LoadTexture(L"Grounded_Platform_Img", tPath);
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Collider->SetScale(Vec2D(124.f, 120.f));
 	m_Collider->SetOffsetPos(Vec2D(0.f, -30.f));
@@ -34,7 +34,7 @@ CPlatform::CPlatform(UINT _typeIndex)
 
 CPlatform::CPlatform(const CPlatform& _Other)
 	: CObject(_Other)
-	, m_PlatformImg(_Other.m_PlatformImg)
+	, m_texture(_Other.m_texture)
 {
 	m_Collider = GetComponent<CCollider>();
 }
@@ -87,11 +87,11 @@ void CPlatform::render()
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	AlphaBlend(DC
-		, (int)(GetRenderPos().x - m_PlatformImg->GetWidth() / 2.f)
-		, (int)(GetRenderPos().y - m_PlatformImg->GetHeight() / 2.f)
-		, m_PlatformImg->GetWidth(), m_PlatformImg->GetHeight()
-		, m_PlatformImg->GetDC(), 0, 0
-		, m_PlatformImg->GetWidth(), m_PlatformImg->GetHeight()
+		, (int)(GetRenderPos().x - m_texture->GetWidth() / 2.f)
+		, (int)(GetRenderPos().y - m_texture->GetHeight() / 2.f)
+		, m_texture->GetWidth(), m_texture->GetHeight()
+		, m_texture->GetDC(), 0, 0
+		, m_texture->GetWidth(), m_texture->GetHeight()
 		, bf);
 }
 

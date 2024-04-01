@@ -178,6 +178,7 @@
     <ClInclude Include="CSlideState.h" />
     <ClInclude Include="CSound.h" />
     <ClInclude Include="CStage.h" />
+    <ClInclude Include="CStageMgr.h" />
     <ClInclude Include="CState.h" />
     <ClInclude Include="CTaskMgr.h" />
     <ClInclude Include="CTexture.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="CSlideState.cpp" />
     <ClCompile Include="CSound.cpp" />
     <ClCompile Include="CStage.cpp" />
+    <ClCompile Include="CStageMgr.cpp" />
     <ClCompile Include="CState.cpp" />
     <ClCompile Include="CTaskMgr.cpp" />
     <ClCompile Include="CTexture.cpp" />
