@@ -22,8 +22,10 @@ public:
 
 public:
     void SetOwnerAnimator(CAnimator* _animator) { m_pOwnerAnimator = _animator; }
+    void SetOwnerCollider(CCollider* _collider) { m_pOwnerCollider = _collider; }
 
     CPlayer* GetCurPlayer() { return m_pOwner; }
+    CCollider* GetOwnerCollider() { return m_pOwnerCollider; }
     CAnimator* GetOwnerAnimator() { return m_pOwnerAnimator; }
     CRigidBody* GetOwnerRigidBody() { return m_pOwnerRigidBody; }
 

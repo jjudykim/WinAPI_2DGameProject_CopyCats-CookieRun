@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CSlideState.h"
 
+#include "CCollider.h"
 #include "CRigidBody.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
@@ -36,6 +37,11 @@ void CSlideState::Enter()
 
 void CSlideState::FinalTick()
 {
+	if(GetOwnerAnimator() != nullptr)
+	{
+		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
+	}
 }
 
 void CSlideState::Exit()

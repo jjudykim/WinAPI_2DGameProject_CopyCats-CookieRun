@@ -37,18 +37,6 @@ void CAnimator::render()
 		
 }
 
-void CAnimator::CreateAnimation(const wstring& _AnimName, CTexture* _Atlas, Vec2D _StartPos, Vec2D _SliceSize, int _DividerSize, int _FrameCount, int _FPS)
-{
-	CAnimation* pAnim = FindAnimation(_AnimName);
-	assert(!pAnim);
-
-	pAnim = new CAnimation;
-	pAnim->Create(_Atlas, _StartPos, _SliceSize, _DividerSize, _FrameCount, _FPS);
-	pAnim->SetName(_AnimName);
-	pAnim->m_Animator = this;
-	m_mapAnim.insert(make_pair(_AnimName, pAnim));
-}
-
 CAnimation* CAnimator::FindAnimation(const wstring& _AnimName)
 {
 	map<wstring, CAnimation*>::iterator iter = m_mapAnim.find(_AnimName);

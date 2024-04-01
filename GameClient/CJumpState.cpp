@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CJumpState.h"
 
+#include "CCollider.h"
 #include "CRigidBody.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
@@ -34,6 +35,11 @@ void CJumpState::Enter()
 
 void CJumpState::FinalTick()
 {
+	if (GetOwnerAnimator() != nullptr)
+	{
+		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
+	}
 }
 
 void CJumpState::Exit()

@@ -77,7 +77,7 @@ CTexture* CResourceMgr::FindTexture(const wstring& _Key)
 void CResourceMgr::SaveAnimation(CAnimation* _TargetAnim, const wstring& _Key, const wstring& _strRelativePath)
 {
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += _strRelativePath;
+	strFilePath += _strRelativePath + L".anim";
 
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, strFilePath.c_str(), L"w");

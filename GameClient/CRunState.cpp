@@ -8,6 +8,7 @@
 #include "CAnimator.h"
 #include "CAnimation.h"
 #include "CRigidBody.h"
+#include "CCollider.h"
 
 CRunState::CRunState()
 	: m_PlayingAnim(false)
@@ -56,6 +57,8 @@ void CRunState::FinalTick()
 			GetOwnerAnimator()->Play(L"Run", true);
 			m_PlayingAnim = true;
 		}
+		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 	}
 }
 

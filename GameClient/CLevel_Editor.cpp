@@ -108,9 +108,9 @@ void CLevel_Editor::tick()
 
 					if (!m_CreatingAnim)
 					{
-						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
+						swprintf_s(szBuff, 256, L"%.2f", 0.0f);
 						SetWindowText(g_hDrawEdit[6], szBuff);
-						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
+						swprintf_s(szBuff, 256, L"%.2f", 0.0f);
 						SetWindowText(g_hDrawEdit[7], szBuff);
 
 						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
@@ -509,7 +509,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			pEditorLevel->GetEditAnim()->ConvertFPSToDuration(FPS);
 			
 			GetDlgItemText(hEditAnim, IDC_ANIM, szBuff, 256);
-			OpenSaveFile(szBuff);
+			OpenSaveFile(szBuff, L"anim");
 
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITANIM);
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITTEX);
@@ -895,8 +895,9 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			Pen GreenPen(Color(255, 0, 255, 0));
 			Pen RedPen(Color(255, 255, 0, 0));
-			graphics.DrawRectangle(&RedPen, Rect((ColPosX - (ColSizeX / 2.f)) * ratioX
-												,(ColPosY - (ColSizeY / 2.f))* ratioY
+			
+			graphics.DrawRectangle(&RedPen, Rect(((srcWidth / 2 + ColPosX) - (ColSizeX / 2.f))* ratioX
+												, ((srcHeight / 2 + ColPosY) - (ColSizeY / 2.f))* ratioY
 												, ColSizeX * ratioX, ColSizeY * ratioY));
 			graphics.DrawLine(&GreenPen, destWidth / 2, 0, destWidth / 2, destHeight);
 			graphics.DrawLine(&GreenPen, 0, destHeight / 2, destWidth, destHeight / 2);
@@ -940,6 +941,8 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 3");
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 4");
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 5");
+
+		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
 		return (INT_PTR)TRUE;
 	}
 		break;
@@ -968,18 +971,17 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 
 	
-void OpenSaveFile(const wstring& _Key)
+void OpenSaveFile(wstring _Key, wstring _FileType)
 {
 	wchar_t szSelect[256] = {};
-	wcsncpy_s(szSelect, _Key.c_str(), sizeof(szSelect) / sizeof(wchar_t));
+	int i = wcscpy_s(szSelect, 256, _Key.c_str());
 
 	OPENFILENAME ofn = {};
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = nullptr;
 	ofn.lpstrFile = szSelect;
-	ofn.lpstrFile[0] = '\0';
 	ofn.nMaxFile = sizeof(szSelect);
-	wstring filter = L"\0*.anim";
+	wstring filter = L"\0*." + _FileType;
 	ofn.lpstrFilter = filter.c_str();
 	ofn.nFilterIndex = 0;
 	ofn.lpstrFileTitle = NULL;
@@ -994,18 +996,24 @@ void OpenSaveFile(const wstring& _Key)
 
 	if (GetSaveFileName(&ofn))
 	{
-		wstring SelectedFilePath = L"animation\\";
-		wstring SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
-		SelectedFilePath += SelectedFileName;
-
-		size_t pos = SelectedFileName.find(L".anim");
-		SelectedFileName = SelectedFileName.substr(0, pos);
-
 		CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 		CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
 		assert(pEditorLevel);
 
-		CResourceMgr::GetInst()->SaveAnimation(pEditorLevel->GetEditAnim(), SelectedFileName, SelectedFilePath);
+		if (_FileType == L"anim")
+		{
+			wstring SelectedFilePath = L"animation\\";
+			size_t FilePathPos = wstring(ofn.lpstrFile).find(SelectedFilePath);
+			wstring SelectedFileName = wstring(ofn.lpstrFile).substr(FilePathPos + SelectedFilePath.length());
+			SelectedFilePath += SelectedFileName;
+
+			SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
+			size_t pos = SelectedFileName.find(L".anim");
+			SelectedFileName = SelectedFileName.substr(0, pos);
+
+			CResourceMgr::GetInst()->SaveAnimation(pEditorLevel->GetEditAnim(), SelectedFileName, SelectedFilePath);
+		}
+		
 	}
 }
 
@@ -1052,6 +1060,7 @@ bool OpenLoadFile(wstring _Path, wstring _FileType)
 			wstring SelectedFileName = wstring(ofn.lpstrFile).substr(FilePathPos + SelectedFilePath.length());
 			SelectedFilePath += SelectedFileName;
 
+			SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
 			size_t pos = SelectedFileName.find(L".anim");
 			SelectedFileName = SelectedFileName.substr(0, pos);
 			

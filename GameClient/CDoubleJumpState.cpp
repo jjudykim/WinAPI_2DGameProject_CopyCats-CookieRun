@@ -2,6 +2,8 @@
 #include "CDoubleJumpState.h"
 
 #include "CPlayer.h"
+
+#include "CCollider.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
 
@@ -32,6 +34,11 @@ void CDoubleJumpState::Enter()
 
 void CDoubleJumpState::FinalTick()
 {
+	if (GetOwnerAnimator() != nullptr)
+	{
+		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
+	}
 }
 
 void CDoubleJumpState::Exit()
