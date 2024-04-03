@@ -26,6 +26,12 @@ private:
     bool            m_Drawable;
     bool            m_Drawing;
 
+    // Stage Editor
+    CObject*        m_CurEditObject;
+
+    bool            m_Editing;
+    bool            m_Dragging;
+
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -60,7 +66,8 @@ public:
 
 
     // Stage Editor
-
+    bool GetEditing() { return m_Editing; }
+    void SetEditing(bool _editing) { m_Editing = _editing; }
     //void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     //const int& GetAnimFrmCount() { return m_vecFrm.size(); }
     AniFrm GetAnimFrm(int _index) { return m_EditAnim->GetFrame(_index); }

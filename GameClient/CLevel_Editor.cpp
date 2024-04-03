@@ -21,13 +21,13 @@
 #include "CObstacle.h"
 #include "CPlatform.h"
 
+int ExtractTypeNumber(const std::wstring& str);
 
-HBITMAP ResizeBitmap(HBITMAP hBmp, int width, int height);
-
-// For Animation Editor ============================
 // global
 wstring g_DialogText = L"";
+int CurEditMode = -1;
 
+// For Animation Editor ============================
 // 0 ~ 9 : Edit Control, 10 ~ 19 : Spin Control 
 HWND g_hDrawEdit[20] = {};
 
@@ -36,6 +36,8 @@ RECT g_DrawSize = {};
 
 // For Stage Editor ================================
 CObject* SelectObj = nullptr;
+UINT Ep = (UINT)EPISODE_TYPE::END;
+UINT Stg = (UINT)STAGE_TYPE::END;
 
 
 CLevel_Editor::CLevel_Editor()
@@ -48,6 +50,9 @@ CLevel_Editor::CLevel_Editor()
 	, m_Drawing(false)
 	, m_CreatingAnim(false)
 	, m_PlayingAnim(false)
+	, m_CurEditObject(nullptr)
+	, m_Editing(false)
+	, m_Dragging(false)
 {
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCE(IDC_GAMECLIENT));
 }
@@ -64,82 +69,123 @@ void CLevel_Editor::tick()
 {
 	CLevel::tick();
 
-	if (m_Drawable)
+	if (CurEditMode == 0)
 	{
-		if (!m_Drawing)
+		if (m_Drawable)
 		{
-			if (CMouseMgr::GetInst()->IsLbtnDowned())
+			if (!m_Drawing)
 			{
-				m_Drawing = true;
-				CObject* pObject = new CDraw;
-				Vec2D MousePos = CMouseMgr::GetInst()->GetMouseDownPos();
-				pObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
-				pObject->SetScale(1, 1);
-				AddObject(LAYER_TYPE::DRAW, pObject);
-				m_CurDraw = dynamic_cast<CDraw*>(pObject);
-				
+				if (CMouseMgr::GetInst()->IsLbtnDowned())
+				{
+					m_Drawing = true;
+					CObject* pObject = new CDraw;
+					Vec2D MousePos = CMouseMgr::GetInst()->GetMouseDownPos();
+					pObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
+					pObject->SetScale(1, 1);
+					AddObject(LAYER_TYPE::DRAW, pObject);
+					m_CurDraw = dynamic_cast<CDraw*>(pObject);
+
+				}
+			}
+
+			if (m_CurDraw != nullptr)
+			{
+				if (!m_CurDraw->IsDrawing())
+				{
+					m_Drawing = false;
+					m_PrevDraw = m_CurDraw;
+
+					// 그린 Draw 객체의 정보들을 이용해서 Edit Control 값들 세팅
+					wchar_t szBuff[256] = {};
+					AniFrm frm = {};
+
+					if (g_hDrawEdit != NULL)
+					{
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().x + (m_CurDraw->GetScale().x / 2.f));
+						SetWindowText(g_hDrawEdit[0], szBuff);
+						frm.StartPos.x = (float)_wtof(szBuff);
+
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().y + (m_CurDraw->GetScale().y / 2.f));
+						SetWindowText(g_hDrawEdit[1], szBuff);
+						frm.StartPos.y = (float)_wtof(szBuff);
+
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x);
+						SetWindowText(g_hDrawEdit[2], szBuff);
+						frm.SliceSize.x = (float)_wtof(szBuff);
+
+						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y);
+						SetWindowText(g_hDrawEdit[3], szBuff);
+						frm.SliceSize.x = (float)_wtof(szBuff);
+
+						SetWindowText(g_hDrawEdit[4], L"0.00");
+						frm.Offset.x = 0.00f;
+						SetWindowText(g_hDrawEdit[5], L"0.00");
+						frm.Offset.y = 0.00f;
+
+						m_CurFrm = frm;
+
+						if (!m_CreatingAnim)
+						{
+							swprintf_s(szBuff, 256, L"%.2f", 0.0f);
+							SetWindowText(g_hDrawEdit[6], szBuff);
+							swprintf_s(szBuff, 256, L"%.2f", 0.0f);
+							SetWindowText(g_hDrawEdit[7], szBuff);
+
+							swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
+							SetWindowText(g_hDrawEdit[8], szBuff);
+							swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
+							SetWindowText(g_hDrawEdit[9], szBuff);
+						}
+						if (g_DrawCtrl != NULL)
+						{
+							RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+						}
+					}
+
+					m_Drawable = false;
+					CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, false });
+					m_CurDraw = nullptr;
+				}
 			}
 		}
-
-		if (m_CurDraw != nullptr)
+	}
+	else if (CurEditMode == 1)
+	{
+		if (CMouseMgr::GetInst()->IsAbleClick() == false)
 		{
-			if (!m_CurDraw->IsDrawing())
+			CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, true });
+		}
+
+		if (m_Editing)
+		{
+			if (m_CurEditObject == nullptr)
 			{
-				m_Drawing = false;
-				m_PrevDraw = m_CurDraw;
-
-				// 그린 Draw 객체의 정보들을 이용해서 Edit Control 값들 세팅
-				wchar_t szBuff[256] = {};
-				AniFrm frm = {};
-
-				if (g_hDrawEdit != NULL)
+				CObject* clone = SelectObj->Clone();
+				AddObject(clone->GetLayerType(), clone);
+				m_CurEditObject = clone;
+			}
+			else
+			{
+				if (CMouseMgr::GetInst()->IsLbtnDowned())
 				{
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().x + (m_CurDraw->GetScale().x / 2.f));
-					SetWindowText(g_hDrawEdit[0], szBuff);
-					frm.StartPos.x = (float)_wtof(szBuff);
-
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetPos().y + (m_CurDraw->GetScale().y / 2.f));
-					SetWindowText(g_hDrawEdit[1], szBuff);
-					frm.StartPos.y = (float)_wtof(szBuff);
-
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x);
-					SetWindowText(g_hDrawEdit[2], szBuff);
-					frm.SliceSize.x = (float)_wtof(szBuff);
-
-					swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y);
-					SetWindowText(g_hDrawEdit[3], szBuff);
-					frm.SliceSize.x = (float)_wtof(szBuff);
-
-					SetWindowText(g_hDrawEdit[4], L"0.00");
-					frm.Offset.x = 0.00f;
-					SetWindowText(g_hDrawEdit[5], L"0.00");
-					frm.Offset.y = 0.00f;
-
-					m_CurFrm = frm;
-
-					if (!m_CreatingAnim)
+					m_Dragging = true;
+					Vec2D MousePos = CMouseMgr::GetInst()->GetMousePos();
+					m_CurEditObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
+				}
+				else
+				{
+					if (m_Dragging)
 					{
-						swprintf_s(szBuff, 256, L"%.2f", 0.0f);
-						SetWindowText(g_hDrawEdit[6], szBuff);
-						swprintf_s(szBuff, 256, L"%.2f", 0.0f);
-						SetWindowText(g_hDrawEdit[7], szBuff);
-
-						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().x / 2.f);
-						SetWindowText(g_hDrawEdit[8], szBuff);
-						swprintf_s(szBuff, 256, L"%.2f", m_CurDraw->GetScale().y / 2.f);
-						SetWindowText(g_hDrawEdit[9], szBuff);
-					}
-					if (g_DrawCtrl != NULL)
-					{
-						RedrawWindow(g_DrawCtrl, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+						m_Editing = false;
+						m_Dragging = false;
+						m_CurEditObject = nullptr;
+						SelectObj = nullptr;
 					}
 				}
-
-				m_Drawable = false;
-				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, false });
-				m_CurDraw = nullptr;
 			}
 		}
+
+		
 	}
 }
 
@@ -338,6 +384,8 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 	assert(pEditorLevel);
 
 	HWND hEditAnim = CHandleMgr::GetInst()->FindHandle(IDD_EDITANIM);
+
+	CurEditMode = 0;
 
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
@@ -933,6 +981,8 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	CurEditMode = 1;
+
 	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
 	assert(pEditorLevel);
@@ -971,29 +1021,38 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		return (INT_PTR)TRUE;
 	}
-		break;
-
 	case WM_NOTIFY:
 	{
 		NMHDR* pNmhdr = (NMHDR*)lParam;
-		for (int i = 10; i < 20; ++i)
+		if (pNmhdr->idFrom == IDC_LIST && pNmhdr->code == LVN_ITEMCHANGED)
 		{
-			if (pNmhdr->idFrom == IDC_LIST && pNmhdr->code == LVN_ITEMCHANGED)
+			NMLISTVIEW* pNMLV = (NMLISTVIEW*)lParam;
+			if (pNMLV->uChanged & LVIF_STATE)
 			{
-				NMLISTVIEW* pNMLV = (NMLISTVIEW*)lParam;
-				if (pNMLV->uChanged & LVIF_STATE)
+				// && !(pNMLV->uOldState & LVIS_SELECTED)
+				if (pNMLV->uNewState & LVIS_SELECTED)
 				{
-					if ((pNMLV->uNewState & LVIS_SELECTED) && !(pNMLV->uOldState & LVIS_SELECTED))
+					wchar_t szBuff[256];
+					ListView_GetItemText(pNmhdr->hwndFrom, pNMLV->iItem, 0, szBuff, sizeof(szBuff) / sizeof(szBuff[0]));
+					SetDlgItemText(hDlg, IDC_SELECTOBJ, szBuff);
+
+					UINT ObjType = ExtractTypeNumber(wstring(szBuff));
+					CStage* EditStage = CStageMgr::GetInst()->GetStage(Ep, Stg);
+					GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
+					if (wstring(szBuff) == L"OBSTACLE")
 					{
-						wchar_t szBuff[256];
-						ListView_GetItemText(pNmhdr->hwndFrom, pNMLV->iItem, 0, szBuff, sizeof(szBuff) / sizeof(szBuff[0]));
-						SetDlgItemText(hDlg, IDC_SELECTOBJ, szBuff);
+						SelectObj = EditStage->GetOBS(static_cast<OBS_TYPE>(ObjType));
+						pEditorLevel->SetEditing(true);
+					}
+					else if (wstring(szBuff) == L"PLATFORM")
+					{
+						SelectObj = EditStage->GetPLT(static_cast<PLT_TYPE>(ObjType));
+						pEditorLevel->SetEditing(true);
 					}
 				}
 			}
 		}
 	}
-
 	case WM_COMMAND:
 	{
 		if (LOWORD(wParam) == IDC_LOAD)
@@ -1002,8 +1061,8 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			hWndListView = GetDlgItem(hDlg, IDC_LIST);
 			ListView_DeleteAllItems(hWndListView);
 
-			UINT Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_SETCURSEL, (WPARAM)0, 0);
-			UINT Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_SETCURSEL, (WPARAM)0, 0);
+			Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_SETCURSEL, (WPARAM)0, 0);
+			Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_SETCURSEL, (WPARAM)0, 0);
 		
 			wchar_t szBuff[256] = {};
 			GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
@@ -1086,31 +1145,6 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	}
 	return (INT_PTR)FALSE;
 }
-
-HBITMAP ResizeBitmap(HBITMAP hBmp, int width, int height)
-{
-	BITMAP bmp;
-	GetObject(hBmp, sizeof(BITMAP), &bmp);
-
-	HDC hDCSrc = CreateCompatibleDC(NULL);
-	HDC hDCDst = CreateCompatibleDC(NULL);
-
-	HBITMAP hBmpNew = CreateCompatibleBitmap(hDCSrc, width, height);
-
-	HBITMAP hBmpOldSrc = (HBITMAP)SelectObject(hDCSrc, hBmp);
-	HBITMAP hBmpOldDst = (HBITMAP)SelectObject(hDCDst, hBmpNew);
-
-	SetStretchBltMode(hDCDst, HALFTONE); // 더 나은 이미지 품질을 위해
-	StretchBlt(hDCDst, 0, 0, width, height, hDCSrc, 0, 0, bmp.bmWidth, bmp.bmHeight, SRCCOPY);
-
-	SelectObject(hDCSrc, hBmpOldSrc);
-	SelectObject(hDCDst, hBmpOldDst);
-
-	DeleteDC(hDCSrc);
-	DeleteDC(hDCDst);
-
-	return hBmpNew;
-}
 	
 void OpenSaveFile(wstring _Key, wstring _FileType)
 {
@@ -1158,6 +1192,24 @@ void OpenSaveFile(wstring _Key, wstring _FileType)
 	}
 }
 
+int ExtractTypeNumber(const std::wstring& str)
+{
+	int length = str.length();
+	wstring numberStr = L"";
+
+	for (int i = length - 1; i >= 0; --i) 
+	{
+		if (isdigit(str[i])) { numberStr = str[i] + numberStr; }
+		else break;
+	}
+
+	if (!numberStr.empty()) 
+	{
+		return std::stoi(numberStr);
+	}
+
+	return -1;
+}
 
 bool OpenLoadFile(wstring _Path, wstring _FileType)
 {

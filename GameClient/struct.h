@@ -210,7 +210,6 @@ struct DbgObjInfo
 
 struct AtlasInfo
 {
-	bool  UseAtlas;
 	Vec2D StartPos;
 	Vec2D SliceSize;
 };

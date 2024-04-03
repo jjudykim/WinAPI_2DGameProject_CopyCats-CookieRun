@@ -98,15 +98,14 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					if (wstring(szReadBuff) == L"==BACKGROUND==") break;
 				}
 				fwscanf_s(pFile, L"%s", szReadBuff, 256);
-				Vec2D Size = {};
 				Vec2D Pos = {};
 				Vec2D Slice = {};
 				CBackground* BG;
 
 				for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
 				{
-					fwscanf_s(pFile, L"%f%f%f%f%f%f", &Size.x, &Size.y, &Pos.x, &Pos.y, &Slice.x, &Slice.y);
-					if (Size == 0) break;
+					fwscanf_s(pFile, L"%f%f%f%f", &Pos.x, &Pos.y, &Slice.x, &Slice.y);
+					if (Slice == 0) break;
 					curStg->m_arrBG[i] = new CBackground;
 					if (i == 1) { curStg->m_arrBG[i]->SetSpeed(10); }
 					else if (i == 2) { curStg->m_arrBG[i]->SetSpeed(5); }
@@ -115,8 +114,8 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					BG = curStg->m_arrBG[i];
 					BG->SetBGType(static_cast<BG_TYPE>(i));
 					BG->SetAtlas(tex);
-					BG->SetScale(Size);
-					BG->SetAtlasInfo(true, Pos, Slice);
+					BG->SetScale(Slice * 2.25f);
+					BG->SetAtlasInfo(Pos, Slice);
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
 				}
 				tex = nullptr;
@@ -134,8 +133,12 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
 					curStg->m_arrPLT[i] = new CPlatform;
 					PLT = curStg->m_arrPLT[i];
+					PLT->SetPLTType(static_cast<PLT_TYPE>(i));
 					tex = CResourceMgr::GetInst()->LoadTexture(EP + L"_" + STG + L"_PLT" + std::to_wstring(i), szReadBuff);
 					PLT->SetTexture(tex);
+					Vec2D scale = {};
+					fwscanf_s(pFile, L"%f%f", &scale.x, &scale.y);
+					PLT->SetScale(scale);
 				}
 				tex = nullptr;
 
@@ -153,8 +156,14 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
 					curStg->m_arrOBS[i] = new CObstacle;
 					OBS = curStg->m_arrOBS[i];
+					OBS->SetOBSType(static_cast<OBS_TYPE>(i));
 					tex = CResourceMgr::GetInst()->LoadTexture(EP + L"_" + STG + L"_OBS" + std::to_wstring(i), szReadBuff);
 					OBS->SetTexture(tex);
+
+					Vec2D scale = {};
+					fwscanf_s(pFile, L"%f%f", &scale.x, &scale.y);
+					OBS->SetScale(scale);
+
 					if (i == 2) // JUMP_UP
 					{
 						fwscanf_s(pFile, L"%s", szReadBuff, 256);

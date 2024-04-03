@@ -25,9 +25,8 @@ CBackground::~CBackground()
 	
 }
 
-void CBackground::SetAtlasInfo(bool _use, Vec2D _StartPos, Vec2D _SliceSize)
+void CBackground::SetAtlasInfo(Vec2D _StartPos, Vec2D _SliceSize)
 {
-	m_AtlasInfo.UseAtlas = _use;
 	m_AtlasInfo.StartPos = _StartPos;
 	m_AtlasInfo.SliceSize = _SliceSize;
 }

@@ -40,5 +40,6 @@ public:
 	Vec2D GetMousePos() { return m_MousePos; }
 	Vec2D GetMouseDownPos() { return m_MouseDownPos; }
 	bool IsLbtnDowned() { return m_MouseLbtnDown; }
+	bool IsAbleClick() { return m_UseClick; }
 };
 

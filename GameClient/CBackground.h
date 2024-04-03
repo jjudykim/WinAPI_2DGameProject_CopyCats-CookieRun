@@ -18,7 +18,7 @@ public:
 public:
     void SetBGType(BG_TYPE _type) { m_type = _type; }
     void SetAtlas(CTexture* _tex) { m_BGAtlas = _tex; }
-    void SetAtlasInfo(bool _use, Vec2D _StartPos, Vec2D _SlicePos);
+    void SetAtlasInfo(Vec2D _StartPos, Vec2D _SlicePos);
 
     CLONE(CBackground);
 public:
