@@ -30,9 +30,8 @@ public:
     
 
 public:
-    void SpawnStageObject(StageObjInfo& _ObjInfo);
+    void SpawnStageObject(StageSTObjInfo& _ObjInfo);
     //void DeleteStageObject(CObject* _Obj);
-    void LoadFromFile(const wstring& _FullPath);
 public:
     CLONE_DISABLE(CLevel_Game);
 

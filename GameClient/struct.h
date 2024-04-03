@@ -285,18 +285,11 @@ struct JellyInfo
 //	wstring		_Path;
 //};
 
-struct StageObjInfo
+struct StageSTObjInfo
 {
 	LAYER_TYPE		_objType;
-
 	UINT			_typeIndex;
-	Vec2D			_startPos;
-	Vec2D			_scale;
-	float			_speed;
 
-	wstring			_imageName;
-	wstring			_path;
-	bool			_atlas;
-	Vec2D			_slicePos;
-	Vec2D			_sliceSize;
+	Vec2D			_pos;
+	Vec2D			_scale;
 };

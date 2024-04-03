@@ -38,5 +38,6 @@ using namespace Gdiplus;
 #include <shlwapi.h> 
 #pragma comment(lib, "shlwapi.lib") 
 
-// Common Controls
+// MFC, Common Controls
 #include <CommCtrl.h>
+#pragma comment(lib, "comctl32.lib")

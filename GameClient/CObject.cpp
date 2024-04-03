@@ -23,7 +23,7 @@ CObject::CObject(const CObject& _Other)
 	, m_Scale(_Other.m_Scale)
 	, m_Speed(_Other.m_Speed)
 	, m_Animator(nullptr)
-	, m_Type(LAYER_TYPE::NONE)
+	, m_Type(_Other.m_Type)
 	, m_bDead(false)
 {
 	for (size_t i = 0; i < _Other.m_vecCom.size(); ++i)
@@ -36,17 +36,6 @@ CObject::CObject(const CObject& _Other)
 CObject::~CObject()
 {
 	Safe_Del_Vec(m_vecCom);
-}
-
-void CObject::SetAtlasInfo(bool _use, Vec2D _StartPos, Vec2D _SlicePos)
-{
-	if (!_use)
-	{
-		m_ImageInfo.UseAtlas = false;
-		return;
-	}
-	m_ImageInfo.StartPos = _StartPos;
-	m_ImageInfo.SliceSize = _SlicePos;
 }
 
 void CObject::Destroy()

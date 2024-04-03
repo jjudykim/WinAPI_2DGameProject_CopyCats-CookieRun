@@ -6,17 +6,25 @@
 
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
+#include "CStageMgr.h"
 #include "CResourceMgr.h"
 #include "CTaskMgr.h"
 #include "CMouseMgr.h"
 #include "CHandleMgr.h"
 #include "CCamera.h"
 
+#include "CObject.h"
 #include "CTexture.h"
 #include "CDraw.h"
 #include "CAnimator.h"
+#include "CStage.h"
+#include "CObstacle.h"
+#include "CPlatform.h"
 
 
+HBITMAP ResizeBitmap(HBITMAP hBmp, int width, int height);
+
+// For Animation Editor ============================
 // global
 wstring g_DialogText = L"";
 
@@ -25,6 +33,9 @@ HWND g_hDrawEdit[20] = {};
 
 HWND g_DrawCtrl = nullptr;
 RECT g_DrawSize = {};
+
+// For Stage Editor ================================
+CObject* SelectObj = nullptr;
 
 
 CLevel_Editor::CLevel_Editor()
@@ -927,6 +938,8 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	assert(pEditorLevel);
 
 	HWND hEditSTStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC);
+	HIMAGELIST hImageList = nullptr;
+	HWND hWndListView = nullptr;
 
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
@@ -936,20 +949,20 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		hEditSTStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC);
 
 		HWND hCombo = GetDlgItem(hDlg, IDC_EPISODE);
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP1_Escape From The Oven");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 2");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 3");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 4");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"항목 5");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP1");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP2");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP3");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP4");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP5");
 		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
 
 		hCombo = GetDlgItem(hDlg, IDC_STAGE);
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"1ST STAGE");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"2ND STAGE");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"3RD STAGE");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"4TH STAGE");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"5TH STAGE");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"6TH STAGE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG1");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG2");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG3");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG4");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG5");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG6");
 		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
 
 		hCombo = GetDlgItem(hDlg, IDC_OBJTYPE);
@@ -960,22 +973,107 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	}
 		break;
 
+	case WM_NOTIFY:
+	{
+		NMHDR* pNmhdr = (NMHDR*)lParam;
+		for (int i = 10; i < 20; ++i)
+		{
+			if (pNmhdr->idFrom == IDC_LIST && pNmhdr->code == LVN_ITEMCHANGED)
+			{
+				NMLISTVIEW* pNMLV = (NMLISTVIEW*)lParam;
+				if (pNMLV->uChanged & LVIF_STATE)
+				{
+					if ((pNMLV->uNewState & LVIS_SELECTED) && !(pNMLV->uOldState & LVIS_SELECTED))
+					{
+						wchar_t szBuff[256];
+						ListView_GetItemText(pNmhdr->hwndFrom, pNMLV->iItem, 0, szBuff, sizeof(szBuff) / sizeof(szBuff[0]));
+						SetDlgItemText(hDlg, IDC_SELECTOBJ, szBuff);
+					}
+				}
+			}
+		}
+	}
+
 	case WM_COMMAND:
 	{
-		if (LOWORD(wParam) == IDC_EPISODE)
+		if (LOWORD(wParam) == IDC_LOAD)
 		{
-			
-		}
-		else if (LOWORD(wParam) == IDC_STAGE)
-		{
+			hImageList = ImageList_Create(64, 64,  ILC_COLOR32 | ILC_MASK, 4, 4);
+			hWndListView = GetDlgItem(hDlg, IDC_LIST);
+			ListView_DeleteAllItems(hWndListView);
 
-		}
-		else if (LOWORD(wParam) == IDC_LOAD)
-		{
+			UINT Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_SETCURSEL, (WPARAM)0, 0);
+			UINT Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_SETCURSEL, (WPARAM)0, 0);
+		
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
+			wstring Obj = szBuff;
+
+			CStageMgr::GetInst()->LoadStageInfo(static_cast<EPISODE_TYPE>(Ep));
+			CStage* EditStage = CStageMgr::GetInst()->GetStage(Ep, Stg);
+			if (Obj == L"OBSTACLE")
+			{
+				CObstacle* curOBS;
+				HICON hIcon;
+				for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
+				{
+					curOBS = EditStage->GetOBS(static_cast<OBS_TYPE>(i));
+					Bitmap* pBitmap = curOBS->GetTexture()->GetpBit();
+					pBitmap->GetHICON(&hIcon);
+					
+					ImageList_ReplaceIcon(hImageList, -1, hIcon);
+					DestroyIcon(hIcon);
+				}
+				ListView_SetImageList(hWndListView, hImageList, LVSIL_NORMAL);
+
+				for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
+				{
+					wstring str = L"OBS_" + std::to_wstring(i);
+					LV_ITEM lvItem;
+					lvItem.mask = LVIF_TEXT | LVIF_IMAGE;
+					lvItem.iItem = i;
+					lvItem.iSubItem = 0;
+					lvItem.pszText = (LPWSTR)str.c_str();
+					lvItem.iImage = i;
+
+					ListView_InsertItem(hWndListView, &lvItem);
+				}
+			
+			}
+			else if (Obj == L"PLATFORM")
+			{
+				CPlatform* curPLT;
+				HICON hIcon;
+				for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
+				{
+					curPLT = EditStage->GetPLT(static_cast<PLT_TYPE>(i));
+					Bitmap* pBitmap = curPLT->GetTexture()->GetpBit();
+					pBitmap->GetHICON(&hIcon);
+
+					ImageList_ReplaceIcon(hImageList, -1, hIcon);
+					DestroyIcon(hIcon);
+				}
+				ListView_SetImageList(hWndListView, hImageList, LVSIL_NORMAL);
+
+				for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
+				{
+					wstring str = L"PLT_" + std::to_wstring(i);
+					LV_ITEM lvItem;
+					lvItem.mask = LVIF_TEXT | LVIF_IMAGE;
+					lvItem.iItem = i;
+					lvItem.iSubItem = 0;
+					lvItem.pszText = (LPWSTR)str.c_str();
+					lvItem.iImage = i;
+
+					ListView_InsertItem(hWndListView, &lvItem);
+				}
+			}
+			
+			
 		}
 		else if (LOWORD(wParam) == IDSAVE)
 		{
-
+			
 		}
 		if (LOWORD(wParam) == IDCANCEL)
 		{
@@ -989,7 +1087,30 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	return (INT_PTR)FALSE;
 }
 
+HBITMAP ResizeBitmap(HBITMAP hBmp, int width, int height)
+{
+	BITMAP bmp;
+	GetObject(hBmp, sizeof(BITMAP), &bmp);
 
+	HDC hDCSrc = CreateCompatibleDC(NULL);
+	HDC hDCDst = CreateCompatibleDC(NULL);
+
+	HBITMAP hBmpNew = CreateCompatibleBitmap(hDCSrc, width, height);
+
+	HBITMAP hBmpOldSrc = (HBITMAP)SelectObject(hDCSrc, hBmp);
+	HBITMAP hBmpOldDst = (HBITMAP)SelectObject(hDCDst, hBmpNew);
+
+	SetStretchBltMode(hDCDst, HALFTONE); // 더 나은 이미지 품질을 위해
+	StretchBlt(hDCDst, 0, 0, width, height, hDCSrc, 0, 0, bmp.bmWidth, bmp.bmHeight, SRCCOPY);
+
+	SelectObject(hDCSrc, hBmpOldSrc);
+	SelectObject(hDCDst, hBmpOldDst);
+
+	DeleteDC(hDCSrc);
+	DeleteDC(hDCDst);
+
+	return hBmpNew;
+}
 	
 void OpenSaveFile(wstring _Key, wstring _FileType)
 {

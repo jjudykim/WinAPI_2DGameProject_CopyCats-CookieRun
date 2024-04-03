@@ -6,6 +6,7 @@ class CTexture :
 {
 private:
     HDC         m_hDC;
+    Bitmap*     m_pBit;
     HBITMAP     m_hBit;
     BITMAP      m_Info;
 
@@ -17,6 +18,7 @@ private:
 
 public:
     HDC GetDC() { return m_hDC; }
+    Bitmap* GetpBit() { return m_pBit; }
     HBITMAP GetBit() { return m_hBit; }
     UINT GetWidth() { return m_Info.bmWidth; }
     UINT GetHeight() { return m_Info.bmHeight; }

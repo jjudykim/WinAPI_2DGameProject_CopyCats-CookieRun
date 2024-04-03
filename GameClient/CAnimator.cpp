@@ -10,6 +10,17 @@ CAnimator::CAnimator()
 {
 }
 
+CAnimator::CAnimator(const CAnimator& _Other)
+	: m_CurAnim(nullptr)
+	, m_Repeat(_Other.m_Repeat)
+{
+	map<wstring, CAnimation*>::const_iterator iter = _Other.m_mapAnim.begin();
+	for (; iter != _Other.m_mapAnim.end(); ++iter)
+	{
+		m_mapAnim.insert(make_pair(iter->first, iter->second));
+	}
+}
+
 CAnimator::~CAnimator()
 {
 	Safe_Del_Map(m_mapAnim);

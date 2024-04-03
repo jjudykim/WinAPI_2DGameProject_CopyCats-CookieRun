@@ -7,6 +7,7 @@
 #include "CPathMgr.h"
 #include "CKeyMgr.h"
 #include "CLevelMgr.h"
+#include "CStageMgr.h"
 #include "CTaskMgr.h"
 
 #include "CEngine.h"
@@ -57,11 +58,11 @@ void CLevel_Game::tick()
 	m_SpawnPosX = StandardPosX + m_ResolutionWidth;
 	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
 
-	vector<StageObjInfo>& vecStageInfo = m_CurStage->m_vecStageInfo;
-	vector<StageObjInfo>::iterator iter = vecStageInfo.begin();
+	vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecStageInfo;
+	vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
 	for (; iter != vecStageInfo.end(); )
 	{
-		if (iter->_startPos.x <= m_SpawnPosX)
+		if (iter->_pos.x <= m_SpawnPosX)
 		{
 			SpawnStageObject(*iter);
 			iter = vecStageInfo.erase(iter);
@@ -79,7 +80,16 @@ void CLevel_Game::tick()
 
 		for (size_t j = 0; j < vecObj.size(); ++j)
 		{
-			float tPosX = vecObj[j]->GetPos().x + vecObj[j]->GetScale().x;
+			float tPosX = 0.0f;
+			if (vecObj[j]->GetLayerType() == LAYER_TYPE::BACKGROUND)
+			{
+				tPosX = vecObj[j]->GetPos().x + vecObj[j]->GetScale().x * 2.25;
+			}
+			else
+			{
+				tPosX = vecObj[j]->GetPos().x + vecObj[j]->GetScale().x;
+			}
+
 			if (tPosX <= m_DeletePosX)
 			{
 				vecObj[j]->Destroy();
@@ -115,13 +125,9 @@ void CLevel_Game::Enter()
 	m_ResolutionWidth = CEngine::GetInst()->GetResolution().x;
 	
 	// 현재 스테이지 맵 데이터 불러오기
-	m_CurStage = new CStage();
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += L"stage\\Ep1_1st_stage.stg";
-	LoadFromFile(strFilePath);
-
-	// 다음 스테이지 맵 데이터 불러오기
-	//...
+	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
+	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
+	m_CurStage->LoadFromFile();
 
 	CObject* pObject = new CPlayer;
 	pObject->SetName(L"Player");
@@ -155,35 +161,25 @@ void CLevel_Game::Exit()
 {
 }
 
-void CLevel_Game::SpawnStageObject(StageObjInfo& _ObjInfo)
+void CLevel_Game::SpawnStageObject(StageSTObjInfo& _ObjInfo)
 {
 	Task task = {};
 	CObject* pObject = nullptr;
 
 	LAYER_TYPE type = _ObjInfo._objType;
 	UINT index = _ObjInfo._typeIndex;
-	if (type == LAYER_TYPE::BACKGROUND)	pObject = new CBackground(index);
-	else if (type == LAYER_TYPE::PLATFORM) pObject = new CPlatform(index);
-	else if (type == LAYER_TYPE::OBSTACLE) pObject = new CObstacle(index);
+	if (type == LAYER_TYPE::BACKGROUND)	pObject = (m_CurStage->GetBG(static_cast<BG_TYPE>(index)))->Clone();
+	else if (type == LAYER_TYPE::PLATFORM) pObject = (m_CurStage->GetPLT(static_cast<PLT_TYPE>(index)))->Clone();
+	else if (type == LAYER_TYPE::OBSTACLE) pObject = (m_CurStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
 
-	pObject->SetPos(_ObjInfo._startPos);
+	pObject->SetPos(_ObjInfo._pos);
 	pObject->SetScale(_ObjInfo._scale);
-	pObject->SetSpeed(_ObjInfo._speed);
-
-	pObject->SetImage(CResourceMgr::GetInst()->LoadTexture(_ObjInfo._imageName, _ObjInfo._path));
-	pObject->SetAtlasInfo(_ObjInfo._atlas, _ObjInfo._slicePos, _ObjInfo._sliceSize);
 
 	task.Type = TASK_TYPE::SPAWN_OBJECT;
 	task.Param1 = (DWORD_PTR)type;
 	task.Param2 = (DWORD_PTR)pObject;
 
 	CTaskMgr::GetInst()->AddTask(task);
-}
-
-void CLevel_Game::LoadFromFile(const wstring& _FullPath)
-{
-	m_CurStage->LoadFromFile(_FullPath);
-	
 }
 
 

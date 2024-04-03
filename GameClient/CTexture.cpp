@@ -57,6 +57,7 @@ int CTexture::Load(const wstring& _strFilePath)
 
 		Image* pImg = Image::FromFile(_strFilePath.c_str(), 0);
 		Bitmap* pBitmap = (Bitmap*)pImg->Clone();
+		m_pBit = pBitmap;
 		Gdiplus::Status status = pBitmap->GetHBITMAP(Color(0, 0, 0, 0), &m_hBit);
 		assert(status == Gdiplus::Status::Ok);
 		m_Path = _strFilePath;

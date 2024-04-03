@@ -1,31 +1,33 @@
 [BACKGROUND_ATLAS]
-texture\\Ep1_Background_Atlas.png
+texture\Ep1_Background_Atlas.png
 
 [STAGE_COUNT]
 1
 
-[STAGE 1]
+[STAGE1]
 ==BACKGROUND==
 [MAIN] 1280.0000 720.0000 2.0000 17.0000 569.0000 320.0000 
-[SUB1] 1280.0000 720.0000 573.0000 17.0000 862.0000 320.0000
+[SUB1] 1939.5000 720.0000 573.0000 17.0000 862.0000 320.0000
 [SUB2] 0 0 0 0 0 0
 [SUB3] 0 0 0 0 0 0
 [END]
 
 ==PLATFORM==
-[GROUNDED] texture\\EP1\\Stage1\\ep1_stg1_PLT_grounded.png
-[FLOATED] texture\\EP1\\Stage1\\ep1_stg1_PLT_floated.png
+[GROUNDED] texture\EP1\Stage1\EP1_STG1_PLT0.png
+[FLOATED] texture\EP1\Stage1\EP1_STG1_PLT1.png
 [END]
 
 ==OBSTACLE==
-[JUMP_A] texture\\EP1\\Stage1\\ep1_stg1_OBS_jumpA.png
-[JUMP_B] texture\\EP1\\Stage1\\ep1_stg1_OBS_jumpB.png 
-[JUMP_UP] animation\\EP1\\ep1_stg1_OBS_jumpUp.anim
-[JUMP_DOWN] texture\\EP1\\Stage1\\ep1_stg1_OBS_jumpDown.png 
-[DBJUMP_A] texture\\EP1\\Stage1\\ep1_stg1_OBS_DBjumpA.png
-[DBJUMP_B] texture\\EP1\\Stage1\\ep1_stg1_OBS_DBjumpB.png
-[DBJUMP_DOWN] texture\\EP1\\Stage1\\ep1_stg1_OBS_DBjumpDown.png
-[DBJUMP_UP] animation\\EP1\\ep1_stg1_OBS_DBjumpUp.anim
-[SLIDE_A] texture\\EP1\\Stage1\\ep1_stg1_OBS_slideA.png
-[SLIDE_B] texture\\EP1\\Stage1\\ep1_stg1_OBS_slideB.png
+[JUMP_A] texture\EP1\Stage1\EP1_STG1_OBS0.png
+[JUMP_B] texture\EP1\Stage1\EP1_STG1_OBS1.png 
+[JUMP_UP] texture\EP1\Stage1\EP1_STG1_OBS2.png
+animation\EP1\EP1_STG1_OBS2.anim
+[JUMP_DOWN] texture\EP1\Stage1\EP1_STG1_OBS3.png 
+[DBJUMP_A] texture\EP1\Stage1\EP1_STG1_OBS4.png
+[DBJUMP_B] texture\EP1\Stage1\EP1_STG1_OBS5.png
+[DBJUMP_DOWN] texture\EP1\Stage1\EP1_STG1_OBS6.png
+[DBJUMP_UP] texture\EP1\Stage1\EP1_STG1_OBS7.png
+animation\EP1\EP1_STG1_OBS7.anim
+[SLIDE_A] texture\EP1\Stage1\EP1_STG1_OBS8.png
+[SLIDE_B] texture\EP1\Stage1\EP1_STG1_OBS9.png
 [END]

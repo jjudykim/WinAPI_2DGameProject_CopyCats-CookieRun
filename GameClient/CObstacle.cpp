@@ -2,30 +2,31 @@
 #include "CObstacle.h"
 
 #include "CCollider.h"
+#include "CAnimator.h"
 
 CObstacle::CObstacle()
-	: m_ObstacleImg(nullptr)
+	: m_Texture(nullptr)
+	, m_Animator(nullptr)
 	, m_Collider(nullptr)
-{
-
-}
-
-CObstacle::CObstacle(UINT _typeIndex)
+	, m_type(OBS_TYPE::END)
 {
 	SetLayerType(LAYER_TYPE::OBSTACLE);
-	m_type = (OBS_TYPE)_typeIndex;
-
-	wstring tPath = L"";
-	Vec2D tColliderScale;
-
-	if (m_type == OBS_TYPE::JUMP_A)
-	{
-		tPath = L"texture\\Ep1_jump_1.png";
-		tColliderScale = Vec2D(80.f, 100.f);
-	}
-	m_ObstacleImg = CResourceMgr::GetInst()->LoadTexture(L"Ep1_jump_1", tPath);
+	m_Animator = (CAnimator*)AddComponent(new CAnimator);
 	m_Collider = (CCollider*)AddComponent(new CCollider);
-	m_Collider->SetScale(tColliderScale);
+}
+
+CObstacle::CObstacle(const CObstacle& _Other)
+	: CObject(_Other)
+	, m_type(_Other.m_type)
+	, m_Texture(_Other.m_Texture)
+	, m_Animator(nullptr)
+	, m_Collider(nullptr)
+{
+	if (_Other.m_Animator != nullptr)
+	{
+		m_Animator = GetComponent<CAnimator>();
+	}
+	m_Collider = GetComponent<CCollider>();
 }
 
 CObstacle::~CObstacle()
@@ -51,11 +52,11 @@ void CObstacle::render()
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	AlphaBlend(DC
-		, (int)(GetRenderPos().x - m_ObstacleImg->GetWidth() / 2.f)
-		, (int)(GetRenderPos().y - m_ObstacleImg->GetHeight() / 2.f)
-		, m_ObstacleImg->GetWidth(), m_ObstacleImg->GetHeight()
-		, m_ObstacleImg->GetDC(), 0, 0
-		, m_ObstacleImg->GetWidth(), m_ObstacleImg->GetHeight()
+		, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+		, (int)(GetRenderPos().y - m_Texture->GetHeight() / 2.f)
+		, m_Texture->GetWidth(), m_Texture->GetHeight()
+		, m_Texture->GetDC(), 0, 0
+		, m_Texture->GetWidth(), m_Texture->GetHeight()
 		, bf);
 }
 

@@ -6,6 +6,7 @@
 #include "CPathMgr.h"
 #include "CKeyMgr.h"
 #include "CMouseMgr.h"
+#include "CStageMgr.h"
 #include "CLevelMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CCollisionMgr.h"
@@ -65,6 +66,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CTimeMgr::GetInst()->init();
 	CLevelMgr::GetInst()->init();
 	CCamera::GetInst()->init();
+	CStageMgr::GetInst()->init();
 
 	return S_OK;
 }

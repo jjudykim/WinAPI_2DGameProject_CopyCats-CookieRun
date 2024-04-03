@@ -6,8 +6,8 @@ class CPlatform :
 {
 private:
     bool        m_Edge;
-    PLT_TYPE    m_type;
-    CTexture*   m_texture;
+    PLT_TYPE    m_Type;
+    CTexture*   m_Texture;
     CCollider*  m_Collider;
 
 public:
@@ -21,13 +21,13 @@ public:
     CLONE(CPlatform)
 
 public:
-    void SetPLTType(PLT_TYPE _type) { m_type = _type; }
-    void SetTexture(CTexture* _tex) { m_texture = _tex; }
+    CTexture* GetTexture() { return m_Texture; }
+    void SetPLTType(PLT_TYPE _type) { m_Type = _type; }
+    void SetTexture(CTexture* _tex) { m_Texture = _tex; }
     void SetEdge(bool _b) { m_Edge = _b; }
 
 public:
     CPlatform();
-    CPlatform(UINT _typeIndex);
     CPlatform(const CPlatform& _Other);
     ~CPlatform();
     

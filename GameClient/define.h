@@ -1,5 +1,7 @@
 #pragma once
 
+#define _AFXDLL
+
 // ½Ì±ÛÅæ ÆÐÅÏ ±¸Çö
 #define SINGLE(type) public:\
 						static type* GetInst()\
