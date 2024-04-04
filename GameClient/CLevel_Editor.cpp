@@ -25,7 +25,6 @@ int ExtractTypeNumber(const std::wstring& str);
 
 // global
 wstring g_DialogText = L"";
-int CurEditMode = -1;
 
 // For Animation Editor ============================
 // 0 ~ 9 : Edit Control, 10 ~ 19 : Spin Control 
@@ -42,6 +41,7 @@ UINT Stg = (UINT)STAGE_TYPE::END;
 
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
+	, m_EditMode(-1)
 	, m_EditTex(nullptr)
 	, m_EditAnim(nullptr)
 	, m_CurDraw(nullptr)
@@ -51,6 +51,7 @@ CLevel_Editor::CLevel_Editor()
 	, m_CreatingAnim(false)
 	, m_PlayingAnim(false)
 	, m_CurEditObject(nullptr)
+	, m_GuideDraw(nullptr)
 	, m_Editing(false)
 	, m_Dragging(false)
 {
@@ -69,7 +70,7 @@ void CLevel_Editor::tick()
 {
 	CLevel::tick();
 
-	if (CurEditMode == 0)
+	if (m_EditMode == 0)
 	{
 		if (m_Drawable)
 		{
@@ -149,7 +150,7 @@ void CLevel_Editor::tick()
 			}
 		}
 	}
-	else if (CurEditMode == 1)
+	else if (m_EditMode == 1)
 	{
 		if (CMouseMgr::GetInst()->IsAbleClick() == false)
 		{
@@ -163,6 +164,50 @@ void CLevel_Editor::tick()
 				CObject* clone = SelectObj->Clone();
 				AddObject(clone->GetLayerType(), clone);
 				m_CurEditObject = clone;
+
+				m_GuideDraw = new CDraw;
+				m_GuideDraw->SetTexture(CResourceMgr::GetInst()->FindTexture(L"GuideDraw"));
+				if (m_GuideDraw->GetTexture() == nullptr)
+				{
+					m_GuideDraw->SetTexture(CResourceMgr::GetInst()->CreateTexture(L"GuideDraw", 15000, 50, true));
+				}
+				m_GuideDraw->setDrawing(false);
+				m_GuideDraw->SetPos(0, 0);
+				m_GuideDraw->SetScale(15000, 50);
+
+				switch (m_CurEditObject->GetLayerType())
+				{
+				case LAYER_TYPE::OBSTACLE:
+				{
+					CObstacle* CurObs = dynamic_cast<CObstacle*>(m_CurEditObject);
+					if (CurObs == nullptr) break;
+					
+					switch (CurObs->GetOBSType())
+					{
+					case OBS_TYPE::JUMP_A: case OBS_TYPE::JUMP_B: case OBS_TYPE::JUMP_UP: case OBS_TYPE::JUMP_DOWN:
+					{
+						m_GuideDraw->SetPos(Vec2D(0, 610));
+					}
+					break;
+					case OBS_TYPE::DBJUMP_A: case OBS_TYPE::DBJUMP_B: case OBS_TYPE::DBJUMP_UP: case OBS_TYPE::DBJUMP_DOWN:
+					{
+						m_GuideDraw->SetPos(Vec2D(0, 610));
+					}
+					break;
+					case OBS_TYPE::SLIDE_A: case OBS_TYPE::SLIDE_B:
+					{
+						m_GuideDraw->SetPos(Vec2D(0, 0));
+					}
+					break;
+					}
+				}
+				case LAYER_TYPE::PLATFORM:
+				{
+				}
+
+				
+				}
+				AddObject(LAYER_TYPE::DRAW, m_GuideDraw);
 			}
 			else
 			{
@@ -180,6 +225,12 @@ void CLevel_Editor::tick()
 						m_Dragging = false;
 						m_CurEditObject = nullptr;
 						SelectObj = nullptr;
+						
+						if (m_GuideDraw != nullptr)
+						{
+							CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)m_GuideDraw });
+							m_GuideDraw == nullptr;
+						}
 					}
 				}
 			}
@@ -385,7 +436,7 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 	HWND hEditAnim = CHandleMgr::GetInst()->FindHandle(IDD_EDITANIM);
 
-	CurEditMode = 0;
+	pEditorLevel->SetEditMode(0);
 
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
@@ -981,11 +1032,11 @@ INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	CurEditMode = 1;
-
 	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
 	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
 	assert(pEditorLevel);
+
+	pEditorLevel->SetEditMode(1);
 
 	HWND hEditSTStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC);
 	HIMAGELIST hImageList = nullptr;
@@ -1023,47 +1074,54 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	}
 	case WM_NOTIFY:
 	{
-		NMHDR* pNmhdr = (NMHDR*)lParam;
-		if (pNmhdr->idFrom == IDC_LIST && pNmhdr->code == LVN_ITEMCHANGED)
+		LPNMITEMACTIVATE pnmItem = (LPNMITEMACTIVATE)lParam;
+		if (pnmItem->hdr.idFrom == IDC_LIST && pnmItem->hdr.code == NM_CLICK)
 		{
-			NMLISTVIEW* pNMLV = (NMLISTVIEW*)lParam;
-			if (pNMLV->uChanged & LVIF_STATE)
-			{
-				// && !(pNMLV->uOldState & LVIS_SELECTED)
-				if (pNMLV->uNewState & LVIS_SELECTED)
-				{
-					wchar_t szBuff[256];
-					ListView_GetItemText(pNmhdr->hwndFrom, pNMLV->iItem, 0, szBuff, sizeof(szBuff) / sizeof(szBuff[0]));
-					SetDlgItemText(hDlg, IDC_SELECTOBJ, szBuff);
+			LVHITTESTINFO hitTestInfo = {0};
+			hitTestInfo.pt = pnmItem->ptAction;
+			ListView_HitTest(pnmItem->hdr.hwndFrom, &hitTestInfo);
 
-					UINT ObjType = ExtractTypeNumber(wstring(szBuff));
-					CStage* EditStage = CStageMgr::GetInst()->GetStage(Ep, Stg);
-					GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
-					if (wstring(szBuff) == L"OBSTACLE")
-					{
-						SelectObj = EditStage->GetOBS(static_cast<OBS_TYPE>(ObjType));
-						pEditorLevel->SetEditing(true);
-					}
-					else if (wstring(szBuff) == L"PLATFORM")
-					{
-						SelectObj = EditStage->GetPLT(static_cast<PLT_TYPE>(ObjType));
-						pEditorLevel->SetEditing(true);
-					}
+			if (hitTestInfo.flags & LVHT_ONITEM)
+			{
+				wchar_t szBuff[256];
+				ListView_GetItemText(pnmItem->hdr.hwndFrom, hitTestInfo.iItem, 0, szBuff, sizeof(szBuff) / sizeof(szBuff[0]));
+				SetDlgItemText(hDlg, IDC_SELECTOBJ, szBuff);
+
+				UINT ObjType = ExtractTypeNumber(wstring(szBuff));
+				CStage* EditStage = CStageMgr::GetInst()->GetStage(Ep, Stg);
+				GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
+				if (wstring(szBuff) == L"OBSTACLE")
+				{
+					SelectObj = EditStage->GetOBS(static_cast<OBS_TYPE>(ObjType));
+					pEditorLevel->SetEditing(true);
+				}
+				else if (wstring(szBuff) == L"PLATFORM")
+				{
+					SelectObj = EditStage->GetPLT(static_cast<PLT_TYPE>(ObjType));
+					pEditorLevel->SetEditing(true);
 				}
 			}
 		}
+		break;
 	}
+	case WM_KILLFOCUS:
+		if ((HWND)wParam == hWndListView)
+		{
+			ListView_SetItemState(hWndListView, -1, 0, LVIS_SELECTED);
+		}
+		return (INT_PTR)TRUE;
+
 	case WM_COMMAND:
 	{
 		if (LOWORD(wParam) == IDC_LOAD)
 		{
-			hImageList = ImageList_Create(64, 64,  ILC_COLOR32 | ILC_MASK, 4, 4);
+			hImageList = ImageList_Create(64, 64, ILC_COLOR32 | ILC_MASK, 4, 4);
 			hWndListView = GetDlgItem(hDlg, IDC_LIST);
 			ListView_DeleteAllItems(hWndListView);
 
 			Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_SETCURSEL, (WPARAM)0, 0);
 			Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_SETCURSEL, (WPARAM)0, 0);
-		
+
 			wchar_t szBuff[256] = {};
 			GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
 			wstring Obj = szBuff;
@@ -1079,7 +1137,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 					curOBS = EditStage->GetOBS(static_cast<OBS_TYPE>(i));
 					Bitmap* pBitmap = curOBS->GetTexture()->GetpBit();
 					pBitmap->GetHICON(&hIcon);
-					
+
 					ImageList_ReplaceIcon(hImageList, -1, hIcon);
 					DestroyIcon(hIcon);
 				}
@@ -1097,7 +1155,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 					ListView_InsertItem(hWndListView, &lvItem);
 				}
-			
+
 			}
 			else if (Obj == L"PLATFORM")
 			{
@@ -1127,12 +1185,12 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 					ListView_InsertItem(hWndListView, &lvItem);
 				}
 			}
-			
-			
+
+
 		}
 		else if (LOWORD(wParam) == IDSAVE)
 		{
-			
+
 		}
 		if (LOWORD(wParam) == IDCANCEL)
 		{
@@ -1141,7 +1199,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			return (INT_PTR)TRUE;
 		}
 	}
-		break;
+	break;
 	}
 	return (INT_PTR)FALSE;
 }

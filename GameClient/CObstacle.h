@@ -19,6 +19,8 @@ public:
 
     void SetOBSType(OBS_TYPE _type) { m_type = _type; }
     void SetTexture(CTexture* _tex) { m_Texture = _tex; }
+
+    OBS_TYPE GetOBSType() { return m_type; }
     
     CLONE(CObstacle);
 

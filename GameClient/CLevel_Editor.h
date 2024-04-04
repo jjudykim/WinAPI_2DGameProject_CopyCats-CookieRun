@@ -12,7 +12,8 @@ class CLevel_Editor :
 {
 private:
     HMENU       m_hMenu;
-    
+    int         m_EditMode;
+
     // Animation Editor
     CTexture*       m_EditTex;
     CAnimation*     m_EditAnim;
@@ -28,6 +29,7 @@ private:
 
     // Stage Editor
     CObject*        m_CurEditObject;
+    CDraw*          m_GuideDraw;
 
     bool            m_Editing;
     bool            m_Dragging;
@@ -43,6 +45,8 @@ public:
 
 public:
     vector<wstring> GetLoadedTextureKey();
+    int GetEditMode() { return m_EditMode; }
+    void SetEditMode(int _mode) { m_EditMode = _mode; }
 
     // Animation Editor
     void ResetAllAnimationOption();

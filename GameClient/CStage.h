@@ -12,6 +12,7 @@ class CStage :
 private:
 	EPISODE_TYPE			  m_EpisodeType;
 	STAGE_TYPE				  m_StageType;
+	float					  m_StageLength;
 
 	CBackground*			  m_arrBG[(UINT)BG_TYPE::END];
 	CPlatform*				  m_arrPLT[(UINT)PLT_TYPE::END];

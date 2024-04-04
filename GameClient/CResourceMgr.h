@@ -18,7 +18,7 @@ private:
 public:
 	void init();
 
-	CTexture* CreateTexture(const wstring& _Key, UINT _Width, UINT _Height);
+	CTexture* CreateTexture(const wstring& _Key, UINT _Width, UINT _Height, bool _Alpha);
 	CTexture* LoadTexture(const wstring& _Key, const wstring& _strRelativePath);
 	CTexture* FindTexture(const wstring& _Key);
 

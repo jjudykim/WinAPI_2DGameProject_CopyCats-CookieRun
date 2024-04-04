@@ -5,6 +5,7 @@
 CTexture::CTexture()
 	: m_hDC{}
 	, m_hBit{}
+	, m_pBit{}
 	, m_Info{}
 	, m_Path{}
 {
@@ -27,6 +28,25 @@ int CTexture::Create(UINT _Width, UINT _Height)
 	DeleteObject(hPrevBitmap);
 
 	// 로드된 비트맵의 정보를 확인한다.
+	GetObject(m_hBit, sizeof(BITMAP), &m_Info);
+
+	return S_OK;
+}
+
+int CTexture::CreateWithAlpha(UINT _Width, UINT _Height)
+{
+	Bitmap bitmap(_Width, _Height, PixelFormat32bppARGB);
+	Graphics graphics(&bitmap);
+
+	Color color(128, 0, 0, 255);
+	SolidBrush brush(color);
+
+	graphics.FillRectangle(&brush, 0, 0, _Width, _Height);
+	
+	bitmap.GetHBITMAP(Color::Black, &m_hBit);
+	m_hDC = CreateCompatibleDC(nullptr);
+	SelectObject(m_hDC, m_hBit);
+
 	GetObject(m_hBit, sizeof(BITMAP), &m_Info);
 
 	return S_OK;
@@ -67,12 +87,7 @@ int CTexture::Load(const wstring& _strFilePath)
 		assert(nullptr);
 	}
 
-	
-
-	
-
 	GetObject(m_hBit, sizeof(BITMAP), &m_Info);
-
 	m_hDC = CreateCompatibleDC(CEngine::GetInst()->GetMainDC());
 	DeleteObject(SelectObject(m_hDC, m_hBit));
 	return S_OK;

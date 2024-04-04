@@ -46,7 +46,8 @@ public:
 	void render();
 
 private:
-	void Move();
+	void MoveAll();
+	void MoveLR();
 	void CameraEffect();
 };
 

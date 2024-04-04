@@ -44,13 +44,23 @@ CTexture* CResourceMgr::LoadTexture(const wstring& _Key, const wstring& _strRela
 	return pTex;
 }
 
-CTexture* CResourceMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height)
+CTexture* CResourceMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height, bool _Alpha)
 {
 	// 해당 키로 등록된 텍스쳐가 있다면
 	assert(!FindTexture(_Key));
 
 	CTexture* pTex = new CTexture;
-	if (FAILED(pTex->Create(_Width, _Height)))
+	int result;
+	if (_Alpha == true)
+	{
+		result = pTex->CreateWithAlpha(_Width, _Height);
+	}
+	else
+	{
+		result = pTex->Create(_Width, _Height);
+	}
+
+	if (FAILED(result))
 	{
 		MessageBox(nullptr, _Key.c_str(), L"텍스쳐 생성 실패", MB_OK);
 		delete pTex;

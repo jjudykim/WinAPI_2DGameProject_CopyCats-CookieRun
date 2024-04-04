@@ -6,6 +6,7 @@
 #include "CLevelMgr.h"
 #include "CKeyMgr.h"
 #include "CLevel.h"
+#include "CLevel_Editor.h"
 #include "CPlayer.h"
 #include "CTimeMgr.h"
 
@@ -30,8 +31,9 @@ void CCamera::init()
 
 void CCamera::tick()
 {
+	CLevel* pLevel = GET_CUR_LEVEL;
 	LEVEL_TYPE curLevel = GET_CUR_LEVELTYPE;
-
+	
 	if (curLevel == LEVEL_TYPE::GAME)
 	{
 		if (m_FocusObj != nullptr)
@@ -40,8 +42,18 @@ void CCamera::tick()
 	}
 	else if (curLevel == LEVEL_TYPE::EDITOR)
 	{
-		m_CamSpeed = 300.f;
-		Move();
+		m_CamSpeed = 500.f;
+		CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
+		assert(pEditorLevel);
+
+		if (pEditorLevel->GetEditMode() == 0)
+		{
+			MoveAll();
+		}
+		else if (pEditorLevel->GetEditMode() == 1)
+		{
+			MoveLR();
+		}
 	}
 
 	Vec2D vResol = CEngine::GetInst()->GetResolution();
@@ -97,12 +109,20 @@ void CCamera::SetCameraEffect(CAM_EFFECT _Effect, float _Duration)
 	m_EffectList.push_back(info);
 }
 
-void CCamera::Move()
+void CCamera::MoveAll()
 {
 	if (KEY_PRESSED(KEY::W))
 		m_LookAt.y -= DT * m_CamSpeed;
 	if (KEY_PRESSED(KEY::S))
 		m_LookAt.y += DT * m_CamSpeed;
+	if (KEY_PRESSED(KEY::A))
+		m_LookAt.x -= DT * m_CamSpeed;
+	if (KEY_PRESSED(KEY::D))
+		m_LookAt.x += DT * m_CamSpeed;
+}
+
+void CCamera::MoveLR()
+{
 	if (KEY_PRESSED(KEY::A))
 		m_LookAt.x -= DT * m_CamSpeed;
 	if (KEY_PRESSED(KEY::D))
