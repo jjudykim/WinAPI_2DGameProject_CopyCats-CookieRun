@@ -31,6 +31,7 @@ public:
 	const vector<StageSTObjInfo>& GetStageInfo() { return m_vecStageInfo; }
 	EPISODE_TYPE GetEPType() { return m_EpisodeType; }
 	STAGE_TYPE GetSTGType() { return m_StageType; }
+	float GetSTGLength() { return m_StageLength; }
 	CBackground* GetBG(BG_TYPE _type) { return m_arrBG[(UINT)_type]; }
 	CPlatform* GetPLT(PLT_TYPE _type) { return m_arrPLT[(UINT)_type]; }
 	CObstacle* GetOBS(OBS_TYPE _type) { return m_arrOBS[(UINT)_type]; }

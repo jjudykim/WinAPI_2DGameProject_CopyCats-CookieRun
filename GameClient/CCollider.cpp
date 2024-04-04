@@ -9,6 +9,7 @@
 CCollider::CCollider()
 	: m_OverlapCount(0)
 	, m_OffsetPos(Vec2D(0))
+	, m_CollidingCol(nullptr)
 {
 
 }
@@ -18,6 +19,7 @@ CCollider::CCollider(const CCollider& _Other)
 	, m_OffsetPos(_Other.m_OffsetPos)
 	, m_Scale(_Other.m_Scale)
 	, m_OverlapCount(0)
+	, m_CollidingCol(nullptr)
 {
 }
 
@@ -45,7 +47,7 @@ void CCollider::finaltick()
 void CCollider::BeginOverlap(CCollider* _OtherCollider)
 {
 	m_OverlapCount++;
-
+	m_CollidingCol = _OtherCollider;
 	GetOwner()->BeginOverlap(this, _OtherCollider->GetOwner(), _OtherCollider);
 }
 
@@ -57,6 +59,7 @@ void CCollider::OnOverlap(CCollider* _OtherCollider)
 void CCollider::EndOverlap(CCollider* _OtherCollider)
 {
 	m_OverlapCount--;
+	m_CollidingCol = nullptr;
 	GetOwner()->EndOverlap(this, _OtherCollider->GetOwner(), _OtherCollider);
 }
 

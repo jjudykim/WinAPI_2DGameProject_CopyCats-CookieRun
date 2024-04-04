@@ -3,12 +3,15 @@
 
 #include "CCollider.h"
 #include "CAnimator.h"
+#include "CMouseMgr.h"
 
 CObstacle::CObstacle()
 	: m_Texture(nullptr)
 	, m_Animator(nullptr)
 	, m_Collider(nullptr)
-	, m_type(OBS_TYPE::END)
+	, m_Type(OBS_TYPE::END)
+	, m_UseMouse(false)
+	, m_MouseOn(false)
 {
 	SetLayerType(LAYER_TYPE::OBSTACLE);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
@@ -17,10 +20,12 @@ CObstacle::CObstacle()
 
 CObstacle::CObstacle(const CObstacle& _Other)
 	: CObject(_Other)
-	, m_type(_Other.m_type)
+	, m_Type(_Other.m_Type)
 	, m_Texture(_Other.m_Texture)
 	, m_Animator(nullptr)
 	, m_Collider(nullptr)
+	, m_UseMouse(_Other.m_UseMouse)
+	, m_MouseOn(false)
 {
 	if (_Other.m_Animator != nullptr)
 	{
@@ -36,10 +41,15 @@ CObstacle::~CObstacle()
 
 void CObstacle::begin()
 {
+	m_Collider->SetScale(Vec2D(GetScale().x, GetScale().y));
 }
 
 void CObstacle::tick()
 {
+	if (m_UseMouse)
+	{
+		CheckMouseOn();
+	}
 }
 
 void CObstacle::render()
@@ -51,12 +61,63 @@ void CObstacle::render()
 	bf.SourceConstantAlpha = (int)255;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
-	AlphaBlend(DC
-		, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-		, (int)(GetRenderPos().y - m_Texture->GetHeight() / 2.f)
-		, m_Texture->GetWidth(), m_Texture->GetHeight()
-		, m_Texture->GetDC(), 0, 0
-		, m_Texture->GetWidth(), m_Texture->GetHeight()
-		, bf);
+	if (m_Type == OBS_TYPE::SLIDE_A || m_Type == OBS_TYPE::SLIDE_B)
+	{
+		AlphaBlend(DC
+			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+			, (int)(GetRenderPos().y)
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, m_Texture->GetDC(), 0, 0
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, bf);
+	}
+	else 
+	{
+		AlphaBlend(DC
+			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+			, (int)(GetRenderPos().y - m_Texture->GetHeight())
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, m_Texture->GetDC(), 0, 0
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, bf);
+	}
+	
+}
+
+void CObstacle::CheckMouseOn()
+{
+	Vec2D vPos = GetRenderPos();
+	Vec2D vScale = GetScale();
+	Vec2D vMousePos = CMouseMgr::GetInst()->GetMousePos();
+
+	if (m_Type == OBS_TYPE::SLIDE_A || m_Type == OBS_TYPE::SLIDE_B)
+	{
+		if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
+			&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
+			&& vPos.y <= vMousePos.y
+			&& vMousePos.y <= vPos.y + vScale.y)
+		{
+			m_MouseOn = true;
+		}
+		else
+		{
+			m_MouseOn = false;
+		}
+	}
+	else
+	{
+		if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
+			&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
+			&& vPos.y - vScale.y <= vMousePos.y
+			&& vMousePos.y <= vPos.y)
+		{
+			m_MouseOn = true;
+		}
+		else
+		{
+			m_MouseOn = false;
+		}
+	}
+	
 }
 

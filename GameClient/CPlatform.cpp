@@ -4,17 +4,19 @@
 #include "CCollider.h"
 #include "CRigidBody.h"
 #include "CResourceMgr.h"
+#include "CMouseMgr.h"
 
 
 CPlatform::CPlatform()
 	: m_Texture(nullptr)
+	, m_Type(PLT_TYPE::END)
 	, m_Collider(nullptr)
 	, m_Edge(false)
+	, m_UseMouse(false)
+	, m_MouseOn(false)
 {
 	SetLayerType(LAYER_TYPE::PLATFORM);
 	m_Collider = (CCollider*)AddComponent(new CCollider);
-	m_Collider->SetScale(Vec2D(124.f, 120.f));
-	m_Collider->SetOffsetPos(Vec2D(0.f, -30.f));
 }
 
 CPlatform::CPlatform(const CPlatform& _Other)
@@ -22,6 +24,8 @@ CPlatform::CPlatform(const CPlatform& _Other)
 	, m_Texture(_Other.m_Texture)
 	, m_Type(_Other.m_Type)
 	, m_Edge(false)
+	, m_UseMouse(_Other.m_UseMouse)
+	, m_MouseOn(false)
 {
 	m_Collider = GetComponent<CCollider>();
 }
@@ -32,12 +36,14 @@ CPlatform::~CPlatform()
 
 void CPlatform::begin()
 {
-	m_Collider->SetScale(Vec2D(GetScale().x, GetScale().y / 2.f));
-	m_Collider->SetOffsetPos(Vec2D(0.f, GetScale().y / 4.f * (-1.f)));
 }
 
 void CPlatform::tick()
 {
+	if (m_UseMouse)
+	{
+		CheckMouseOn();
+	}
 }
 
 void CPlatform::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
@@ -73,12 +79,61 @@ void CPlatform::render()
 	bf.SourceConstantAlpha = (int)255;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
-	AlphaBlend(DC
-		, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-		, (int)(GetRenderPos().y - m_Texture->GetHeight() / 2.f)
-		, m_Texture->GetWidth(), m_Texture->GetHeight()
-		, m_Texture->GetDC(), 0, 0
-		, m_Texture->GetWidth(), m_Texture->GetHeight()
-		, bf);
+	if (m_Type == PLT_TYPE::GROUNDED)
+	{
+		AlphaBlend(DC
+			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+			, (int)(GetRenderPos().y)
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, m_Texture->GetDC(), 0, 0
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, bf);
+	}
+	else if (m_Type == PLT_TYPE::FLOATED)
+	{
+		AlphaBlend(DC
+			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+			, (int)(GetRenderPos().y - m_Texture->GetHeight() / 2.f)
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, m_Texture->GetDC(), 0, 0
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, bf);
+	}
+	
 }
 
+void CPlatform::CheckMouseOn()
+{
+	Vec2D vPos = GetRenderPos();
+	Vec2D vScale = GetScale();
+	Vec2D vMousePos = CMouseMgr::GetInst()->GetMousePos();
+
+	if (m_Type == PLT_TYPE::GROUNDED)
+	{
+		if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
+			&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
+			&& vPos.y - vScale.y <= vMousePos.y
+			&& vMousePos.y <= vPos.y)
+		{
+			m_MouseOn = true;
+		}
+		else
+		{
+			m_MouseOn = false;
+		}
+	}
+	else if (m_Type == PLT_TYPE::FLOATED)
+	{
+		if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
+			&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
+			&& (vPos.y - (vScale.y / 2.f)) <= vMousePos.y
+			&& vMousePos.y <= vPos.y + (vScale.y / 2.f))
+		{
+			m_MouseOn = true;
+		}
+		else
+		{
+			m_MouseOn = false;
+		}
+	}
+}

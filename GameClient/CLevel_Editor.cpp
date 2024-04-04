@@ -8,20 +8,27 @@
 #include "CLevelMgr.h"
 #include "CStageMgr.h"
 #include "CResourceMgr.h"
+#include "CDbgRenderMgr.h"
 #include "CTaskMgr.h"
 #include "CMouseMgr.h"
 #include "CHandleMgr.h"
 #include "CCamera.h"
 
+#include "CAnimator.h"
+#include "CCollider.h"
+
 #include "CObject.h"
 #include "CTexture.h"
 #include "CDraw.h"
-#include "CAnimator.h"
 #include "CStage.h"
+#include "CBackground.h"
 #include "CObstacle.h"
 #include "CPlatform.h"
+#include "CCollisionMgr.h"
 
 int ExtractTypeNumber(const std::wstring& str);
+void XPositionCorrectionForObject(CObject* _Obj);
+void YPositionCorrectionForObject(CObject* _Obj);
 
 // global
 wstring g_DialogText = L"";
@@ -186,12 +193,12 @@ void CLevel_Editor::tick()
 					{
 					case OBS_TYPE::JUMP_A: case OBS_TYPE::JUMP_B: case OBS_TYPE::JUMP_UP: case OBS_TYPE::JUMP_DOWN:
 					{
-						m_GuideDraw->SetPos(Vec2D(0, 610));
+						m_GuideDraw->SetPos(Vec2D(0, 550));
 					}
 					break;
 					case OBS_TYPE::DBJUMP_A: case OBS_TYPE::DBJUMP_B: case OBS_TYPE::DBJUMP_UP: case OBS_TYPE::DBJUMP_DOWN:
 					{
-						m_GuideDraw->SetPos(Vec2D(0, 610));
+						m_GuideDraw->SetPos(Vec2D(0, 550));
 					}
 					break;
 					case OBS_TYPE::SLIDE_A: case OBS_TYPE::SLIDE_B:
@@ -203,6 +210,22 @@ void CLevel_Editor::tick()
 				}
 				case LAYER_TYPE::PLATFORM:
 				{
+					CPlatform* CurPlt = dynamic_cast<CPlatform*>(m_CurEditObject);
+					if (CurPlt == nullptr) break;
+
+					switch (CurPlt->GetPLTType())
+					{
+					case PLT_TYPE::GROUNDED:
+					{
+						m_GuideDraw->SetPos(Vec2D(0, 600));
+					}
+					break;
+					case PLT_TYPE::FLOATED:
+					{
+						m_GuideDraw->SetPos(Vec2D(0, -100));
+					}
+					break;
+					}
 				}
 
 				
@@ -216,11 +239,16 @@ void CLevel_Editor::tick()
 					m_Dragging = true;
 					Vec2D MousePos = CMouseMgr::GetInst()->GetMousePos();
 					m_CurEditObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
+					CCollider* col = m_CurEditObject->GetComponent<CCollider>();
+					col->SetScale(m_CurEditObject->GetScale());
 				}
 				else
 				{
 					if (m_Dragging)
 					{
+						// 여기서 CurEditObject의 위치 보정
+						YPositionCorrectionForObject(m_CurEditObject);
+
 						m_Editing = false;
 						m_Dragging = false;
 						m_CurEditObject = nullptr;
@@ -235,13 +263,63 @@ void CLevel_Editor::tick()
 				}
 			}
 		}
+		else
+		{
+			if (CMouseMgr::GetInst()->IsLbtnDowned())
+			{
+				if (!m_Dragging)
+				{
+					vector<CObject*> vecObj = GetObjects(LAYER_TYPE::OBSTACLE);
+					CObstacle* obs = nullptr;
 
-		
+					for (int i = 0; i < vecObj.size(); ++i)
+					{
+						obs = static_cast<CObstacle*>(vecObj[i]);
+						if (obs->IsMouseOn() == true)
+						{
+							m_CurEditObject = obs;
+							LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
+							m_Dragging = true;
+							break;
+						}
+					}
+
+					vecObj = GetObjects(LAYER_TYPE::PLATFORM);
+					CPlatform* plt = nullptr;
+
+					for (int i = 0; i < vecObj.size(); ++i)
+					{
+						plt = static_cast<CPlatform*>(vecObj[i]);
+						if (plt->IsMouseOn() == true)
+						{
+							m_CurEditObject = plt;
+							LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
+							m_Dragging = true;
+							break;
+						}
+					}
+				}
+				else
+				{
+					Vec2D MousePos = CMouseMgr::GetInst()->GetMousePos();
+					m_CurEditObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
+					YPositionCorrectionForObject(m_CurEditObject);
+				}
+			}
+			else
+			{
+				
+				m_CurEditObject = nullptr;
+				m_Dragging = false;
+			}
+		}
 	}
 }
 
 void CLevel_Editor::finaltick()
 {
+	CLevel::finaltick();
+
 	if (m_EditAnim != nullptr && m_PlayingAnim)
 	{
 		if (m_EditAnim->IsFinish())
@@ -286,8 +364,8 @@ void CLevel_Editor::Enter()
 	SetMenu(CEngine::GetInst()->GetMainWnd(), m_hMenu);
 	CEngine::GetInst()->ChangeWindowSize(CEngine::GetInst()->GetResolution(), true);
 
-	// Test
-
+	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::OBSTACLE, LAYER_TYPE::OBSTACLE);
+	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLATFORM, LAYER_TYPE::PLATFORM);
 }
 
 void CLevel_Editor::ResetAllAnimationOption()
@@ -1127,7 +1205,25 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			wstring Obj = szBuff;
 
 			CStageMgr::GetInst()->LoadStageInfo(static_cast<EPISODE_TYPE>(Ep));
-			CStage* EditStage = CStageMgr::GetInst()->GetStage(Ep, Stg);
+			pEditorLevel->SetEditStage(CStageMgr::GetInst()->GetStage(Ep, Stg));
+			CStage* EditStage = pEditorLevel->GetEditStage();
+			if (EditStage == nullptr) return(INT_PTR)FALSE;
+			int count = 0;
+
+			for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
+			{
+				CBackground* CurBG = EditStage->GetBG(static_cast<BG_TYPE>(i));
+				if (CurBG == nullptr) break;
+				count = (int)(EditStage->GetSTGLength() / CurBG->GetScale().x);
+				
+				for (int i = 0; i < count; ++i)
+				{
+					CBackground* Clone = CurBG->Clone();
+					Clone->SetPos(CurBG->GetScale().x * i, 0);
+					pEditorLevel->AddObject(LAYER_TYPE::BACKGROUND, Clone);
+				}
+			}
+			
 			if (Obj == L"OBSTACLE")
 			{
 				CObstacle* curOBS;
@@ -1135,6 +1231,11 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
 				{
 					curOBS = EditStage->GetOBS(static_cast<OBS_TYPE>(i));
+
+					// Use Mouse
+					curOBS->SetUseMouseOn(true);
+
+					// Icon Setting
 					Bitmap* pBitmap = curOBS->GetTexture()->GetpBit();
 					pBitmap->GetHICON(&hIcon);
 
@@ -1164,6 +1265,11 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
 				{
 					curPLT = EditStage->GetPLT(static_cast<PLT_TYPE>(i));
+
+					// Use Mouse
+					curPLT->SetUseMouseOn(true);
+
+					// Icon Setting
 					Bitmap* pBitmap = curPLT->GetTexture()->GetpBit();
 					pBitmap->GetHICON(&hIcon);
 
@@ -1203,7 +1309,110 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	}
 	return (INT_PTR)FALSE;
 }
-	
+
+int ExtractTypeNumber(const std::wstring& str)
+{
+	int length = str.length();
+	wstring numberStr = L"";
+
+	for (int i = length - 1; i >= 0; --i) 
+	{
+		if (isdigit(str[i])) { numberStr = str[i] + numberStr; }
+		else break;
+	}
+
+	if (!numberStr.empty()) 
+	{
+		return std::stoi(numberStr);
+	}
+
+	return -1;
+}
+
+void XPositionCorrectionForObject(CObject* _Obj)
+{
+	CCollider* CurObjCol = _Obj->GetComponent<CCollider>();
+	if (CurObjCol == nullptr) return;
+	if (CurObjCol->GetOverlapCount() > 0)
+	{
+		CCollider* CollidingCol = CurObjCol->GetCollidingCol();
+		if (CollidingCol == nullptr) return;
+		CObject* CollidingColOwner = CollidingCol->GetOwner();
+
+		if (CurObjCol->GetFinalPos().x < CollidingCol->GetFinalPos().x)
+		{
+			
+			Vec2D CorrectPos = Vec2D(CollidingColOwner->GetRenderPos().x 
+								- (CollidingColOwner->GetScale().x / 2.f)
+								- (CurObjCol->GetScale().x / 2.f)
+								- 1.f
+								, _Obj->GetRenderPos().y);
+
+			Vec2D RealPos = CCamera::GetInst()->GetRealPos(CorrectPos);
+			_Obj->SetPos(RealPos);
+		}
+		else if (CollidingCol->GetFinalPos().x <= CurObjCol->GetFinalPos().x)
+		{
+			Vec2D CorrectPos = Vec2D(CollidingColOwner->GetRenderPos().x
+								+ (CollidingColOwner->GetScale().x / 2.f)
+								+ (CurObjCol->GetScale().x / 2.f)
+								+ 1.f
+								, _Obj->GetRenderPos().y);
+
+			Vec2D RealPos = CCamera::GetInst()->GetRealPos(CorrectPos);
+			_Obj->SetPos(RealPos);
+		}
+	}
+}
+
+void YPositionCorrectionForObject(CObject* _Obj)
+{
+	switch (_Obj->GetLayerType())
+	{
+	case LAYER_TYPE::OBSTACLE:
+	{
+		CObstacle* CurObs = dynamic_cast<CObstacle*>(_Obj);
+		switch (CurObs->GetOBSType())
+		{
+		case OBS_TYPE::JUMP_A: case OBS_TYPE::JUMP_B: case OBS_TYPE::JUMP_DOWN: case OBS_TYPE::JUMP_UP:
+		{
+			XPositionCorrectionForObject(CurObs);
+			_Obj->SetPos(Vec2D(_Obj->GetPos().x, 600.f));
+		}
+		break;
+		case OBS_TYPE::DBJUMP_A: case OBS_TYPE::DBJUMP_B: case OBS_TYPE::DBJUMP_DOWN: case OBS_TYPE::DBJUMP_UP:
+		{
+			XPositionCorrectionForObject(CurObs);
+			_Obj->SetPos(Vec2D(_Obj->GetPos().x, 600.f));
+		}
+		break;
+		case OBS_TYPE::SLIDE_A: case OBS_TYPE::SLIDE_B:
+		{
+			XPositionCorrectionForObject(CurObs);
+			_Obj->SetPos(Vec2D(_Obj->GetPos().x, 0.f));
+		}
+		}
+	}
+	break;
+
+	case LAYER_TYPE::PLATFORM:
+	{
+		CPlatform* CurPlt = dynamic_cast<CPlatform*>(_Obj);
+		switch (CurPlt->GetPLTType())
+		{
+		case PLT_TYPE::GROUNDED:
+		{
+			XPositionCorrectionForObject(CurPlt);
+			_Obj->SetPos(Vec2D(_Obj->GetPos().x, 600.f));
+		}
+		}
+	}
+	break;
+
+
+	}
+}
+
 void OpenSaveFile(wstring _Key, wstring _FileType)
 {
 	wchar_t szSelect[256] = {};
@@ -1246,27 +1455,8 @@ void OpenSaveFile(wstring _Key, wstring _FileType)
 
 			CResourceMgr::GetInst()->SaveAnimation(pEditorLevel->GetEditAnim(), SelectedFileName, SelectedFilePath);
 		}
-		
+
 	}
-}
-
-int ExtractTypeNumber(const std::wstring& str)
-{
-	int length = str.length();
-	wstring numberStr = L"";
-
-	for (int i = length - 1; i >= 0; --i) 
-	{
-		if (isdigit(str[i])) { numberStr = str[i] + numberStr; }
-		else break;
-	}
-
-	if (!numberStr.empty()) 
-	{
-		return std::stoi(numberStr);
-	}
-
-	return -1;
 }
 
 bool OpenLoadFile(wstring _Path, wstring _FileType)

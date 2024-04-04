@@ -110,6 +110,8 @@ void CCollisionMgr::CollisionUnCheck(LAYER_TYPE _Layer1, LAYER_TYPE _Layer2)
 
 bool CCollisionMgr::IsCollision(CCollider* _Left, CCollider* _Right)
 {
+	if (_Left->GetID() == _Right->GetID()) return false;
+
 	Vec2D vLeftPos = _Left->GetFinalPos();
 	Vec2D vLeftScale = _Left->GetScale();
 

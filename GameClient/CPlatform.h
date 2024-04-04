@@ -10,6 +10,9 @@ private:
     CTexture*   m_Texture;
     CCollider*  m_Collider;
 
+    bool        m_UseMouse;
+    bool        m_MouseOn;
+
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -21,10 +24,16 @@ public:
     CLONE(CPlatform)
 
 public:
+    void SetUseMouseOn(bool _use) { m_UseMouse = _use; }
+    bool IsMouseOn() { return m_MouseOn; }
+
     CTexture* GetTexture() { return m_Texture; }
+    PLT_TYPE GetPLTType() { return m_Type;  }
     void SetPLTType(PLT_TYPE _type) { m_Type = _type; }
     void SetTexture(CTexture* _tex) { m_Texture = _tex; }
     void SetEdge(bool _b) { m_Edge = _b; }
+
+    void CheckMouseOn();
 
 public:
     CPlatform();

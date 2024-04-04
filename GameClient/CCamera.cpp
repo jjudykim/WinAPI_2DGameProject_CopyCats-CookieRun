@@ -123,7 +123,7 @@ void CCamera::MoveAll()
 
 void CCamera::MoveLR()
 {
-	if (KEY_PRESSED(KEY::A))
+	if (KEY_PRESSED(KEY::A) && (CEngine::GetInst()->GetResolution().x / 2.f < m_LookAt.x))
 		m_LookAt.x -= DT * m_CamSpeed;
 	if (KEY_PRESSED(KEY::D))
 		m_LookAt.x += DT * m_CamSpeed;

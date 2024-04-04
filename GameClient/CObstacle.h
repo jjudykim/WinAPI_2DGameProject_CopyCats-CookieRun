@@ -4,10 +4,13 @@ class CObstacle :
     public CObject
 {
 private:
-    OBS_TYPE    m_type;
+    OBS_TYPE    m_Type;
     CTexture*   m_Texture;
     CAnimator*  m_Animator;
     CCollider*  m_Collider;
+
+    bool        m_UseMouse;
+    bool        m_MouseOn;
 
 public:
     virtual void begin() override;
@@ -15,12 +18,15 @@ public:
     virtual void render() override;
 
 public:
-    CTexture* GetTexture() { return m_Texture; }
-
-    void SetOBSType(OBS_TYPE _type) { m_type = _type; }
+    void SetUseMouseOn(bool _use) { m_UseMouse = _use; }
+    bool IsMouseOn() { return m_MouseOn; }
+    void SetOBSType(OBS_TYPE _type) { m_Type = _type; }
     void SetTexture(CTexture* _tex) { m_Texture = _tex; }
 
-    OBS_TYPE GetOBSType() { return m_type; }
+    CTexture* GetTexture() { return m_Texture; }
+    OBS_TYPE GetOBSType() { return m_Type; }
+
+    void CheckMouseOn();
     
     CLONE(CObstacle);
 

@@ -4,6 +4,7 @@
 #include "CAnimation.h"
 
 class CTexture;
+class CStage;
 class CAnimation;
 class CDraw;
 
@@ -29,6 +30,7 @@ private:
 
     // Stage Editor
     CObject*        m_CurEditObject;
+    CStage*         m_CurEditStage;
     CDraw*          m_GuideDraw;
 
     bool            m_Editing;
@@ -45,12 +47,14 @@ public:
 
 public:
     vector<wstring> GetLoadedTextureKey();
-    int GetEditMode() { return m_EditMode; }
-    void SetEditMode(int _mode) { m_EditMode = _mode; }
+    
+    
 
     // Animation Editor
     void ResetAllAnimationOption();
 
+  
+    void SetEditMode(int _mode) { m_EditMode = _mode; }
     void SetEditTex(CTexture* _tex) { m_EditTex = _tex; }
     void SetEditAnim(CAnimation* _anim) { m_EditAnim = _anim; }
     void SetCurFrm(const AniFrm& _frm) { m_CurFrm = _frm; }
@@ -70,10 +74,16 @@ public:
 
 
     // Stage Editor
-    bool GetEditing() { return m_Editing; }
     void SetEditing(bool _editing) { m_Editing = _editing; }
+    void SetEditStage(CStage* _stage) { m_CurEditStage = _stage; }
+
+    bool GetEditing() { return m_Editing; }
+    CStage* GetEditStage() { return m_CurEditStage; }
+    int GetEditMode() { return m_EditMode; }
+   
     //void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     //const int& GetAnimFrmCount() { return m_vecFrm.size(); }
+
     AniFrm GetAnimFrm(int _index) { return m_EditAnim->GetFrame(_index); }
 
 public:

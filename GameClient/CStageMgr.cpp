@@ -8,8 +8,10 @@
 #include "CBackground.h"
 #include "CPlatform.h"
 #include "CObstacle.h"
+
 #include "CAnimation.h"
 #include "CAnimator.h"
+#include "CCollider.h"
 
 CStageMgr::CStageMgr()
 	: m_CurrentStageType(STAGE_TYPE::END)
@@ -91,7 +93,13 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 			for (int i = 0; i < count; ++i)
 			{
 				wstring STG = L"STG" + std::to_wstring(count);
-
+				while (true)
+				{
+					fwscanf_s(pFile, L"%s", szReadBuff, 256);
+					if (wstring(szReadBuff) == L"[STAGE_LENGTH]") break;
+				}
+				fwscanf_s(pFile, L"%f", &curStg->m_StageLength);
+				
 				while (true)
 				{
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
@@ -134,11 +142,16 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					curStg->m_arrPLT[i] = new CPlatform;
 					PLT = curStg->m_arrPLT[i];
 					PLT->SetPLTType(static_cast<PLT_TYPE>(i));
+
 					tex = CResourceMgr::GetInst()->LoadTexture(EP + L"_" + STG + L"_PLT" + std::to_wstring(i), szReadBuff);
 					PLT->SetTexture(tex);
 					Vec2D scale = {};
 					fwscanf_s(pFile, L"%f%f", &scale.x, &scale.y);
 					PLT->SetScale(scale);
+
+					CCollider* col = PLT->GetComponent<CCollider>();
+					if (i == 0) col->SetOffsetPos(Vec2D(0.f, PLT->GetScale().y / 2.f));             // PLT_TYPE::GROUNDED
+					else if (i == 1) col->SetOffsetPos(Vec2D(0.f, 0.f));                            // PLT_TYPE::FLOATED
 				}
 				tex = nullptr;
 
@@ -157,12 +170,17 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					curStg->m_arrOBS[i] = new CObstacle;
 					OBS = curStg->m_arrOBS[i];
 					OBS->SetOBSType(static_cast<OBS_TYPE>(i));
+
 					tex = CResourceMgr::GetInst()->LoadTexture(EP + L"_" + STG + L"_OBS" + std::to_wstring(i), szReadBuff);
 					OBS->SetTexture(tex);
 
 					Vec2D scale = {};
 					fwscanf_s(pFile, L"%f%f", &scale.x, &scale.y);
 					OBS->SetScale(scale);
+		
+					CCollider* col = OBS->GetComponent<CCollider>();
+					if (i == 8 || i == 9) col->SetOffsetPos(Vec2D(0.f, OBS->GetScale().y / 2.f));     // OBS_TYPE::SLIDE_A, OBS_TYPE::SLIDE_B
+					else { col->SetOffsetPos(Vec2D(0.f, (-1.f) * OBS->GetScale().y / 2.f)); }         // else OBS_TYPE
 
 					if (i == 2) // JUMP_UP
 					{
