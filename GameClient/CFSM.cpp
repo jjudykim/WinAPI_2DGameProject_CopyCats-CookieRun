@@ -6,6 +6,8 @@
 map<wstring, BlackboardData> CFSM::m_mapGlobalData;
 
 CFSM::CFSM()
+	: m_CurState(nullptr)
+	, m_PrevState(nullptr)
 {
 	
 }

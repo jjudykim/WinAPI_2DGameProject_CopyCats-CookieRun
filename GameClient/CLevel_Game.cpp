@@ -96,7 +96,7 @@ void CLevel_Game::tick()
 			if (tPosX <= m_DeletePosX)
 			{
 				vecObj[j]->Destroy();
-				LOG(LOG_TYPE::DBG_LOG, L"Stage Obejct Deleted");
+				//LOG(LOG_TYPE::DBG_LOG, L"Stage Obejct Deleted");
 			}
 		}
 	}

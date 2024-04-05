@@ -7,6 +7,9 @@
 #include "CAnimation.h"
 
 CJumpState::CJumpState()
+	: m_Jumping(false)
+	, m_JumpHigherStandard(false)
+	, m_JumpStandard(0)
 {
 }
 
@@ -28,21 +31,36 @@ void CJumpState::Set()
 void CJumpState::Enter()
 {
 	CPlayerState::Enter();
+	LOG(LOG_TYPE::DBG_WARNING, L"Jump State ÁøÀÔ");
 
 	GetOwnerRigidBody()->SetUseGravity(true);
 	GetOwnerAnimator()->Play(L"Jump", false);
+	m_JumpStandard = GetCurPlayer()->GetJumpStartYPos();
 }
 
 void CJumpState::FinalTick()
 {
+	if (!m_JumpHigherStandard && GetCurPlayer()->GetPos().y <= m_JumpStandard - 100.f)
+	{
+ 		m_JumpHigherStandard = true;
+	}
+
+	if (m_JumpHigherStandard && GetOwnerRigidBody()->IsGround())
+	{
+		GetFSM()->ChangeState(L"Run");
+	}
+
 	if (GetOwnerAnimator() != nullptr)
 	{
-		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		Vec2D ColPos = GetOwnerAnimator()->GetCurAnim()->GetColliderPos();
+		Vec2D ColSize = GetOwnerAnimator()->GetCurAnim()->GetColliderSize();
+		GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
 		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 	}
 }
 
 void CJumpState::Exit()
 {
+	m_JumpHigherStandard = false;
 }
 

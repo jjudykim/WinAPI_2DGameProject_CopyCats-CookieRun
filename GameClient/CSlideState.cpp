@@ -29,7 +29,6 @@ void CSlideState::Enter()
 {
 	CPlayerState::Enter();
 
-	// TODO : stage 구성 후 true로 변경하기
 	GetOwnerRigidBody()->SetUseGravity(true);
 
 	GetOwnerAnimator()->Play(L"Slide", true);
@@ -39,7 +38,9 @@ void CSlideState::FinalTick()
 {
 	if(GetOwnerAnimator() != nullptr)
 	{
-		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		Vec2D ColPos = GetOwnerAnimator()->GetCurAnim()->GetColliderPos();
+		Vec2D ColSize = GetOwnerAnimator()->GetCurAnim()->GetColliderSize();
+		GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
 		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 	}
 }

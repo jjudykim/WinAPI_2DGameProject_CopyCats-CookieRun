@@ -17,6 +17,7 @@ private:
 public:
     virtual void finaltick() override;
     void render();
+    void render(float);
 
 public:
     CAnimation* FindAnimation(const wstring& _AnimName);

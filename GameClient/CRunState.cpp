@@ -57,7 +57,9 @@ void CRunState::FinalTick()
 			GetOwnerAnimator()->Play(L"Run", true);
 			m_PlayingAnim = true;
 		}
-		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		Vec2D ColPos = GetOwnerAnimator()->GetCurAnim()->GetColliderPos();
+		Vec2D ColSize = GetOwnerAnimator()->GetCurAnim()->GetColliderSize();
+		GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
 		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 	}
 }

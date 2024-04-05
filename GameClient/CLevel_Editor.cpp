@@ -1445,7 +1445,7 @@ void XPositionCorrectionForObject(CObject* _Obj)
 			Vec2D CorrectPos = Vec2D(CollidingColOwner->GetRenderPos().x 
 								- (CollidingColOwner->GetScale().x / 2.f)
 								- (CurObjCol->GetScale().x / 2.f)
-								- 1.f
+								- 0.1f
 								, _Obj->GetRenderPos().y);
 
 			Vec2D RealPos = CCamera::GetInst()->GetRealPos(CorrectPos);
@@ -1456,7 +1456,7 @@ void XPositionCorrectionForObject(CObject* _Obj)
 			Vec2D CorrectPos = Vec2D(CollidingColOwner->GetRenderPos().x
 								+ (CollidingColOwner->GetScale().x / 2.f)
 								+ (CurObjCol->GetScale().x / 2.f)
-								+ 1.f
+								+ 0.1f
 								, _Obj->GetRenderPos().y);
 
 			Vec2D RealPos = CCamera::GetInst()->GetRealPos(CorrectPos);

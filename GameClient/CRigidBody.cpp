@@ -5,7 +5,7 @@
 #include "CTimeMgr.h"
 
 CRigidBody::CRigidBody()
-	: m_UseGravity(false)
+	: m_UseGravity(true)
 	, m_MaxJumpHeight(100.f)
 	, m_WalkSpeed(0.f)
 	, m_JumpSpeed(1000.f)
@@ -13,9 +13,6 @@ CRigidBody::CRigidBody()
 	, m_Ground(true)
 	, m_GroundInst(nullptr)
 	, m_GroundDelegate(nullptr)
-	//, m_AirInst(nullptr)
-	//, m_AirDelegate(nullptr)
-	// m_AirInst, m_AirDelegate을 nullptr로 초기화 시 힙 손상 발생하는 이유?
 {
 	
 }
@@ -31,9 +28,7 @@ void CRigidBody::Walk(Vec2D& _originPos)
 
 void CRigidBody::Jump()
 {
-	m_VelocityByGravity = Vec2D(0.f, -1.f) * m_JumpSpeed;
-	SetGround(false);
-	LOG(LOG_TYPE::DBG_LOG, L"SetGround -> false");
+	m_VelocityByJump = Vec2D(0.f, -1.f) * m_JumpSpeed;
 }
 
 void CRigidBody::finaltick()
@@ -46,18 +41,17 @@ void CRigidBody::finaltick()
 	{
 		if (!m_Ground)
 		{
-			Vec2D vJumpSpeed = Vec2D(0.f, 1.0f) * m_GravityAccel * DT;
-			m_VelocityByGravity += vJumpSpeed;
-			vObjPos += m_VelocityByGravity * DT;
+			Vec2D vGravitySpeed = Vec2D(0.f, 1.0f) * m_GravityAccel * DT;
+			m_VelocityByJump += vGravitySpeed;
+			vObjPos += m_VelocityByJump * DT;
 		}
 		else
 		{
-			GetOwner()->SetPos(Vec2D(vObjPos.x, 465.f));
-			return;
+			m_VelocityByJump = Vec2D(0.f, 0.f);
 		}
 	}
 	GetOwner()->SetPos(vObjPos);
-	DrawDebugLine(PEN_TYPE::PEN_BLUE, GetOwner()->GetRenderPos(), GetOwner()->GetRenderPos() + m_VelocityByGravity, 0.f);
+	DrawDebugLine(PEN_TYPE::PEN_BLUE, GetOwner()->GetRenderPos(), GetOwner()->GetRenderPos() + m_VelocityByJump, 0.f);
 }
 
 

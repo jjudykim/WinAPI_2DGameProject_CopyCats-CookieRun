@@ -5,6 +5,9 @@ class CJumpState
 	: public CPlayerState
 {
 private:
+	bool    m_Jumping;
+	bool	m_JumpHigherStandard;
+	float	m_JumpStandard;
 
 private:
 	virtual void Set() override;

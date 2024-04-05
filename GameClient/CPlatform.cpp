@@ -11,7 +11,6 @@ CPlatform::CPlatform()
 	: m_Texture(nullptr)
 	, m_Type(PLT_TYPE::END)
 	, m_Collider(nullptr)
-	, m_Edge(false)
 	, m_UseMouse(false)
 	, m_MouseOn(false)
 {
@@ -23,7 +22,6 @@ CPlatform::CPlatform(const CPlatform& _Other)
 	: CObject(_Other)
 	, m_Texture(_Other.m_Texture)
 	, m_Type(_Other.m_Type)
-	, m_Edge(false)
 	, m_UseMouse(_Other.m_UseMouse)
 	, m_MouseOn(false)
 {
@@ -49,12 +47,7 @@ void CPlatform::tick()
 
 void CPlatform::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
-	if (_OtherObj->GetName() == L"Player")
-	{
-		CRigidBody* pRB = _OtherObj->GetComponent<CRigidBody>();
-  		pRB->SetGround(true);
-		LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
-	}
+	
 }
 
 void CPlatform::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
@@ -63,12 +56,7 @@ void CPlatform::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider
 
 void CPlatform::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
-	if (_OtherObj->GetName() == L"Player" && m_Edge)
-	{
-		CRigidBody* pRB = _OtherObj->GetComponent<CRigidBody>();
-		pRB->SetGround(false);
-		LOG(LOG_TYPE::DBG_LOG, L"SetGround -> false");
-	}
+	
 }
 
 void CPlatform::render()

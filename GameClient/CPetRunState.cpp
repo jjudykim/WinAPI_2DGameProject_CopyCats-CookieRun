@@ -38,7 +38,8 @@ void CPetRunState::FinalTick()
 	float Speed = GetBlackboardData<float>(L"Speed");
 	CObject* pCookie = GetBlackboardData<CObject*>(L"Cookie");
 
-	Vec2D Diff = (0, pCookie->GetPos().y - GetObj()->GetPos().y);
+	float ChaseYPos = pCookie->GetPos().y - (pCookie->GetScale().y / 2.f);
+	Vec2D Diff = (0,ChaseYPos - GetObj()->GetPos().y);
 	if (abs(Diff.y) > 5.f)
 	{
 		Speed = abs(Diff.y) / 0.3f;

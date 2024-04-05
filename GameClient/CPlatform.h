@@ -5,7 +5,6 @@ class CPlatform :
     public CObject
 {
 private:
-    bool        m_Edge;
     PLT_TYPE    m_Type;
     CTexture*   m_Texture;
     CCollider*  m_Collider;
@@ -31,7 +30,6 @@ public:
     PLT_TYPE GetPLTType() { return m_Type;  }
     void SetPLTType(PLT_TYPE _type) { m_Type = _type; }
     void SetTexture(CTexture* _tex) { m_Texture = _tex; }
-    void SetEdge(bool _b) { m_Edge = _b; }
 
     void CheckMouseOn();
 

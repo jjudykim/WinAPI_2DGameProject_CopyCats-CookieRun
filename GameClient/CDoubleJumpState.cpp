@@ -3,6 +3,7 @@
 
 #include "CPlayer.h"
 
+#include "CRigidBody.h"
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
@@ -34,9 +35,16 @@ void CDoubleJumpState::Enter()
 
 void CDoubleJumpState::FinalTick()
 {
+	if (GetOwnerRigidBody()->IsGround() == true)
+	{
+		GetFSM()->ChangeState(L"Run");
+	}
+
 	if (GetOwnerAnimator() != nullptr)
 	{
-		GetOwnerCollider()->SetOffsetPos(GetOwnerAnimator()->GetCurAnim()->GetColliderPos());
+		Vec2D ColPos = GetOwnerAnimator()->GetCurAnim()->GetColliderPos();
+		Vec2D ColSize = GetOwnerAnimator()->GetCurAnim()->GetColliderSize();
+		GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
 		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 	}
 }

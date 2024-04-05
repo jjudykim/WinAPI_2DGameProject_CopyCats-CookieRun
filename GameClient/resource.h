@@ -92,7 +92,10 @@
 #define IDC_SPINPOSX                    1048
 #define IDC_SPINPOSY                    1049
 #define IDC_ADD                         1050
+#define IDC_EDIT                        1050
+#define IDC_EDITMODE                    1050
 #define IDC_DEL                         1051
+#define IDC_DELMODE                     1051
 #define ID_EDITMODE_ANIMATIONEDITMODE   32771
 #define ID_EDITMODE_STAGEEDITMODE       32772
 #define ID_EDITANIM                     32773
