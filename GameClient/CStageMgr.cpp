@@ -113,7 +113,11 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 				for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
 				{
 					fwscanf_s(pFile, L"%f%f%f%f", &Pos.x, &Pos.y, &Slice.x, &Slice.y);
-					if (Slice == 0) break;
+					if (Slice == 0)
+					{
+						curStg->m_arrBG[i] = nullptr;
+						break;
+					}
 					curStg->m_arrBG[i] = new CBackground;
 					if (i == 1) { curStg->m_arrBG[i]->SetSpeed(10); }
 					else if (i == 2) { curStg->m_arrBG[i]->SetSpeed(5); }
@@ -145,9 +149,10 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 
 					tex = CResourceMgr::GetInst()->LoadTexture(EP + L"_" + STG + L"_PLT" + std::to_wstring(i), szReadBuff);
 					PLT->SetTexture(tex);
+					// TODO : scale 읽기 변경
 					Vec2D scale = {};
 					fwscanf_s(pFile, L"%f%f", &scale.x, &scale.y);
-					PLT->SetScale(scale);
+					PLT->SetScale(tex->GetWidth(), tex->GetHeight());
 
 					CCollider* col = PLT->GetComponent<CCollider>();
 					if (i == 0) col->SetOffsetPos(Vec2D(0.f, PLT->GetScale().y / 2.f));             // PLT_TYPE::GROUNDED
@@ -173,7 +178,7 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 
 					tex = CResourceMgr::GetInst()->LoadTexture(EP + L"_" + STG + L"_OBS" + std::to_wstring(i), szReadBuff);
 					OBS->SetTexture(tex);
-
+					OBS->SetScale(tex->GetWidth(), tex->GetHeight());
 					Vec2D scale = {};
 					fwscanf_s(pFile, L"%f%f", &scale.x, &scale.y);
 					OBS->SetScale(scale);
@@ -199,11 +204,60 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 				tex = nullptr;
 
 				m_arrStage[(UINT)_EPType].at(i) = curStg;
+				m_arrStage[(UINT)_EPType].at(i)->SetEPType(_EPType);
+				m_arrStage[(UINT)_EPType].at(i)->SetSTGType(static_cast<STAGE_TYPE>(i));
 			}
 		}
 	}
 
 	
+
+	fclose(pFile);
+}
+
+void CStageMgr::SaveStageSTObject(CStage* _SaveStage)
+{
+	// ex) EP1_STG1_STObj.stg
+	wstring FileName = L"TEST_EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)           // TODO: 시험 완료 후 파일명에서 TEST 제거하기
+		+ L"_STG" + std::to_wstring((UINT)_SaveStage->GetSTGType() + 1)
+		+ L"_STObj.stg";
+
+	wstring FilePath = CPathMgr::GetInst()->GetContentPath() + L"stage\\" + FileName;
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, FilePath.c_str(), L"w");
+
+	if (nullptr == pFile)
+	{
+		LOG(LOG_TYPE::DBG_ERROR, L"스테이지 스태틱 오브젝트 저장 실패");
+		return;
+	}
+
+	for (UINT i = 0; i < 3; ++i)
+	{
+		fwprintf_s(pFile, L"[OBJECT_TYPE]\n");
+
+		wstring strObjType = L"";
+		if (i == 0) strObjType = L"BACKGROUND";
+		else if (i == 1) strObjType = L"PLATFORM";
+		else if (i == 2) strObjType = L"OBSTACLE";
+		fwprintf_s(pFile, L"%s\n\n", strObjType.c_str());
+
+		fwprintf_s(pFile, L"[OBJECT_COUNT]\n");
+
+		const vector<StageSTObjInfo>& _Info = _SaveStage->GetSTObjInfo(i);
+		int size = _Info.size();
+		fwprintf_s(pFile, L"%d\n\n", size);
+
+		for (int j = 0; j < size; ++j)
+		{
+			fwprintf_s(pFile, L"[TYPE_INDEX] ");
+			fwprintf_s(pFile, L"%d\n", _Info[j]._typeIndex);
+
+			fwprintf_s(pFile, L"[STARTPOS] ");
+			fwprintf_s(pFile, L"%f %f\n\n", _Info[j]._pos.x, _Info[j]._pos.y);
+		}
+	}
 
 	fclose(pFile);
 }

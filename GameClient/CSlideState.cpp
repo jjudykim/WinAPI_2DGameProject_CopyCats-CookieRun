@@ -30,7 +30,7 @@ void CSlideState::Enter()
 	CPlayerState::Enter();
 
 	// TODO : stage 구성 후 true로 변경하기
-	GetOwnerRigidBody()->SetUseGravity(false);
+	GetOwnerRigidBody()->SetUseGravity(true);
 
 	GetOwnerAnimator()->Play(L"Slide", true);
 }

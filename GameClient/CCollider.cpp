@@ -53,13 +53,14 @@ void CCollider::BeginOverlap(CCollider* _OtherCollider)
 
 void CCollider::OnOverlap(CCollider* _OtherCollider)
 {
+	m_CollidingCol = _OtherCollider;
 	GetOwner()->OnOverlap(this, _OtherCollider->GetOwner(), _OtherCollider);
 }
 
 void CCollider::EndOverlap(CCollider* _OtherCollider)
 {
 	m_OverlapCount--;
-	m_CollidingCol = nullptr;
+	if (m_OverlapCount == 0) m_CollidingCol = nullptr;
 	GetOwner()->EndOverlap(this, _OtherCollider->GetOwner(), _OtherCollider);
 }
 

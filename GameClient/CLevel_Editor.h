@@ -33,8 +33,11 @@ private:
     CStage*         m_CurEditStage;
     CDraw*          m_GuideDraw;
 
+    bool            m_Assigning;
     bool            m_Editing;
+    bool            m_Deleting;
     bool            m_Dragging;
+    bool            m_BGSetted;
 
 public:
     virtual void begin() override;
@@ -47,13 +50,13 @@ public:
 
 public:
     vector<wstring> GetLoadedTextureKey();
+    void SetObjectMouseCheck(bool _set);
     
     
 
     // Animation Editor
     void ResetAllAnimationOption();
 
-  
     void SetEditMode(int _mode) { m_EditMode = _mode; }
     void SetEditTex(CTexture* _tex) { m_EditTex = _tex; }
     void SetEditAnim(CAnimation* _anim) { m_EditAnim = _anim; }
@@ -74,12 +77,19 @@ public:
 
 
     // Stage Editor
+    void SetAssigning(bool _assigning) { m_Assigning = _assigning; }
     void SetEditing(bool _editing) { m_Editing = _editing; }
+    void SetDeleting(bool _deleting) { m_Deleting = _deleting; }
     void SetEditStage(CStage* _stage) { m_CurEditStage = _stage; }
+    void SetBGSetted(bool _setted) { m_BGSetted = _setted; }
 
+    bool GetAssigning() { return m_Assigning; }
     bool GetEditing() { return m_Editing; }
+    bool GetDeleting() { return m_Deleting; }
+    CObject* GetEditObject() { return m_CurEditObject; }
     CStage* GetEditStage() { return m_CurEditStage; }
     int GetEditMode() { return m_EditMode; }
+    bool GetBGSetted() { return m_BGSetted; }
    
     //void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     //const int& GetAnimFrmCount() { return m_vecFrm.size(); }

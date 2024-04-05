@@ -288,7 +288,5 @@ struct StageSTObjInfo
 {
 	LAYER_TYPE		_objType;
 	UINT			_typeIndex;
-
 	Vec2D			_pos;
-	Vec2D			_scale;
 };

@@ -47,36 +47,39 @@ void CLevel_Game::tick()
 	if (m_Cookie == nullptr)
 		return;
 
-	// TODO: test
+	// Editor Level ÁøÀÔ
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
 	{
 		ChangeLevel(LEVEL_TYPE::EDITOR);
 	}
 
-
 	float StandardPosX = m_Cookie->GetPos().x;
 	m_SpawnPosX = StandardPosX + m_ResolutionWidth;
 	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
 
-	vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecStageInfo;
-	vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
-	for (; iter != vecStageInfo.end(); )
+	for (int i = 0; i < 3; i++)
 	{
-		if (iter->_pos.x <= m_SpawnPosX)
+		vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecSTObjInfo[i];
+		vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
+		for (; iter != vecStageInfo.end(); )
 		{
-			SpawnStageObject(*iter);
-			iter = vecStageInfo.erase(iter);
-		}
-		else
-		{
-			++iter;
+			if (iter->_pos.x <= m_SpawnPosX)
+			{
+				SpawnStageObject(*iter);
+				iter = vecStageInfo.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
 		}
 	}
+	
 
 	// Delete Passed Stage Object
 	for (int i = 0; i < (UINT)LAYER_TYPE::END; ++i)
 	{
-		const vector<CObject*>& vecObj = GET_CUR_LEVEL->GetObjects(static_cast<LAYER_TYPE>(i));
+		const vector<CObject*>& vecObj = GET_CUR_LEVEL->GetObjectsByLayerType(static_cast<LAYER_TYPE>(i));
 
 		for (size_t j = 0; j < vecObj.size(); ++j)
 		{
@@ -173,7 +176,6 @@ void CLevel_Game::SpawnStageObject(StageSTObjInfo& _ObjInfo)
 	else if (type == LAYER_TYPE::OBSTACLE) pObject = (m_CurStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
 
 	pObject->SetPos(_ObjInfo._pos);
-	pObject->SetScale(_ObjInfo._scale);
 
 	task.Type = TASK_TYPE::SPAWN_OBJECT;
 	task.Param1 = (DWORD_PTR)type;

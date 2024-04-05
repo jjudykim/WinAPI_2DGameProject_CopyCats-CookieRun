@@ -8,28 +8,10 @@
 
 CStage::CStage()
 {
-	/*for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
-	{
-		m_arrBG[i] = new CBackground;
-		m_arrBG[i]->SetBGType(static_cast<BG_TYPE>(i));
-	}
-	
-	for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
-	{
-		m_arrPLT[i] = new CPlatform;
-		m_arrPLT[i]->SetPLTType(static_cast<PLT_TYPE>(i));
-	}
-
-	for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
-	{
-		m_arrOBS[i] = new CObstacle;
-		m_arrOBS[i]->SetOBSType(static_cast<OBS_TYPE>(i));
-	}*/
 }
 
 CStage::~CStage()
 {
-	m_vecStageInfo.clear();
 }
 
 void CStage::Enter()
@@ -45,8 +27,8 @@ int CStage::LoadFromFile()
 	// LoadFromFile에서 진행되어야 할 일
 	// 파일로부터 저장된 정보를 읽어들여 StageObjInfo를 작성
 
-	// EP1_STG1_STObj.stg
-	wstring FileName = L"EP" + std::to_wstring((UINT)m_EpisodeType + 1)
+	// ex) EP1_STG1_STObj.stg
+	wstring FileName = L"TEST_EP" + std::to_wstring((UINT)m_EpisodeType + 1)
 					+ L"_STG" + std::to_wstring((UINT)m_StageType + 1)
 					+ L"_STObj.stg";
 
@@ -93,10 +75,9 @@ int CStage::LoadFromFile()
 				fwscanf_s(pFile, L"%s", szReadBuff, 256);
 				fwscanf_s(pFile, L"%f%f", &tStageObj._pos.x, &tStageObj._pos.y);
 
-				fwscanf_s(pFile, L"%s", szReadBuff, 256);
-				fwscanf_s(pFile, L"%f%f", &tStageObj._scale.x, &tStageObj._scale.y);
-
-				m_vecStageInfo.push_back(tStageObj);
+				if(tStageObj._objType == LAYER_TYPE::BACKGROUND) m_vecSTObjInfo[0].push_back(tStageObj);
+				else if (tStageObj._objType == LAYER_TYPE::PLATFORM) m_vecSTObjInfo[1].push_back(tStageObj);
+				else if (tStageObj._objType == LAYER_TYPE::OBSTACLE) m_vecSTObjInfo[2].push_back(tStageObj);
 			}
 		}
 	}

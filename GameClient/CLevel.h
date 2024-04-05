@@ -30,10 +30,11 @@ public:
 	virtual void Exit() = 0;
 
 public:
-	const vector<CObject*>& GetObjects(LAYER_TYPE _Type) { return m_arrObj[(UINT)_Type]; }
+	const vector<CObject*>& GetObjectsByLayerType(LAYER_TYPE _Type) { return m_arrObj[(UINT)_Type]; }
 	const vector<CCollider*>& GetColliders(LAYER_TYPE _Layer) { return m_arrCollider[(UINT)_Layer]; }
 	const vector<CAnimator*>& GetAnimators(LAYER_TYPE _Layer) { return m_arrAnimator[(UINT)_Layer]; }
 
+	void SortObjectsByXpos(LAYER_TYPE _Layer);
 public:
 	virtual CLevel* Clone() = 0;
 

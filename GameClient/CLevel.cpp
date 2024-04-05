@@ -115,4 +115,11 @@ CObject* CLevel::FindObjectByName(LAYER_TYPE _Type, const wstring& _Name)
 	return nullptr;
 }
 
+void CLevel::SortObjectsByXpos(LAYER_TYPE _Layer)
+{
+	std::sort(m_arrObj[(UINT)_Layer].begin(), m_arrObj[(UINT)_Layer].begin(), [](const CObject* a, const CObject* b)
+		{
+			return a->GetPos().x < b->GetPos().x;
+		});
+}
 

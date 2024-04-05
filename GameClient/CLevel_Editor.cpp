@@ -45,7 +45,6 @@ CObject* SelectObj = nullptr;
 UINT Ep = (UINT)EPISODE_TYPE::END;
 UINT Stg = (UINT)STAGE_TYPE::END;
 
-
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
 	, m_EditMode(-1)
@@ -57,10 +56,13 @@ CLevel_Editor::CLevel_Editor()
 	, m_Drawing(false)
 	, m_CreatingAnim(false)
 	, m_PlayingAnim(false)
+	, m_CurEditStage(nullptr)
 	, m_CurEditObject(nullptr)
 	, m_GuideDraw(nullptr)
 	, m_Editing(false)
+	, m_Assigning(false)
 	, m_Dragging(false)
+	, m_BGSetted(false)
 {
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCE(IDC_GAMECLIENT));
 }
@@ -164,7 +166,7 @@ void CLevel_Editor::tick()
 			CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, true });
 		}
 
-		if (m_Editing)
+		if (m_Assigning)
 		{
 			if (m_CurEditObject == nullptr)
 			{
@@ -248,8 +250,9 @@ void CLevel_Editor::tick()
 					{
 						// 여기서 CurEditObject의 위치 보정
 						YPositionCorrectionForObject(m_CurEditObject);
+						XPositionCorrectionForObject(m_CurEditObject);
 
-						m_Editing = false;
+						m_Assigning = false;
 						m_Dragging = false;
 						m_CurEditObject = nullptr;
 						SelectObj = nullptr;
@@ -265,52 +268,61 @@ void CLevel_Editor::tick()
 		}
 		else
 		{
-			if (CMouseMgr::GetInst()->IsLbtnDowned())
+			if (m_Editing || m_Deleting)
 			{
-				if (!m_Dragging)
+				if (CMouseMgr::GetInst()->IsLbtnDowned())
 				{
-					vector<CObject*> vecObj = GetObjects(LAYER_TYPE::OBSTACLE);
-					CObstacle* obs = nullptr;
-
-					for (int i = 0; i < vecObj.size(); ++i)
+					if (!m_Dragging)
 					{
-						obs = static_cast<CObstacle*>(vecObj[i]);
-						if (obs->IsMouseOn() == true)
+						vector<CObject*> vecObj = GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
+						CObstacle* obs = nullptr;
+
+						for (int i = 0; i < vecObj.size(); ++i)
 						{
-							m_CurEditObject = obs;
-							LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
-							m_Dragging = true;
-							break;
+							obs = static_cast<CObstacle*>(vecObj[i]);
+							if (obs->IsMouseOn() == true)
+							{
+								m_CurEditObject = obs;
+								LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
+								m_Dragging = true;
+								break;
+							}
+						}
+
+						vecObj = GetObjectsByLayerType(LAYER_TYPE::PLATFORM);
+						CPlatform* plt = nullptr;
+
+						for (int i = 0; i < vecObj.size(); ++i)
+						{
+							plt = static_cast<CPlatform*>(vecObj[i]);
+							if (plt->IsMouseOn() == true)
+							{
+								m_CurEditObject = plt;
+								LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
+								m_Dragging = true;
+								break;
+							}
 						}
 					}
-
-					vecObj = GetObjects(LAYER_TYPE::PLATFORM);
-					CPlatform* plt = nullptr;
-
-					for (int i = 0; i < vecObj.size(); ++i)
+					else
 					{
-						plt = static_cast<CPlatform*>(vecObj[i]);
-						if (plt->IsMouseOn() == true)
+						if (m_Editing)
 						{
-							m_CurEditObject = plt;
-							LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
-							m_Dragging = true;
-							break;
+							Vec2D MousePos = CMouseMgr::GetInst()->GetMousePos();
+							m_CurEditObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
+							YPositionCorrectionForObject(m_CurEditObject);
+						}
+						else if (m_Deleting)
+						{
+							CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)m_CurEditObject });
 						}
 					}
 				}
 				else
 				{
-					Vec2D MousePos = CMouseMgr::GetInst()->GetMousePos();
-					m_CurEditObject->SetPos(CCamera::GetInst()->GetRealPos(MousePos));
-					YPositionCorrectionForObject(m_CurEditObject);
+					m_CurEditObject = nullptr;
+					m_Dragging = false;
 				}
-			}
-			else
-			{
-				
-				m_CurEditObject = nullptr;
-				m_Dragging = false;
 			}
 		}
 	}
@@ -398,6 +410,23 @@ vector<wstring> CLevel_Editor::GetLoadedTextureKey()
 	}
 
 	return vKey;
+}
+
+void CLevel_Editor::SetObjectMouseCheck(bool _set)
+{
+	vector<CObject*> vecObj = GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
+	for (int i = 0; i < vecObj.size(); ++i)
+	{
+		CObstacle* obs = (CObstacle*)vecObj[i];
+		obs->SetUseMouseOn(_set);
+	}
+
+	vecObj = GetObjectsByLayerType(LAYER_TYPE::PLATFORM);
+	for (int i = 0; i < vecObj.size(); ++i)
+	{
+		CPlatform* plt = (CPlatform*)vecObj[i];
+		plt->SetUseMouseOn(_set);
+	}
 }
 
 INT_PTR CALLBACK CreateTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -1171,12 +1200,12 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				if (wstring(szBuff) == L"OBSTACLE")
 				{
 					SelectObj = EditStage->GetOBS(static_cast<OBS_TYPE>(ObjType));
-					pEditorLevel->SetEditing(true);
+					pEditorLevel->SetAssigning(true);
 				}
 				else if (wstring(szBuff) == L"PLATFORM")
 				{
 					SelectObj = EditStage->GetPLT(static_cast<PLT_TYPE>(ObjType));
-					pEditorLevel->SetEditing(true);
+					pEditorLevel->SetAssigning(true);
 				}
 			}
 		}
@@ -1193,6 +1222,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	{
 		if (LOWORD(wParam) == IDC_LOAD)
 		{
+			CCamera::GetInst()->SetCameraDefault();
 			hImageList = ImageList_Create(64, 64, ILC_COLOR32 | ILC_MASK, 4, 4);
 			hWndListView = GetDlgItem(hDlg, IDC_LIST);
 			ListView_DeleteAllItems(hWndListView);
@@ -1210,20 +1240,25 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			if (EditStage == nullptr) return(INT_PTR)FALSE;
 			int count = 0;
 
-			for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
+			if (pEditorLevel->GetBGSetted() == false)
 			{
-				CBackground* CurBG = EditStage->GetBG(static_cast<BG_TYPE>(i));
-				if (CurBG == nullptr) break;
-				count = (int)(EditStage->GetSTGLength() / CurBG->GetScale().x);
-				
-				for (int i = 0; i < count; ++i)
+				for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
 				{
-					CBackground* Clone = CurBG->Clone();
-					Clone->SetPos(CurBG->GetScale().x * i, 0);
-					pEditorLevel->AddObject(LAYER_TYPE::BACKGROUND, Clone);
+					CBackground* CurBG = EditStage->GetBG(static_cast<BG_TYPE>(i));
+					if (CurBG == nullptr) break;
+					count = (int)(EditStage->GetSTGLength() / CurBG->GetScale().x);
+
+					for (int i = 0; i < count; ++i)
+					{
+						CBackground* Clone = CurBG->Clone();
+						Clone->SetPos(CurBG->GetScale().x * i, 0);
+						Clone->SetSpeed(0);
+						pEditorLevel->AddObject(LAYER_TYPE::BACKGROUND, Clone);
+					}
+					pEditorLevel->SetBGSetted(true);
 				}
 			}
-			
+
 			if (Obj == L"OBSTACLE")
 			{
 				CObstacle* curOBS;
@@ -1231,9 +1266,6 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
 				{
 					curOBS = EditStage->GetOBS(static_cast<OBS_TYPE>(i));
-
-					// Use Mouse
-					curOBS->SetUseMouseOn(true);
 
 					// Icon Setting
 					Bitmap* pBitmap = curOBS->GetTexture()->GetpBit();
@@ -1266,9 +1298,6 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				{
 					curPLT = EditStage->GetPLT(static_cast<PLT_TYPE>(i));
 
-					// Use Mouse
-					curPLT->SetUseMouseOn(true);
-
 					// Icon Setting
 					Bitmap* pBitmap = curPLT->GetTexture()->GetpBit();
 					pBitmap->GetHICON(&hIcon);
@@ -1294,9 +1323,79 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 
 		}
+		else if (LOWORD(wParam) == IDC_EDITMODE)
+		{
+			if (pEditorLevel->GetEditing() == false)
+			{
+				if (pEditorLevel->GetDeleting() == true)
+				{
+					LOG(LOG_TYPE::DBG_WARNING, L"현재 DeleteMode 실행 중입니다. 종료 후 시작하세요.");
+					return (INT_PTR)TRUE;
+				}
+				LOG(LOG_TYPE::DBG_LOG, L"EditMode 시작 / Object를 클릭하면 위치를 수정합니다.");
+				pEditorLevel->SetObjectMouseCheck(true);
+				pEditorLevel->SetEditing(true);
+			}
+			else
+			{
+				LOG(LOG_TYPE::DBG_LOG, L"EditMode 종료");
+				pEditorLevel->SetObjectMouseCheck(false);
+				pEditorLevel->SetEditing(false);
+			}
+		}
+		else if (LOWORD(wParam) == IDC_DELMODE)
+		{
+			if (pEditorLevel->GetDeleting() == false)
+			{
+				if (pEditorLevel->GetEditing() == true)
+				{
+					LOG(LOG_TYPE::DBG_WARNING, L"현재 EditMode 실행 중입니다. 종료 후 시작하세요.");
+					return (INT_PTR)TRUE;
+				}
+				LOG(LOG_TYPE::DBG_LOG, L"DeleteMode 시작 / Object를 클릭하면 삭제됩니다.");
+				pEditorLevel->SetObjectMouseCheck(true);
+				pEditorLevel->SetDeleting(true);
+			}
+			else
+			{
+				LOG(LOG_TYPE::DBG_LOG, L"DeleteMode 종료");
+				pEditorLevel->SetObjectMouseCheck(false);
+				pEditorLevel->SetDeleting(false);
+			}
+			
+		}
 		else if (LOWORD(wParam) == IDSAVE)
 		{
+			CStage* CurStg = pEditorLevel->GetEditStage();
 
+			// Background Object
+			pEditorLevel->SortObjectsByXpos(LAYER_TYPE::BACKGROUND);
+			const vector<CObject*>& vecBG = pEditorLevel->GetObjectsByLayerType(LAYER_TYPE::BACKGROUND);
+			for (int i = 0; i < vecBG.size(); ++i)
+			{
+				CBackground* bg = (CBackground*)vecBG[i];
+				CurStg->AddSTObjInfo(StageSTObjInfo{ LAYER_TYPE::BACKGROUND, (UINT)bg->GetBGType(), bg->GetPos() }, 0);
+			}
+
+			// Platform Object
+			pEditorLevel->SortObjectsByXpos(LAYER_TYPE::PLATFORM);
+			const vector<CObject*>& vecPLT = pEditorLevel->GetObjectsByLayerType(LAYER_TYPE::PLATFORM);
+			for (int i = 0; i < vecPLT.size(); ++i)
+			{
+				CPlatform* plt = (CPlatform*)vecPLT[i];
+				CurStg->AddSTObjInfo(StageSTObjInfo{ LAYER_TYPE::PLATFORM, (UINT)plt->GetPLTType(), plt->GetPos() }, 1);
+			}
+
+			// Obstacle Object
+			pEditorLevel->SortObjectsByXpos(LAYER_TYPE::OBSTACLE);
+			const vector<CObject*>& vecOBS = pEditorLevel->GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
+			for (int i = 0; i < vecOBS.size(); ++i)
+			{
+				CObstacle* obs = (CObstacle*)vecOBS[i];
+				CurStg->AddSTObjInfo(StageSTObjInfo{ LAYER_TYPE::OBSTACLE, (UINT)obs->GetOBSType(), obs->GetPos() }, 2);
+			}
+
+			OpenSaveFile(L"", L"stg");
 		}
 		if (LOWORD(wParam) == IDCANCEL)
 		{
@@ -1309,6 +1408,8 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	}
 	return (INT_PTR)FALSE;
 }
+
+
 
 int ExtractTypeNumber(const std::wstring& str)
 {
@@ -1341,7 +1442,6 @@ void XPositionCorrectionForObject(CObject* _Obj)
 
 		if (CurObjCol->GetFinalPos().x < CollidingCol->GetFinalPos().x)
 		{
-			
 			Vec2D CorrectPos = Vec2D(CollidingColOwner->GetRenderPos().x 
 								- (CollidingColOwner->GetScale().x / 2.f)
 								- (CurObjCol->GetScale().x / 2.f)
@@ -1431,7 +1531,9 @@ void OpenSaveFile(wstring _Key, wstring _FileType)
 
 	// 탐색창 초기 위치 지정
 	wstring strInitPath = CPathMgr::GetInst()->GetContentPath();
-	strInitPath += L"animation\\";
+	if (_FileType == L"anim") strInitPath += L"animation\\";
+	else if (_FileType == L"stg") strInitPath += L"stage\\";
+	
 	ofn.lpstrInitialDir = strInitPath.c_str();
 
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
@@ -1454,6 +1556,19 @@ void OpenSaveFile(wstring _Key, wstring _FileType)
 			SelectedFileName = SelectedFileName.substr(0, pos);
 
 			CResourceMgr::GetInst()->SaveAnimation(pEditorLevel->GetEditAnim(), SelectedFileName, SelectedFilePath);
+		}
+		else if (_FileType == L"stg")
+		{
+			wstring SelectedFilePath = L"stage\\";
+			size_t FilePathPos = wstring(ofn.lpstrFile).find(SelectedFilePath);
+			wstring SelectedFileName = wstring(ofn.lpstrFile).substr(FilePathPos + SelectedFilePath.length());
+			SelectedFilePath += SelectedFileName;
+
+			SelectedFileName = PathFindFileNameW(ofn.lpstrFile);               // 확장자 포함
+			size_t pos = SelectedFileName.find(L".stg");
+			SelectedFileName = SelectedFileName.substr(0, pos);
+
+			CStageMgr::GetInst()->SaveStageSTObject(pEditorLevel->GetEditStage());
 		}
 
 	}

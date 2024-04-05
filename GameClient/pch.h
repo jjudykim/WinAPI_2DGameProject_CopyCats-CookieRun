@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <assert.h>
 
+#include <algorithm>
 #include <vector>
 using std::vector;
 

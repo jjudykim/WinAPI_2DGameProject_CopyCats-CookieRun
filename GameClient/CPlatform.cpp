@@ -36,6 +36,7 @@ CPlatform::~CPlatform()
 
 void CPlatform::begin()
 {
+	m_Collider->SetScale(Vec2D(GetScale().x, GetScale().y));
 }
 
 void CPlatform::tick()
@@ -112,8 +113,8 @@ void CPlatform::CheckMouseOn()
 	{
 		if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
 			&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
-			&& vPos.y - vScale.y <= vMousePos.y
-			&& vMousePos.y <= vPos.y)
+			&& vPos.y <= vMousePos.y
+			&& vMousePos.y <= vPos.y + vScale.y)
 		{
 			m_MouseOn = true;
 		}

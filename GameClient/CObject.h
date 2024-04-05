@@ -37,11 +37,11 @@ public:
 	void SetScale(float _width, float _height) { m_Scale.x = _width; m_Scale.y = _height; }
 	void SetLayerType(LAYER_TYPE _type) { m_Type = _type; }
 	
-	Vec2D GetPos() { return m_Pos; }
-	Vec2D GetScale() { return m_Scale; }
-	float GetSpeed() { return m_Speed; }
-	Vec2D GetRenderPos() { return CCamera::GetInst()->GetRenderPos(m_Pos); }
-	LAYER_TYPE GetLayerType() { return m_Type; }
+	Vec2D GetPos() const { return m_Pos; }
+	Vec2D GetScale() const { return m_Scale; }
+	float GetSpeed() const { return m_Speed; }
+	Vec2D GetRenderPos() const { return CCamera::GetInst()->GetRenderPos(m_Pos); }
+	LAYER_TYPE GetLayerType() const { return m_Type; }
 	
 	bool IsDead() { return m_bDead; }
 
