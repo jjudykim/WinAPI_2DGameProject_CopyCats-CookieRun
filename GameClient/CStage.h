@@ -32,13 +32,14 @@ public:
 
 	void AddSTObjInfo(StageSTObjInfo _info, int _index) { m_vecSTObjInfo[_index].push_back(_info); }
 	const vector<StageSTObjInfo>& GetSTObjInfo(int _index) { return m_vecSTObjInfo[_index]; }
+	void ClearSTObjInfo(int _index) { m_vecSTObjInfo[_index].clear(); }
 	EPISODE_TYPE GetEPType() { return m_EpisodeType; }
 	STAGE_TYPE GetSTGType() { return m_StageType; }
 	float GetSTGLength() { return m_StageLength; }
 	CBackground* GetBG(BG_TYPE _type) { return m_arrBG[(UINT)_type]; }
 	CPlatform* GetPLT(PLT_TYPE _type) { return m_arrPLT[(UINT)_type]; }
 	CObstacle* GetOBS(OBS_TYPE _type) { return m_arrOBS[(UINT)_type]; }
-	int LoadFromFile();
+	int LoadSTObjectsFromFile();
 
 public:
 	CLONE(CStage);

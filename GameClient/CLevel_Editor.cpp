@@ -45,6 +45,7 @@ CObject* SelectObj = nullptr;
 UINT Ep = (UINT)EPISODE_TYPE::END;
 UINT Stg = (UINT)STAGE_TYPE::END;
 
+
 CLevel_Editor::CLevel_Editor()
 	: m_hMenu(nullptr)
 	, m_EditMode(-1)
@@ -283,6 +284,9 @@ void CLevel_Editor::tick()
 							if (obs->IsMouseOn() == true)
 							{
 								m_CurEditObject = obs;
+								wchar_t szBuff[256];
+								wcscpy_s(szBuff, (L"OBS_" + std::to_wstring((UINT)obs->GetOBSType())).c_str());
+								SetDlgItemText(CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC), IDC_SELECTOBJ, szBuff);
 								LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
 								m_Dragging = true;
 								break;
@@ -298,6 +302,9 @@ void CLevel_Editor::tick()
 							if (plt->IsMouseOn() == true)
 							{
 								m_CurEditObject = plt;
+								wchar_t szBuff[256];
+								wcscpy_s(szBuff, (L"PLT_" + std::to_wstring((UINT)plt->GetPLTType())).c_str());
+								SetDlgItemText(CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC), IDC_SELECTOBJ, szBuff);
 								LOG(LOG_TYPE::DBG_ERROR, L"선택 항목 수정중");
 								m_Dragging = true;
 								break;
@@ -427,6 +434,29 @@ void CLevel_Editor::SetObjectMouseCheck(bool _set)
 		CPlatform* plt = (CPlatform*)vecObj[i];
 		plt->SetUseMouseOn(_set);
 	}
+}
+
+void CLevel_Editor::ResetForLoadStage()
+{
+	for (size_t i = 0; i < (UINT)LAYER_TYPE::END; ++i)
+	{
+		Safe_Del_Vec(m_arrObj[i]);
+	}
+
+	for (int i = 0; i < 3; ++i)
+	{
+		if(m_CurEditStage != nullptr) m_CurEditStage->ClearSTObjInfo(i);
+	}
+	
+	m_CurEditObject = nullptr;
+	m_CurEditStage = nullptr;
+	m_GuideDraw = nullptr;
+
+	m_Assigning = false;
+	m_Editing = false;
+	m_Deleting = false;
+	m_Dragging = false;
+	m_BGSetted = false;
 }
 
 INT_PTR CALLBACK CreateTexProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -1176,6 +1206,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		hCombo = GetDlgItem(hDlg, IDC_OBJTYPE);
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"OBSTACLE");
 		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"PLATFORM");
+		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
 
 		return (INT_PTR)TRUE;
 	}
@@ -1222,13 +1253,14 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	{
 		if (LOWORD(wParam) == IDC_LOAD)
 		{
+			pEditorLevel->ResetForLoadStage();
 			CCamera::GetInst()->SetCameraDefault();
 			hImageList = ImageList_Create(64, 64, ILC_COLOR32 | ILC_MASK, 4, 4);
 			hWndListView = GetDlgItem(hDlg, IDC_LIST);
 			ListView_DeleteAllItems(hWndListView);
 
-			Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_SETCURSEL, (WPARAM)0, 0);
-			Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_SETCURSEL, (WPARAM)0, 0);
+			Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_GETCURSEL, (WPARAM)0, 0);
+			Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_GETCURSEL, (WPARAM)0, 0);
 
 			wchar_t szBuff[256] = {};
 			GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
@@ -1238,26 +1270,6 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			pEditorLevel->SetEditStage(CStageMgr::GetInst()->GetStage(Ep, Stg));
 			CStage* EditStage = pEditorLevel->GetEditStage();
 			if (EditStage == nullptr) return(INT_PTR)FALSE;
-			int count = 0;
-
-			if (pEditorLevel->GetBGSetted() == false)
-			{
-				for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
-				{
-					CBackground* CurBG = EditStage->GetBG(static_cast<BG_TYPE>(i));
-					if (CurBG == nullptr) break;
-					count = (int)(EditStage->GetSTGLength() / CurBG->GetScale().x);
-
-					for (int i = 0; i < count; ++i)
-					{
-						CBackground* Clone = CurBG->Clone();
-						Clone->SetPos(CurBG->GetScale().x * i, 0);
-						Clone->SetSpeed(0);
-						pEditorLevel->AddObject(LAYER_TYPE::BACKGROUND, Clone);
-					}
-					pEditorLevel->SetBGSetted(true);
-				}
-			}
 
 			if (Obj == L"OBSTACLE")
 			{
@@ -1321,7 +1333,132 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				}
 			}
 
+			if (EditStage->LoadSTObjectsFromFile() == S_OK)
+			{
+				for (int i = 0; i < 3; ++i)
+				{
+					CObject* pObject = nullptr;
 
+					const vector<StageSTObjInfo>& vecStageInfo = EditStage->GetSTObjInfo(i);
+					vector<StageSTObjInfo>::const_iterator iter = vecStageInfo.begin();
+					for (; iter != vecStageInfo.end(); ++iter)
+					{
+						LAYER_TYPE type = iter->_objType;
+						UINT index = iter->_typeIndex;
+						if (type == LAYER_TYPE::BACKGROUND)
+						{
+							pObject = (EditStage->GetBG(static_cast<BG_TYPE>(index)))->Clone();
+							pObject->SetSpeed(0);
+						}
+						else if (type == LAYER_TYPE::PLATFORM) pObject = (EditStage->GetPLT(static_cast<PLT_TYPE>(index)))->Clone();
+						else if (type == LAYER_TYPE::OBSTACLE) pObject = (EditStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
+						pObject->SetPos(iter->_pos);
+						CCollider* col = pObject->GetComponent<CCollider>();
+						if (col != nullptr)
+						{
+							col->SetScale(pObject->GetScale());
+						}
+
+						pEditorLevel->AddObject(type, pObject);
+					}
+				}
+
+				pEditorLevel->SetBGSetted(true);
+			}
+
+			if (pEditorLevel->GetBGSetted() == false)
+			{
+				int count = 0;
+
+				for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
+				{
+					CBackground* CurBG = EditStage->GetBG(static_cast<BG_TYPE>(i));
+					if (CurBG == nullptr) break;
+					count = (int)(EditStage->GetSTGLength() / CurBG->GetScale().x);
+
+					for (int i = 0; i < count; ++i)
+					{
+						CBackground* Clone = CurBG->Clone();
+						Clone->SetPos(CurBG->GetScale().x * i, 0);
+						Clone->SetSpeed(0);
+						pEditorLevel->AddObject(LAYER_TYPE::BACKGROUND, Clone);
+					}
+					pEditorLevel->SetBGSetted(true);
+				}
+			}
+		}
+		else if (HIWORD(wParam) == CBN_SELCHANGE)
+		{
+			if (pEditorLevel->GetEditStage() == nullptr) return (INT_PTR)TRUE;
+			else
+			{
+				hImageList = ImageList_Create(64, 64, ILC_COLOR32 | ILC_MASK, 4, 4);
+				hWndListView = GetDlgItem(hDlg, IDC_LIST);
+				ListView_DeleteAllItems(hWndListView);
+				HWND hWndComboBox = (HWND)lParam;
+				int selectedindex = SendMessage(hWndComboBox, CB_GETCURSEL, 0, 0);
+				if (selectedindex == 0)
+				{
+					CObstacle* curOBS;
+					HICON hIcon;
+					for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
+					{
+						curOBS = pEditorLevel->GetEditStage()->GetOBS(static_cast<OBS_TYPE>(i));
+
+						// Icon Setting
+						Bitmap* pBitmap = curOBS->GetTexture()->GetpBit();
+						pBitmap->GetHICON(&hIcon);
+
+						ImageList_ReplaceIcon(hImageList, -1, hIcon);
+						DestroyIcon(hIcon);
+					}
+					ListView_SetImageList(hWndListView, hImageList, LVSIL_NORMAL);
+
+					for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
+					{
+						wstring str = L"OBS_" + std::to_wstring(i);
+						LV_ITEM lvItem;
+						lvItem.mask = LVIF_TEXT | LVIF_IMAGE;
+						lvItem.iItem = i;
+						lvItem.iSubItem = 0;
+						lvItem.pszText = (LPWSTR)str.c_str();
+						lvItem.iImage = i;
+
+						ListView_InsertItem(hWndListView, &lvItem);
+					}
+
+				}
+				else if (selectedindex == 1)
+				{
+					CPlatform* curPLT;
+					HICON hIcon;
+					for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
+					{
+						curPLT = pEditorLevel->GetEditStage()->GetPLT(static_cast<PLT_TYPE>(i));
+
+						// Icon Setting
+						Bitmap* pBitmap = curPLT->GetTexture()->GetpBit();
+						pBitmap->GetHICON(&hIcon);
+
+						ImageList_ReplaceIcon(hImageList, -1, hIcon);
+						DestroyIcon(hIcon);
+					}
+					ListView_SetImageList(hWndListView, hImageList, LVSIL_NORMAL);
+
+					for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
+					{
+						wstring str = L"PLT_" + std::to_wstring(i);
+						LV_ITEM lvItem;
+						lvItem.mask = LVIF_TEXT | LVIF_IMAGE;
+						lvItem.iItem = i;
+						lvItem.iSubItem = 0;
+						lvItem.pszText = (LPWSTR)str.c_str();
+						lvItem.iImage = i;
+
+						ListView_InsertItem(hWndListView, &lvItem);
+					}
+				}
+			}
 		}
 		else if (LOWORD(wParam) == IDC_EDITMODE)
 		{
@@ -1399,6 +1536,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		}
 		if (LOWORD(wParam) == IDCANCEL)
 		{
+			pEditorLevel->ResetForLoadStage();
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_STATIC);
 			DestroyWindow(hEditSTStage);
 			return (INT_PTR)TRUE;

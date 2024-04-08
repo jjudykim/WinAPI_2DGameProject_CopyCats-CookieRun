@@ -14,7 +14,7 @@ private:
 
     Vec2D   m_Velocity;
     Vec2D   m_VelocityByJump;
-    Vec2D   m_AddVelocity;
+    bool    m_Descending;
 
     float   m_WalkSpeed;
 
@@ -37,6 +37,7 @@ public:
     void Jump();
 
     bool GetUseGravity() { return m_UseGravity; }
+    bool IsDescending() { return m_Descending; }
     bool IsGround() { return m_Ground; }
     Vec2D GetGraivtyVelocity() { return m_VelocityByJump; }
 

@@ -72,7 +72,8 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 	_wfopen_s(&pFile, Path.c_str(), L"r");
 	if (pFile == nullptr) { return; }
 	
-	CStage* curStg = new CStage();
+	CStage* curStg = nullptr;
+	CTexture* BGtex = nullptr;
 	CTexture* tex = nullptr;
 	wchar_t szReadBuff[256] = {};
 	while (EOF != fwscanf_s(pFile, L"%s", szReadBuff, 256))
@@ -80,7 +81,7 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 		if (wstring(szReadBuff) == L"[BACKGROUND_ATLAS]")
 		{
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
-			tex = CResourceMgr::GetInst()->LoadTexture(EP, szReadBuff);
+			BGtex = CResourceMgr::GetInst()->LoadTexture(EP, szReadBuff);
 			
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
 		}
@@ -92,7 +93,8 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 
 			for (int i = 0; i < count; ++i)
 			{
-				wstring STG = L"STG" + std::to_wstring(count);
+				curStg = new CStage();
+				wstring STG = L"STG" + std::to_wstring(i);
 				while (true)
 				{
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
@@ -125,12 +127,11 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 
 					BG = curStg->m_arrBG[i];
 					BG->SetBGType(static_cast<BG_TYPE>(i));
-					BG->SetAtlas(tex);
+					BG->SetAtlas(BGtex);
 					BG->SetScale(Slice * 2.25f);
 					BG->SetAtlasInfo(Pos, Slice);
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
 				}
-				tex = nullptr;
 
 				while (true)
 				{
@@ -149,7 +150,7 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 
 					tex = CResourceMgr::GetInst()->LoadTexture(EP + L"_" + STG + L"_PLT" + std::to_wstring(i), szReadBuff);
 					PLT->SetTexture(tex);
-					// TODO : scale 읽기 변경
+					
 					Vec2D scale = {};
 					fwscanf_s(pFile, L"%f%f", &scale.x, &scale.y);
 					PLT->SetScale(tex->GetWidth(), tex->GetHeight());
@@ -218,7 +219,7 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 void CStageMgr::SaveStageSTObject(CStage* _SaveStage)
 {
 	// ex) EP1_STG1_STObj.stg
-	wstring FileName = L"TEST_EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)           // TODO: 시험 완료 후 파일명에서 TEST 제거하기
+	wstring FileName = L"EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)           // TODO: 시험 완료 후 파일명에서 TEST 제거하기
 		+ L"_STG" + std::to_wstring((UINT)_SaveStage->GetSTGType() + 1)
 		+ L"_STObj.stg";
 

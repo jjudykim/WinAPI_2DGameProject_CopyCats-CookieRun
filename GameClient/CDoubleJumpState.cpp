@@ -35,9 +35,14 @@ void CDoubleJumpState::Enter()
 
 void CDoubleJumpState::FinalTick()
 {
-	if (GetOwnerRigidBody()->IsGround() == true)
+	if (GetOwnerRigidBody()->IsDescending())
 	{
-		GetFSM()->ChangeState(L"Run");
+		GetCurPlayer()->SetJumpingState(false);
+
+		if (GetOwnerRigidBody()->IsGround())
+		{
+			GetFSM()->ChangeState(L"Run");
+		}
 	}
 
 	if (GetOwnerAnimator() != nullptr)

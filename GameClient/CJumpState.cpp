@@ -33,19 +33,18 @@ void CJumpState::Enter()
 	CPlayerState::Enter();
 	LOG(LOG_TYPE::DBG_WARNING, L"Jump State ÁøÀÔ");
 
-	GetOwnerRigidBody()->SetUseGravity(true);
 	GetOwnerAnimator()->Play(L"Jump", false);
-	m_JumpStandard = GetCurPlayer()->GetJumpStartYPos();
+
+	GetOwnerRigidBody()->SetUseGravity(true);
 }
 
 void CJumpState::FinalTick()
 {
-	if (!m_JumpHigherStandard && GetCurPlayer()->GetPos().y <= m_JumpStandard - 100.f)
+	if (GetOwnerRigidBody()->IsDescending())
 	{
- 		m_JumpHigherStandard = true;
+		GetCurPlayer()->SetJumpingState(false);
 	}
-
-	if (m_JumpHigherStandard && GetOwnerRigidBody()->IsGround())
+	if (!GetCurPlayer()->IsJumping() && GetOwnerRigidBody()->IsGround())
 	{
 		GetFSM()->ChangeState(L"Run");
 	}

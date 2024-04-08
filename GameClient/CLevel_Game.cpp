@@ -57,7 +57,7 @@ void CLevel_Game::tick()
 	m_SpawnPosX = StandardPosX + m_ResolutionWidth;
 	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
 
-	for (int i = 0; i < 3; i++)
+	/*for (int i = 0; i < 3; i++)
 	{
 		vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecSTObjInfo[i];
 		vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
@@ -73,7 +73,7 @@ void CLevel_Game::tick()
 				++iter;
 			}
 		}
-	}
+	}*/
 	
 
 	// Delete Passed Stage Object
@@ -130,7 +130,7 @@ void CLevel_Game::Enter()
 	// 현재 스테이지 맵 데이터 불러오기
 	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
-	m_CurStage->LoadFromFile();
+	m_CurStage->LoadSTObjectsFromFile();
 
 	CObject* pObject = new CPlayer;
 	pObject->SetName(L"Player");
@@ -154,6 +154,18 @@ void CLevel_Game::Enter()
 	m_Pet = pObject;
 	AddObject(LAYER_TYPE::PET, pObject);
 
+	// Static Object 배치
+	for (int i = 0; i < 3; i++)
+	{
+		vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecSTObjInfo[i];
+		vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
+
+		for (; iter < vecStageInfo.end(); ++iter)
+		{
+			SpawnStageObject(*iter);
+		}
+	}
+	
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
 

@@ -91,6 +91,7 @@ public:
     int GetEditMode() { return m_EditMode; }
     bool GetBGSetted() { return m_BGSetted; }
    
+    void ResetForLoadStage();
     //void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     //const int& GetAnimFrmCount() { return m_vecFrm.size(); }
 

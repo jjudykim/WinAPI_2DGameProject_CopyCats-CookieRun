@@ -37,8 +37,9 @@ void CRunState::Set()
 void CRunState::Enter()
 {
 	CPlayerState::Enter();
-
-	if (GetFSM()->FindState(L"Slide") == GetFSM()->GetPrevState()) 
+	LOG(LOG_TYPE::DBG_WARNING, L"Run State ÁøÀÔ");
+	if (GetFSM()->FindState(L"Slide") == GetFSM()->GetPrevState()
+		|| GetFSM()->FindState(L"DoubleJump") == GetFSM()->GetPrevState())
 	{ 
 		GetOwnerAnimator()->Play(L"UpFromSlide", false); 
 	}

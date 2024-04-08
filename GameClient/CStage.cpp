@@ -22,13 +22,13 @@ void CStage::Exit()
 {
 }
 
-int CStage::LoadFromFile()
+int CStage::LoadSTObjectsFromFile()
 {
 	// LoadFromFile에서 진행되어야 할 일
 	// 파일로부터 저장된 정보를 읽어들여 StageObjInfo를 작성
 
 	// ex) EP1_STG1_STObj.stg
-	wstring FileName = L"TEST_EP" + std::to_wstring((UINT)m_EpisodeType + 1)
+	wstring FileName = L"EP" + std::to_wstring((UINT)m_EpisodeType + 1)
 					+ L"_STG" + std::to_wstring((UINT)m_StageType + 1)
 					+ L"_STObj.stg";
 

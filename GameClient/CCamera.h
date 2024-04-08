@@ -36,6 +36,7 @@ private:
 public:
 	Vec2D GetRenderPos(Vec2D _RealPos) { return _RealPos - m_Diff; }
 	Vec2D GetRealPos(Vec2D _RenderPos) { return _RenderPos + m_Diff; }
+	Vec2D GetLookAt() { return m_LookAt; }
 	void SetCameraDefault();
 	void SetCameraFocus();
 	void SetCameraEffect(CAM_EFFECT _Effect, float _Duration);

@@ -76,6 +76,14 @@ void CLevel::render()
 	{
 		for (size_t j = 0; j < m_arrObj[i].size(); ++j)
 		{
+			/*float MinPosX = CCamera::GetInst()->GetLookAt().x - (CEngine::GetInst()->GetResolution().x / 2.f);
+			float MaxPosX = CCamera::GetInst()->GetLookAt().x + (CEngine::GetInst()->GetResolution().x / 2.f);
+			if (MinPosX <= m_arrObj[i][j]->GetPos().x + m_arrObj[i][j]->GetScale().x
+				&& m_arrObj[i][j]->GetPos().x <= MaxPosX)
+			{
+				
+			}*/
+
 			m_arrObj[i][j]->render();
 		}
 	}

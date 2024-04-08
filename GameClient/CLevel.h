@@ -8,7 +8,7 @@ class CAnimator;
 class CLevel
 	: public CEntity
 {
-private:
+protected:
 	vector<CObject*>    m_arrObj[(UINT)LAYER_TYPE::END];
 	vector<CCollider*>	m_arrCollider[(UINT)LAYER_TYPE::END];
 	vector<CAnimator*>  m_arrAnimator[(UINT)LAYER_TYPE::END];

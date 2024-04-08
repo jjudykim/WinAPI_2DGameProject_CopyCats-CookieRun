@@ -3,6 +3,7 @@
 
 #include "CEngine.h"
 #include "CObject.h"
+#include "CPlatform.h"
 
 #include "CLevelMgr.h"
 #include "CTimeMgr.h"
@@ -28,6 +29,7 @@ CPlayer::CPlayer()
 	, m_CurJumpCount(0)
 	, m_OverlapPLTCount(0)
 	, m_State(COOKIE_STATE::NONE)
+	, m_Jumping(false)
 {
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
@@ -44,7 +46,8 @@ CPlayer::~CPlayer()
 
 void CPlayer::begin()
 {
-	m_RigidBody->SetGroundDelegate(this, (DELEGATE)&CPlayer::RestoreJumpCount);
+	m_RigidBody->SetGroundDelegate(this, (DELEGATE)&CPlayer::GroundLogic);
+	m_RigidBody->SetUseGravity(true);
 
 	// FSM State Setting
 	m_FSM->AddState(L"Run", new CRunState);
@@ -60,8 +63,7 @@ void CPlayer::tick()
 {
 	CObject::tick();
 
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::TAP 
-		&& m_RigidBody->IsGround() == true)
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::TAP)
 	{
 		m_JumpStartYPos = GetPos().y;
 		if (m_DoubleJumpCount > m_CurJumpCount)
@@ -76,6 +78,7 @@ void CPlayer::tick()
 				m_FSM->ChangeState(L"Jump");
 			}
 			m_RigidBody->Jump();
+			m_Jumping = true;
 		}
 	}
 	else if (KEY_TAP(KEY::DOWN) && m_RigidBody->IsGround())
@@ -97,13 +100,20 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 {
 	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
 	{
-		++m_OverlapPLTCount;
-		if (m_OverlapPLTCount > 0)
-		{
-			m_RigidBody->SetGround(true);
-			LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
+		CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
+
+		if (plt->GetPLTType() == PLT_TYPE::FLOATED) { // ... 구현해야 함 ... }
+
+			++m_OverlapPLTCount;
+			if (m_OverlapPLTCount > 0)
+			{
+				if (!m_Jumping)
+				{
+					m_RigidBody->SetGround(true);
+					LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
+				}
+			}
 		}
-		
 	}
 }
 
@@ -118,7 +128,6 @@ void CPlayer::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider*
 		--m_OverlapPLTCount;
 		if (m_OverlapPLTCount <= 0)
 		{
-			m_RigidBody->SetUseGravity(true);
 			m_RigidBody->SetGround(false);
 			m_OverlapPLTCount = 0;
 			LOG(LOG_TYPE::DBG_LOG, L"SetGround -> false");

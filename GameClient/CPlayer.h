@@ -11,6 +11,7 @@ private:
     int     m_CurJumpCount;
     int     m_OverlapPLTCount;
     float   m_JumpStartYPos;
+    bool    m_Jumping;
 
     // Component
     CCollider*   m_Collider;
@@ -31,9 +32,15 @@ public:
     void EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
 
 private:
-    void RestoreJumpCount() { m_CurJumpCount = 0; }
+    void GroundLogic()
+    { 
+        m_CurJumpCount = 0;
+        m_Jumping = false;
+    }
 
 public:
+    void SetJumpingState(bool _Jumping) { m_Jumping = _Jumping; }
+    bool IsJumping() { return m_Jumping; }
     float GetJumpStartYPos() { return m_JumpStartYPos; }
     void SetCurCookie(COOKIE_TYPE _cookieType) { m_CurCookie = CResourceMgr::GetInst()->FindCookieInfo((UINT)_cookieType); }
     const CookieInfo& GetCurCookie() { return m_CurCookie; }
