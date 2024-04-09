@@ -22,6 +22,7 @@ private:
     bool    m_UseGravity;
     float   m_JumpSpeed;
     bool    m_Ground;
+    float   m_GroundStandardPosY;
 
 private:
     CObject*    m_GroundInst;
@@ -32,6 +33,7 @@ public:
     void SetUseGravity(bool _use) { m_UseGravity = _use; }
     void SetGravityVelocity(Vec2D _Velocity) { m_VelocityByJump = _Velocity; }
     void SetJumpSpeed(float _Speed) { m_JumpSpeed = _Speed; }
+    void SetGroundStandardPosY(float _PosY) { m_GroundStandardPosY = _PosY; }
 
     void Walk(Vec2D& _OriginPos);
     void Jump();

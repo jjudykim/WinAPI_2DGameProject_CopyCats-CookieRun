@@ -3,6 +3,7 @@
 
 #include "CTimeMgr.h"
 
+#include "CPlayer.h"
 #include "CEngine.h"
 #include "CObject.h"
 #include "CAnimator.h"
@@ -82,7 +83,6 @@ void CAnimation::render()
 	const AniFrm& frm = m_vecFrm[m_CurFrmIdx];
 
 	CObject* pOwnerObj = m_Animator->GetOwner();
-
 	Vec2D vRenderPos = pOwnerObj->GetRenderPos();
 
 	BLENDFUNCTION bf = {};
@@ -130,14 +130,35 @@ void CAnimation::render(float)
 		return;
 
 	const AniFrm& frm = m_vecFrm[m_CurFrmIdx];
-	CObject* pOwnerObj = m_Animator->GetOwner();
-	Vec2D vRenderPos = pOwnerObj->GetRenderPos();
+	CPlayer* player = dynamic_cast<CPlayer*>(m_Animator->GetOwner());
+	Vec2D vRenderPos = player->GetRenderPos();
+
+	static float alpha = 255;
+	static float dir = 1;
 
 	BLENDFUNCTION bf = {};
 
+	if (player->CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
+	{
+		alpha += DT * 1000.f * dir;
+
+		if (255.f <= alpha)
+		{
+			dir *= -1.f;
+		}
+		else if (alpha <= 100.f)
+		{
+			dir *= -1.f;
+		}
+	}
+	else
+	{
+		alpha = 255;
+	}
+
 	bf.BlendOp = AC_SRC_OVER;
 	bf.BlendFlags = 0;
-	bf.SourceConstantAlpha = 255;
+	bf.SourceConstantAlpha = (int)alpha;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	AlphaBlend(DC, (int)(vRenderPos.x - frm.SliceSize.x / 2.f + frm.Offset.x)

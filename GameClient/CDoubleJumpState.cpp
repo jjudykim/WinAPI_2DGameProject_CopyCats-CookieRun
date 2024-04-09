@@ -2,6 +2,7 @@
 #include "CDoubleJumpState.h"
 
 #include "CPlayer.h"
+#include "CKeyMgr.h"
 
 #include "CRigidBody.h"
 #include "CCollider.h"
@@ -10,7 +11,6 @@
 
 CDoubleJumpState::CDoubleJumpState()
 {
-	
 }
 
 CDoubleJumpState::~CDoubleJumpState()
@@ -35,14 +35,17 @@ void CDoubleJumpState::Enter()
 
 void CDoubleJumpState::FinalTick()
 {
+	if (KEY_TAP(KEY::DOWN) && GetOwnerRigidBody()->IsGround())
+	{
+		GetFSM()->ChangeState(L"Slide");
+	}
 	if (GetOwnerRigidBody()->IsDescending())
 	{
 		GetCurPlayer()->SetJumpingState(false);
-
-		if (GetOwnerRigidBody()->IsGround())
-		{
-			GetFSM()->ChangeState(L"Run");
-		}
+	}
+	if (!GetCurPlayer()->IsJumping() && GetOwnerRigidBody()->IsGround())
+	{
+		GetFSM()->ChangeState(L"Run");
 	}
 
 	if (GetOwnerAnimator() != nullptr)

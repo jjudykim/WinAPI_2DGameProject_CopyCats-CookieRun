@@ -2,6 +2,8 @@
 #include "CLevel.h"
 
 class CStage;
+class CPlayer;
+class CPet;
 
 class CLevel_Game :
     public CLevel
@@ -14,9 +16,13 @@ private:
     float       m_SpawnPosX;
     float       m_DeletePosX;
 
-    CObject*    m_Cookie;
-    CObject*    m_Pet;
+    CPlayer*    m_Cookie;
+    CPet*       m_Pet;
+
+
+    // Timer & Log
     float       m_QuaterSecond;
+    float       m_ThreeSecond;
     Vec2D       m_LogPos;
     Vec2D       m_LogPetPos;
 

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CJumpState.h"
 
+#include "CKeyMgr.h"
+
 #include "CCollider.h"
 #include "CRigidBody.h"
 #include "CAnimator.h"
@@ -40,6 +42,21 @@ void CJumpState::Enter()
 
 void CJumpState::FinalTick()
 {
+	if (KEY_TAP(KEY::SPACE))
+	{
+		if ( 0 < GetCurPlayer()->GetCurJumpCount()
+			&& GetCurPlayer()->GetCurJumpCount() < 2)
+		{
+			GetOwnerRigidBody()->Jump();
+			GetFSM()->ChangeState(L"DoubleJump");
+			
+		}
+	}
+	else if (KEY_TAP(KEY::DOWN) && GetOwnerRigidBody()->IsGround())
+	{
+		GetFSM()->ChangeState(L"Slide");
+	}
+
 	if (GetOwnerRigidBody()->IsDescending())
 	{
 		GetCurPlayer()->SetJumpingState(false);

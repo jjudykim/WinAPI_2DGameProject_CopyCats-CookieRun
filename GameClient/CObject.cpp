@@ -65,10 +65,12 @@ void CObject::finaltick()
 
 void CObject::render()
 {
+	if (!(RENDER_MINPOSX <= (GetPos().x + GetScale().x) && GetPos().x - GetScale().x <= RENDER_MAXPOSX)) return;
+
 	if (this == nullptr)
 		return;
 
-	if (m_Animator == nullptr)
+	/*if (m_Animator == nullptr)
 	{
 		CJelly* curJelly = dynamic_cast<CJelly*>(this);
 		if (curJelly != nullptr)
@@ -79,7 +81,7 @@ void CObject::render()
 			curDraw->render();
 
 		return;
-	}
+	}*/
 	
 	m_Animator->render();
 }

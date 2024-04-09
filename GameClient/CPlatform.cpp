@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CPlatform.h"
 
+#include "CDbgRenderMgr.h"
+
 #include "CCollider.h"
 #include "CRigidBody.h"
 #include "CResourceMgr.h"
@@ -60,7 +62,7 @@ void CPlatform::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 }
 
 void CPlatform::render()
-{
+{	
 	BLENDFUNCTION bf = {};
 
 	bf.BlendOp = AC_SRC_OVER;
@@ -68,27 +70,13 @@ void CPlatform::render()
 	bf.SourceConstantAlpha = (int)255;
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
-	if (m_Type == PLT_TYPE::GROUNDED)
-	{
-		AlphaBlend(DC
-			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-			, (int)(GetRenderPos().y)
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, m_Texture->GetDC(), 0, 0
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, bf);
-	}
-	else if (m_Type == PLT_TYPE::FLOATED)
-	{
-		AlphaBlend(DC
-			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-			, (int)(GetRenderPos().y - m_Texture->GetHeight() / 2.f)
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, m_Texture->GetDC(), 0, 0
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, bf);
-	}
-	
+	AlphaBlend(DC
+		, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+		, (int)(GetRenderPos().y)
+		, m_Texture->GetWidth(), m_Texture->GetHeight()
+		, m_Texture->GetDC(), 0, 0
+		, m_Texture->GetWidth(), m_Texture->GetHeight()
+		, bf);
 }
 
 void CPlatform::CheckMouseOn()
@@ -97,32 +85,15 @@ void CPlatform::CheckMouseOn()
 	Vec2D vScale = GetScale();
 	Vec2D vMousePos = CMouseMgr::GetInst()->GetMousePos();
 
-	if (m_Type == PLT_TYPE::GROUNDED)
+	if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
+		&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
+		&& vPos.y <= vMousePos.y
+		&& vMousePos.y <= vPos.y + vScale.y)
 	{
-		if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
-			&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
-			&& vPos.y <= vMousePos.y
-			&& vMousePos.y <= vPos.y + vScale.y)
-		{
-			m_MouseOn = true;
-		}
-		else
-		{
-			m_MouseOn = false;
-		}
+		m_MouseOn = true;
 	}
-	else if (m_Type == PLT_TYPE::FLOATED)
+	else
 	{
-		if (vPos.x - (vScale.x / 2.f) <= vMousePos.x
-			&& vMousePos.x <= vPos.x + (vScale.x / 2.f)
-			&& (vPos.y - (vScale.y / 2.f)) <= vMousePos.y
-			&& vMousePos.y <= vPos.y + (vScale.y / 2.f))
-		{
-			m_MouseOn = true;
-		}
-		else
-		{
-			m_MouseOn = false;
-		}
+		m_MouseOn = false;
 	}
 }

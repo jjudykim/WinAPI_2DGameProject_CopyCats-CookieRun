@@ -1548,7 +1548,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		{
 			for (int i = 0; i < 3; ++i)
 			{
-				if (!pEditorLevel->GetEditStage()->GetSTObjInfo(i).empty())
+				if (pEditorLevel->GetEditStage() != nullptr)
 				{
 					pEditorLevel->GetEditStage()->ClearSTObjInfo(i);
 				}

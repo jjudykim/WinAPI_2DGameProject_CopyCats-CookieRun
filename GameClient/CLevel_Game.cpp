@@ -53,28 +53,12 @@ void CLevel_Game::tick()
 		ChangeLevel(LEVEL_TYPE::EDITOR);
 	}
 
+	CCamera::GetInst()->SetCameraFocus();
+
 	float StandardPosX = m_Cookie->GetPos().x;
 	m_SpawnPosX = StandardPosX + m_ResolutionWidth;
 	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
 
-	/*for (int i = 0; i < 3; i++)
-	{
-		vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecSTObjInfo[i];
-		vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
-		for (; iter != vecStageInfo.end(); )
-		{
-			if (iter->_pos.x <= m_SpawnPosX)
-			{
-				SpawnStageObject(*iter);
-				iter = vecStageInfo.erase(iter);
-			}
-			else
-			{
-				++iter;
-			}
-		}
-	}*/
-	
 
 	// Delete Passed Stage Object
 	for (int i = 0; i < (UINT)LAYER_TYPE::END; ++i)
@@ -96,8 +80,22 @@ void CLevel_Game::tick()
 			if (tPosX <= m_DeletePosX)
 			{
 				vecObj[j]->Destroy();
-				//LOG(LOG_TYPE::DBG_LOG, L"Stage Obejct Deleted");
 			}
+		}
+	}
+
+	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
+	{
+		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 50)), 0, L"INVINCIBLE ON" };
+		CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+
+		m_ThreeSecond += DT;
+
+		if (m_ThreeSecond >= 3.f)
+		{
+			m_ThreeSecond = 0.f;
+			m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
+			LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
 		}
 	}
 
@@ -119,6 +117,8 @@ void CLevel_Game::tick()
 	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info2);
 
+
+	// Timers
 	m_QuaterSecond += DT;
 }
 
@@ -132,28 +132,6 @@ void CLevel_Game::Enter()
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
 	m_CurStage->LoadSTObjectsFromFile();
 
-	CObject* pObject = new CPlayer;
-	pObject->SetName(L"Player");
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
-	pPlayer->SetCurCookie(COOKIE_TYPE::ANGEL_COOKIE);
-	pObject->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
-	pObject->SetScale(pPlayer->GetCurCookie()._frmSize.x, pPlayer->GetCurCookie()._frmSize.y);
-	pObject->SetSpeed(400.f);
-	
-	m_Cookie = pObject;
-	AddObject(LAYER_TYPE::PLAYER, pObject);
-
-	pObject = new CPet;
-	pObject->SetName(L"Pet");
-	CPet* pPet = dynamic_cast<CPet*>(pObject);
-	pPet->SetCurPet(PET_TYPE::GOLD_DROP);
-	pObject->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
-	pObject->SetScale(pPet->GetCurPet()._frmSize.x, pPet->GetCurPet()._frmSize.y);
-	pObject->SetSpeed(400.f);
-
-	m_Pet = pObject;
-	AddObject(LAYER_TYPE::PET, pObject);
-
 	// Static Object ¹èÄ¡
 	for (int i = 0; i < 3; i++)
 	{
@@ -165,11 +143,33 @@ void CLevel_Game::Enter()
 			SpawnStageObject(*iter);
 		}
 	}
+
+	CObject* pObject = new CPlayer;
+	pObject->SetName(L"Player");
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+	pPlayer->SetCurCookie(COOKIE_TYPE::BRAVE_COOKIE);
+	pPlayer->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
+	pPlayer->SetScale(pPlayer->GetCurCookie()._frmSize.x, pPlayer->GetCurCookie()._frmSize.y);
+	pPlayer->SetSpeed(400.f);
+
+	m_Cookie = pPlayer;
+	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PLAYER, (DWORD_PTR)pObject});
+
+	pObject = new CPet;
+	pObject->SetName(L"Pet");
+	CPet* pPet = dynamic_cast<CPet*>(pObject);
+	pPet->SetCurPet(PET_TYPE::GOLD_DROP);
+	pPet->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
+	pPet->SetScale(pPet->GetCurPet()._frmSize.x, pPet->GetCurPet()._frmSize.y);
+	pPet->SetSpeed(400.f);
+
+	m_Pet = pPet;
+	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PET, (DWORD_PTR)pObject });
+	//AddObject(LAYER_TYPE::PET, pObject);
 	
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
+	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::OBSTACLE);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
-
-	CCamera::GetInst()->SetCameraFocus();
 }
 
 void CLevel_Game::Exit()

@@ -156,8 +156,7 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					PLT->SetScale(tex->GetWidth(), tex->GetHeight());
 
 					CCollider* col = PLT->GetComponent<CCollider>();
-					if (i == 0) col->SetOffsetPos(Vec2D(0.f, PLT->GetScale().y / 2.f));             // PLT_TYPE::GROUNDED
-					else if (i == 1) col->SetOffsetPos(Vec2D(0.f, 0.f));                            // PLT_TYPE::FLOATED
+					col->SetOffsetPos(Vec2D(0.f, PLT->GetScale().y / 2.f));
 				}
 				tex = nullptr;
 

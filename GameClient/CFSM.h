@@ -35,6 +35,7 @@ private:
 public:
     void AddState(const wstring& _strStateName, CState* _State);
     void SetState();
+    CState* GetCurState() { return m_CurState; }
     CState* GetPrevState() { return m_PrevState; }
     CState* FindState(const wstring& _strStateName);
     void ChangeState(const wstring& _strNextStateName);

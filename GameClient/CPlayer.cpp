@@ -28,8 +28,9 @@ CPlayer::CPlayer()
 	: m_DoubleJumpCount(2)
 	, m_CurJumpCount(0)
 	, m_OverlapPLTCount(0)
-	, m_State(COOKIE_STATE::NONE)
 	, m_Jumping(false)
+	, m_JumpStartYPos(0.f)
+	, m_PrevYPos(0.f)
 {
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
@@ -54,7 +55,9 @@ void CPlayer::begin()
 	m_FSM->AddState(L"Jump", new CJumpState);
 	m_FSM->AddState(L"DoubleJump", new CDoubleJumpState);
 	m_FSM->AddState(L"Slide", new CSlideState);
+	m_FSM->AddState(L"Damage", new CDamageState);
 	m_FSM->SetState();
+
 
 	m_FSM->ChangeState(L"Run");
 }
@@ -63,32 +66,7 @@ void CPlayer::tick()
 {
 	CObject::tick();
 
-	if (CKeyMgr::GetInst()->GetKeyState(KEY::SPACE) == KEY_STATE::TAP)
-	{
-		m_JumpStartYPos = GetPos().y;
-		if (m_DoubleJumpCount > m_CurJumpCount)
-		{
-			++m_CurJumpCount;
-			if (m_CurJumpCount == 2)
-			{
-				m_FSM->ChangeState(L"DoubleJump");
-			}
-			else
-			{
-				m_FSM->ChangeState(L"Jump");
-			}
-			m_RigidBody->Jump();
-			m_Jumping = true;
-		}
-	}
-	else if (KEY_TAP(KEY::DOWN) && m_RigidBody->IsGround())
-	{
-		m_FSM->ChangeState(L"Slide");
-	}
-	else if (KEY_RELEASED(KEY::DOWN))
-	{
-		m_FSM->ChangeState(L"Run");
-	}
+	m_PrevYPos = GetPos().y;
 }
 
 void CPlayer::render()
@@ -100,19 +78,32 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 {
 	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
 	{
-		CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
-
-		if (plt->GetPLTType() == PLT_TYPE::FLOATED) { // ... 구현해야 함 ... }
-
-			++m_OverlapPLTCount;
-			if (m_OverlapPLTCount > 0)
+		++m_OverlapPLTCount;
+		if (m_OverlapPLTCount > 0)
+		{
+			if (!m_Jumping)
 			{
-				if (!m_Jumping)
+				CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
+
+				if (plt->GetPLTType() == PLT_TYPE::FLOATED)
 				{
-					m_RigidBody->SetGround(true);
-					LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
+					if (0 < GetPos().y - m_PrevYPos)
+					{
+						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
+					}
 				}
+				m_RigidBody->SetGround(true);
+				LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 			}
+		}
+	}
+
+	if (!CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
+	{
+		if (_OtherObj->GetLayerType() == LAYER_TYPE::OBSTACLE)
+		{
+			TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
+			m_FSM->ChangeState(L"Damage");
 		}
 	}
 }
@@ -129,8 +120,8 @@ void CPlayer::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider*
 		if (m_OverlapPLTCount <= 0)
 		{
 			m_RigidBody->SetGround(false);
+			m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
 			m_OverlapPLTCount = 0;
-			LOG(LOG_TYPE::DBG_LOG, L"SetGround -> false");
 		}
 	}
 }

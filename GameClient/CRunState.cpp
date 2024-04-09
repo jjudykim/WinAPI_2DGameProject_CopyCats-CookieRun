@@ -4,6 +4,7 @@
 #include "CObject.h"
 
 #include "CPathMgr.h"
+#include "CKeyMgr.h"
 
 #include "CAnimator.h"
 #include "CAnimation.h"
@@ -13,7 +14,6 @@
 CRunState::CRunState()
 	: m_PlayingAnim(false)
 {
-	
 }
 
 CRunState::~CRunState()
@@ -51,6 +51,22 @@ void CRunState::Enter()
 
 void CRunState::FinalTick()
 {
+	if (KEY_TAP(KEY::SPACE) || KEY_PRESSED(KEY::SPACE) && GetOwnerRigidBody()->IsGround())
+	{
+		CPlayer* Player = GetCurPlayer();
+
+		Player->SetJumpStartYPos(Player->GetPos().y);
+		Player->SetJumpingState(true);
+		Player->PlusJumpCount();
+		GetOwnerRigidBody()->Jump();
+
+		GetFSM()->ChangeState(L"Jump");
+	}
+	else if (KEY_TAP(KEY::DOWN) && GetOwnerRigidBody()->IsGround())
+	{
+		GetFSM()->ChangeState(L"Slide");
+	}
+
 	if (GetOwnerAnimator() != nullptr)
 	{
 		if (GetOwnerAnimator()->GetCurAnim()->IsFinish() && !m_PlayingAnim)

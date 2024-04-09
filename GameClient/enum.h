@@ -91,7 +91,7 @@ enum class PET_TYPE
 	END,
 };
 
-enum class COOKIE_STATE : int
+enum class COOKIE_COMPLEX_STATE : int
 {
 	NONE		= 0,
 	INVINCIBLE	= 1 << 0,
@@ -102,6 +102,20 @@ enum class COOKIE_STATE : int
 	GUMMYPARTY  = 1 << 5,
 
 	END         = 1 << 7,
+};
+
+enum class COOKIE_SINGLESTATE
+{
+	NONE,
+	RUN,
+	JUMP,
+	DBJUMP,
+	SLIDE,
+	DAMAGE,
+	DEADBYLIFE,
+	DEADBYDMG,
+
+	END
 };
 
 enum class JELLY_TYPE

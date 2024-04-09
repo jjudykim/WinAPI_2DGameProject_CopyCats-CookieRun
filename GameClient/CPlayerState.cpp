@@ -28,7 +28,6 @@ void CPlayerState::Set()
 
 void CPlayerState::Enter()
 {
-
 }
 
 void CPlayerState::FinalTick()

@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "CFSM.h"
 
+#include "CPlayer.h"
 #include "CState.h"
+#include "CPlayerState.h"
 
 map<wstring, BlackboardData> CFSM::m_mapGlobalData;
 

@@ -1,9 +1,23 @@
 #pragma once
 
-#include "CState.h"
+#include "CPlayerState.h"
 
 class CDamageState
-	: public CState
+	: public CPlayerState
 {
+private:
+	float    m_Timer;
+
+private:
+	virtual void Set() override;
+	virtual void Enter() override;
+	virtual void FinalTick() override;
+	virtual void Exit() override;
+
+
+	CLONE_DISABLE(CDamageState);
+public:
+	CDamageState();
+	~CDamageState();
 };
 
