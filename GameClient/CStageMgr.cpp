@@ -94,7 +94,7 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 			for (int i = 0; i < count; ++i)
 			{
 				curStg = new CStage();
-				wstring STG = L"STG" + std::to_wstring(i);
+				wstring STG = L"STG" + std::to_wstring(i + 1);
 				while (true)
 				{
 					fwscanf_s(pFile, L"%s", szReadBuff, 256);
@@ -258,7 +258,11 @@ void CStageMgr::SaveStageSTObject(CStage* _SaveStage)
 			fwprintf_s(pFile, L"[STARTPOS] ");
 			fwprintf_s(pFile, L"%f %f\n\n", _Info[j]._pos.x, _Info[j]._pos.y);
 		}
+
+		_SaveStage->ClearSTObjInfo(i);
 	}
+
+	
 
 	fclose(pFile);
 }

@@ -271,6 +271,16 @@ void CLevel_Editor::tick()
 		{
 			if (m_Editing || m_Deleting)
 			{
+				if (m_Editing)
+				{
+					DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(600, 20)), 0, L"Edit Mode 실행 중 / Object를 클릭해 위치를 이동합니다" };
+					CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+				}
+				else if (m_Deleting)
+				{
+					DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(600, 20)), 0, L"Delete Mode 실행 중 / Object를 클릭해 삭제합니다" };
+					CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+				}
 				if (CMouseMgr::GetInst()->IsLbtnDowned())
 				{
 					if (!m_Dragging)
@@ -440,14 +450,12 @@ void CLevel_Editor::ResetForLoadStage()
 {
 	for (size_t i = 0; i < (UINT)LAYER_TYPE::END; ++i)
 	{
+		/*for (size_t j = 0; m_arrObj[i].size(); ++i)
+		{
+			m_arrObj[i][j]->Destroy();
+		}*/
 		Safe_Del_Vec(m_arrObj[i]);
 	}
-
-	for (int i = 0; i < 3; ++i)
-	{
-		if(m_CurEditStage != nullptr) m_CurEditStage->ClearSTObjInfo(i);
-	}
-	
 	m_CurEditObject = nullptr;
 	m_CurEditStage = nullptr;
 	m_GuideDraw = nullptr;
@@ -1254,6 +1262,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		if (LOWORD(wParam) == IDC_LOAD)
 		{
 			pEditorLevel->ResetForLoadStage();
+
 			CCamera::GetInst()->SetCameraDefault();
 			hImageList = ImageList_Create(64, 64, ILC_COLOR32 | ILC_MASK, 4, 4);
 			hWndListView = GetDlgItem(hDlg, IDC_LIST);
@@ -1268,6 +1277,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 			CStageMgr::GetInst()->LoadStageInfo(static_cast<EPISODE_TYPE>(Ep));
 			pEditorLevel->SetEditStage(CStageMgr::GetInst()->GetStage(Ep, Stg));
+
 			CStage* EditStage = pEditorLevel->GetEditStage();
 			if (EditStage == nullptr) return(INT_PTR)FALSE;
 
@@ -1349,6 +1359,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 						{
 							pObject = (EditStage->GetBG(static_cast<BG_TYPE>(index)))->Clone();
 							pObject->SetSpeed(0);
+							pEditorLevel->SetBGSetted(true);
 						}
 						else if (type == LAYER_TYPE::PLATFORM) pObject = (EditStage->GetPLT(static_cast<PLT_TYPE>(index)))->Clone();
 						else if (type == LAYER_TYPE::OBSTACLE) pObject = (EditStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
@@ -1362,8 +1373,6 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 						pEditorLevel->AddObject(type, pObject);
 					}
 				}
-
-				pEditorLevel->SetBGSetted(true);
 			}
 
 			if (pEditorLevel->GetBGSetted() == false)
@@ -1504,6 +1513,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		else if (LOWORD(wParam) == IDSAVE)
 		{
 			CStage* CurStg = pEditorLevel->GetEditStage();
+			for (int i = 0; i < 3; ++i) CurStg->ClearSTObjInfo(i);
 
 			// Background Object
 			pEditorLevel->SortObjectsByXpos(LAYER_TYPE::BACKGROUND);
@@ -1536,7 +1546,16 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		}
 		if (LOWORD(wParam) == IDCANCEL)
 		{
+			for (int i = 0; i < 3; ++i)
+			{
+				if (!pEditorLevel->GetEditStage()->GetSTObjInfo(i).empty())
+				{
+					pEditorLevel->GetEditStage()->ClearSTObjInfo(i);
+				}
+				
+			}
 			pEditorLevel->ResetForLoadStage();
+
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_STATIC);
 			DestroyWindow(hEditSTStage);
 			return (INT_PTR)TRUE;

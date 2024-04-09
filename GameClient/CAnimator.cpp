@@ -11,13 +11,21 @@ CAnimator::CAnimator()
 }
 
 CAnimator::CAnimator(const CAnimator& _Other)
-	: m_CurAnim(nullptr)
+	: CComponent(_Other)
+	, m_CurAnim(nullptr)
 	, m_Repeat(_Other.m_Repeat)
 {
-	map<wstring, CAnimation*>::const_iterator iter = _Other.m_mapAnim.begin();
-	for (; iter != _Other.m_mapAnim.end(); ++iter)
+	for (const auto& pair : _Other.m_mapAnim)
 	{
-		m_mapAnim.insert(make_pair(iter->first, iter->second));
+		CAnimation* pCloneAnim = pair.second->Clone();
+
+		pCloneAnim->m_Animator = this;
+		m_mapAnim.insert(make_pair(pair.first, pCloneAnim));
+	}
+	
+	if (nullptr != _Other.m_CurAnim)
+	{
+		m_CurAnim = FindAnimation(_Other.m_CurAnim->GetName());
 	}
 }
 
