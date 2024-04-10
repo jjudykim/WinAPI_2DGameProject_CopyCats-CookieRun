@@ -18,11 +18,14 @@ public:
     virtual void finaltick() override;
     void render();
     void render(float);
+    void render(char);
 
 public:
     CAnimation* FindAnimation(const wstring& _AnimName);
     void LoadAnimation(const wstring& _Key, const wstring& _strRelativeFilePath);
     void Play(const wstring& _AnimName, bool _Repeat);
+    void ChangePlayingAnim(const wstring& _AnimName, bool _Repeat);
+    void PlayCurAnim(bool _Repeat);
 
     CAnimation* GetCurAnim() { return m_CurAnim; }
 public:

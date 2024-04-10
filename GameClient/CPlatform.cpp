@@ -63,6 +63,8 @@ void CPlatform::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 
 void CPlatform::render()
 {	
+	if (!(RENDER_MINPOSX <= (GetPos().x + GetScale().x) && GetPos().x - GetScale().x <= RENDER_MAXPOSX)) return;
+
 	BLENDFUNCTION bf = {};
 
 	bf.BlendOp = AC_SRC_OVER;

@@ -191,15 +191,20 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 					{
 						fwscanf_s(pFile, L"%s", szReadBuff, 256);
 						pAnimator = (CAnimator*)OBS->AddComponent(new CAnimator);
+						pAnimator->LoadAnimation(EP + L"_" + STG + L"_OBS_jumpNoti", szReadBuff);
+						fwscanf_s(pFile, L"%s", szReadBuff, 256);
 						pAnimator->LoadAnimation(EP + L"_" + STG + L"_OBS" + std::to_wstring(i), szReadBuff);
+						pAnimator->Play(EP + L"_" + STG + L"_OBS_jumpNoti", true);
 					}
 					else if (i == 7) // DBJUMP_UP
 					{
 						fwscanf_s(pFile, L"%s", szReadBuff, 256);
 						pAnimator = (CAnimator*)OBS->AddComponent(new CAnimator);
+						pAnimator->LoadAnimation(EP + L"_" + STG + L"_OBS_jumpNoti", szReadBuff);
+						fwscanf_s(pFile, L"%s", szReadBuff, 256);
 						pAnimator->LoadAnimation(EP + L"_" + STG + L"_OBS" + std::to_wstring(i), szReadBuff);
+						pAnimator->Play(EP + L"_" + STG + L"_OBS_jumpNoti", true);
 					}
-					
 				}
 				tex = nullptr;
 

@@ -13,7 +13,7 @@ private:
     CStage*     m_PostStage;
     
     float       m_ResolutionWidth;
-    float       m_SpawnPosX;
+    float       m_ActingPosX;
     float       m_DeletePosX;
 
     CPlayer*    m_Cookie;

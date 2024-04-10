@@ -8,6 +8,7 @@
 #include "CObject.h"
 #include "CAnimator.h"
 #include "CTexture.h"
+#include "CObstacle.h"
 
 CAnimation::CAnimation()
 	: m_Animator(nullptr)
@@ -122,6 +123,32 @@ void CAnimation::render(int)
 				 , m_Atlas->GetDC()
 				 , (int)(frm.StartPos.x - frm.SliceSize.x / 2.f), (int)(frm.StartPos.y - frm.SliceSize.y / 2.f)
 				 , (int)frm.SliceSize.x, (int)frm.SliceSize.y, bf);
+}
+
+void CAnimation::render(char)
+{
+	if (m_Atlas == nullptr)
+		return;
+
+	const AniFrm& frm = m_vecFrm[m_CurFrmIdx];
+	CObstacle* obs = dynamic_cast<CObstacle*>(m_Animator->GetOwner());
+	Vec2D vRenderPos = obs->GetRenderPos();
+
+	BLENDFUNCTION bf = {};
+
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.SourceConstantAlpha = 255;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+
+	AlphaBlend(DC
+		, (int)(vRenderPos.x - frm.SliceSize.x / 2.f + frm.Offset.x)
+		, (int)(vRenderPos.y - frm.SliceSize.y + frm.Offset.y)
+		, (int)frm.SliceSize.x, (int)frm.SliceSize.y
+		, m_Atlas->GetDC()
+		, (int)(frm.StartPos.x - frm.SliceSize.x / 2.f)
+		, (int)(frm.StartPos.y - frm.SliceSize.y / 2.f)
+		, (int)(frm.SliceSize.x), (int)(frm.SliceSize.y), bf);
 }
 
 void CAnimation::render(float)

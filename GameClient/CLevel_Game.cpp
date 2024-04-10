@@ -19,9 +19,11 @@
 #include "CObstacle.h"
 #include "CStage.h"
 
+#include "CAnimator.h"
+
 CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
-	, m_SpawnPosX(0)
+	, m_ActingPosX(0)
 	, m_DeletePosX(0)
 {
 	
@@ -35,29 +37,71 @@ void CLevel_Game::begin()
 {
 	CLevel::begin();
 
-	m_SpawnPosX = 0;
+	m_ActingPosX = 0;
 	m_DeletePosX = m_ResolutionWidth;
 
 }
 
 void CLevel_Game::tick()
 {
-	CLevel::tick();
-
-	if (m_Cookie == nullptr)
-		return;
-
 	// Editor Level ÁøÀÔ
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
 	{
 		ChangeLevel(LEVEL_TYPE::EDITOR);
 	}
 
+
+	CLevel::tick();
+
+	if (m_Cookie == nullptr)
+		return;
+
+	UINT EP = (UINT)m_CurStage->GetEPType();
+	UINT STG = (UINT)m_CurStage->GetSTGType();
+	
 	CCamera::GetInst()->SetCameraFocus();
 
 	float StandardPosX = m_Cookie->GetPos().x;
-	m_SpawnPosX = StandardPosX + m_ResolutionWidth;
+	m_ActingPosX = StandardPosX + 800.f;
 	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
+
+
+	// Obstacle Animation Play
+	const vector<CObject*>& vecObs = GET_CUR_LEVEL->GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
+	CObstacle* obs = nullptr;
+	float tPosX = 0;
+
+	for (size_t i = 0; i < vecObs.size(); ++i)
+	{
+		obs = static_cast<CObstacle*>(vecObs[i]);	
+		tPosX = vecObs[i]->GetPos().x;
+		if (tPosX <= m_ActingPosX)
+		{
+			if (obs->GetOBSType() == OBS_TYPE::DBJUMP_UP || obs->GetOBSType() == OBS_TYPE::JUMP_UP)
+			{
+				wstring AnimName = L"EP" + std::to_wstring(EP + 1)
+					+ L"_STG" + std::to_wstring(STG + 1)
+					+ L"_OBS" + std::to_wstring((UINT)obs->GetOBSType());
+
+				vecObs[i]->GetAnimator()->ChangePlayingAnim(AnimName, false);
+			}
+			else if (obs->GetOBSType() == OBS_TYPE::JUMP_DOWN || obs->GetOBSType() == OBS_TYPE::DBJUMP_DOWN)
+			{
+				if (600.f <= obs->GetPos().y)
+				{
+					obs->SetPos(obs->GetPos().x, 600.f);
+					continue;
+				}
+				else
+				{
+					obs->SetPos(Vec2D(obs->GetPos().x, obs->GetPos().y + (600 * DT * 4.f)));
+					Vec2D check = obs->GetPos();
+					int a = 0;
+				}
+			}
+		}
+	}
+
 
 
 	// Delete Passed Stage Object
@@ -187,7 +231,14 @@ void CLevel_Game::SpawnStageObject(StageSTObjInfo& _ObjInfo)
 	else if (type == LAYER_TYPE::PLATFORM) pObject = (m_CurStage->GetPLT(static_cast<PLT_TYPE>(index)))->Clone();
 	else if (type == LAYER_TYPE::OBSTACLE) pObject = (m_CurStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
 
-	pObject->SetPos(_ObjInfo._pos);
+	if ((type == LAYER_TYPE::OBSTACLE) && (index == 3 || index == 6))
+	{
+		pObject->SetPos(Vec2D(_ObjInfo._pos.x, 0.0f));
+	}
+	else
+	{
+		pObject->SetPos(_ObjInfo._pos);
+	}
 
 	task.Type = TASK_TYPE::SPAWN_OBJECT;
 	task.Param1 = (DWORD_PTR)type;

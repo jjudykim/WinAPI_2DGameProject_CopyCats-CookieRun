@@ -40,6 +40,7 @@ public:
 	Vec2D GetPos() const { return m_Pos; }
 	Vec2D GetScale() const { return m_Scale; }
 	float GetSpeed() const { return m_Speed; }
+	CAnimator* GetAnimator() { return m_Animator; }
 	Vec2D GetRenderPos() const { return CCamera::GetInst()->GetRenderPos(m_Pos); }
 	LAYER_TYPE GetLayerType() const { return m_Type; }
 	

@@ -65,6 +65,7 @@ public:
     void finaltick();
     void render();
     void render(int);
+    void render(char);
     void render(float);
 
 public:

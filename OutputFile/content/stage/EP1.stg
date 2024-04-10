@@ -23,12 +23,14 @@ texture\Ep1_Background_Atlas.png
 [JUMP_A] texture\EP1\Stage1\EP1_STG1_OBS0.png 63.000 99.000
 [JUMP_B] texture\EP1\Stage1\EP1_STG1_OBS1.png 68.000 99.000
 [JUMP_UP] texture\EP1\Stage1\EP1_STG1_OBS2.png 81.000 131.000
+animation\EP1\EP1_STG1_OBS_jumpNoti.anim
 animation\EP1\EP1_STG1_OBS2.anim
 [JUMP_DOWN] texture\EP1\Stage1\EP1_STG1_OBS3.png 80.000 113.000
 [DBJUMP_A] texture\EP1\Stage1\EP1_STG1_OBS4.png 59.000 193.000
 [DBJUMP_B] texture\EP1\Stage1\EP1_STG1_OBS5.png 106.000 193.000
 [DBJUMP_DOWN] texture\EP1\Stage1\EP1_STG1_OBS6.png 71.000 216.000
 [DBJUMP_UP] texture\EP1\Stage1\EP1_STG1_OBS7.png 87.000 222.000
+animation\EP1\EP1_STG1_OBS_jumpNoti.anim
 animation\EP1\EP1_STG1_OBS7.anim
 [SLIDE_A] texture\EP1\Stage1\EP1_STG1_OBS8.png 86.000 482.000
 [SLIDE_B] texture\EP1\Stage1\EP1_STG1_OBS9.png 134.000 482.000
@@ -53,12 +55,14 @@ animation\EP1\EP1_STG1_OBS7.anim
 [JUMP_A] texture\EP1\Stage2\EP1_STG2_OBS0.png 63.000 99.000
 [JUMP_B] texture\EP1\Stage2\EP1_STG2_OBS1.png 68.000 99.000
 [JUMP_UP] texture\EP1\Stage2\EP1_STG2_OBS2.png 81.000 131.000
+animation\EP1\EP1_STG2_OBS_jumpNoti.anim
 animation\EP1\EP1_STG2_OBS2.anim
 [JUMP_DOWN] texture\EP1\Stage2\EP1_STG2_OBS3.png 80.000 113.000
 [DBJUMP_A] texture\EP1\Stage2\EP1_STG2_OBS4.png 59.000 193.000
 [DBJUMP_B] texture\EP1\Stage2\EP1_STG2_OBS5.png 106.000 193.000
 [DBJUMP_DOWN] texture\EP1\Stage2\EP1_STG2_OBS6.png 71.000 216.000
 [DBJUMP_UP] texture\EP1\Stage2\EP1_STG2_OBS7.png 87.000 222.000
+animation\EP1\EP1_STG2_OBS_jumpNoti.anim
 animation\EP1\EP1_STG2_OBS7.anim
 [SLIDE_A] texture\EP1\Stage2\EP1_STG2_OBS8.png 86.000 482.000
 [SLIDE_B] texture\EP1\Stage2\EP1_STG2_OBS9.png 134.000 482.000

@@ -69,19 +69,6 @@ void CObject::render()
 
 	if (this == nullptr)
 		return;
-
-	/*if (m_Animator == nullptr)
-	{
-		CJelly* curJelly = dynamic_cast<CJelly*>(this);
-		if (curJelly != nullptr)
-			curJelly->render();
-
-		CDraw* curDraw = dynamic_cast<CDraw*>(this);
-		if (curDraw != nullptr)
-			curDraw->render();
-
-		return;
-	}*/
 	
 	m_Animator->render();
 }

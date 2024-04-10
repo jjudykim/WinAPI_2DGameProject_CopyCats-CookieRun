@@ -14,7 +14,7 @@ CObstacle::CObstacle()
 	, m_MouseOn(false)
 {
 	SetLayerType(LAYER_TYPE::OBSTACLE);
-	m_Animator = (CAnimator*)AddComponent(new CAnimator);
+	m_Animator = nullptr;
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 }
 
@@ -54,34 +54,42 @@ void CObstacle::tick()
 
 void CObstacle::render()
 {
-	BLENDFUNCTION bf = {};
+	if (!(RENDER_MINPOSX <= (GetPos().x + GetScale().x) && GetPos().x - GetScale().x <= RENDER_MAXPOSX)) return;
 
-	bf.BlendOp = AC_SRC_OVER;
-	bf.BlendFlags = 0;
-	bf.SourceConstantAlpha = (int)255;
-	bf.AlphaFormat = AC_SRC_ALPHA;
+	if (GetAnimator() == nullptr)
+	{
+		BLENDFUNCTION bf = {};
 
-	if (m_Type == OBS_TYPE::SLIDE_A || m_Type == OBS_TYPE::SLIDE_B)
-	{
-		AlphaBlend(DC
-			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-			, (int)(GetRenderPos().y)
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, m_Texture->GetDC(), 0, 0
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, bf);
+		bf.BlendOp = AC_SRC_OVER;
+		bf.BlendFlags = 0;
+		bf.SourceConstantAlpha = (int)255;
+		bf.AlphaFormat = AC_SRC_ALPHA;
+
+		if (m_Type == OBS_TYPE::SLIDE_A || m_Type == OBS_TYPE::SLIDE_B)
+		{
+			AlphaBlend(DC
+				, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+				, (int)(GetRenderPos().y)
+				, m_Texture->GetWidth(), m_Texture->GetHeight()
+				, m_Texture->GetDC(), 0, 0
+				, m_Texture->GetWidth(), m_Texture->GetHeight()
+				, bf);
+		}
+		else
+		{
+			AlphaBlend(DC
+				, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+				, (int)(GetRenderPos().y - m_Texture->GetHeight())
+				, m_Texture->GetWidth(), m_Texture->GetHeight()
+				, m_Texture->GetDC(), 0, 0
+				, m_Texture->GetWidth(), m_Texture->GetHeight()
+				, bf);
+		}
 	}
-	else 
+	else
 	{
-		AlphaBlend(DC
-			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-			, (int)(GetRenderPos().y - m_Texture->GetHeight())
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, m_Texture->GetDC(), 0, 0
-			, m_Texture->GetWidth(), m_Texture->GetHeight()
-			, bf);
+		GetAnimator()->render(' ');
 	}
-	
 }
 
 void CObstacle::CheckMouseOn()

@@ -64,6 +64,14 @@ void CAnimator::render(float)
 	}
 }
 
+void CAnimator::render(char)
+{
+	if (m_CurAnim != nullptr)
+	{
+		m_CurAnim->render(' ');
+	}
+}
+
 CAnimation* CAnimator::FindAnimation(const wstring& _AnimName)
 {
 	map<wstring, CAnimation*>::iterator iter = m_mapAnim.find(_AnimName);
@@ -105,6 +113,21 @@ void CAnimator::Play(const wstring& _AnimName, bool _Repeat)
 		LOG(LOG_TYPE::DBG_ERROR, L"Play할 애니메이션을 찾을 수 없음");
 		return;
 	}
+
+	m_CurAnim->Reset();
+	m_Repeat = _Repeat;
+}
+
+void CAnimator::ChangePlayingAnim(const wstring& _AnimName, bool _Repeat)
+{
+	if (m_CurAnim->GetName() == _AnimName) return;
+
+	Play(_AnimName, _Repeat);
+}
+
+void CAnimator::PlayCurAnim(bool _Repeat)
+{
+	if (m_CurAnim == nullptr) return;
 
 	m_CurAnim->Reset();
 	m_Repeat = _Repeat;
