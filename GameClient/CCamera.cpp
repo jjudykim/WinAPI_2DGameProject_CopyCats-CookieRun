@@ -14,6 +14,8 @@ CCamera::CCamera()
 	: m_CamSpeed(0.f)
 	, m_FadeTex(nullptr)
 	, m_FocusObj(nullptr)
+	, m_LimitPosX(FLT_MAX)
+
 {
 }
 
@@ -125,7 +127,7 @@ void CCamera::MoveLR()
 {
 	if (KEY_PRESSED(KEY::A) && (CEngine::GetInst()->GetResolution().x / 2.f < m_LookAt.x))
 		m_LookAt.x -= DT * m_CamSpeed;
-	if (KEY_PRESSED(KEY::D))
+	if (KEY_PRESSED(KEY::D) && (m_LookAt.x < m_LimitPosX - CEngine::GetInst()->GetResolution().x / 2.f))
 		m_LookAt.x += DT * m_CamSpeed;
 }
 

@@ -80,6 +80,12 @@ void CLevel_Editor::tick()
 {
 	CLevel::tick();
 
+	DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(500, 50)), 0,
+						L"LookAt : " + std::to_wstring(CCamera::GetInst()->GetLookAt().x) 
+					 +  L", " + std::to_wstring(CCamera::GetInst()->GetLookAt().y)};
+
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+
 	if (m_EditMode == 0)
 	{
 		if (m_Drawable)
@@ -450,12 +456,9 @@ void CLevel_Editor::ResetForLoadStage()
 {
 	for (size_t i = 0; i < (UINT)LAYER_TYPE::END; ++i)
 	{
-		/*for (size_t j = 0; m_arrObj[i].size(); ++i)
-		{
-			m_arrObj[i][j]->Destroy();
-		}*/
 		Safe_Del_Vec(m_arrObj[i]);
 	}
+	CCamera::GetInst()->SetLimitPosX(FLT_MAX);
 	m_CurEditObject = nullptr;
 	m_CurEditStage = nullptr;
 	m_GuideDraw = nullptr;
@@ -1277,8 +1280,9 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 			CStageMgr::GetInst()->LoadStageInfo(static_cast<EPISODE_TYPE>(Ep));
 			pEditorLevel->SetEditStage(CStageMgr::GetInst()->GetStage(Ep, Stg));
-
 			CStage* EditStage = pEditorLevel->GetEditStage();
+			CCamera::GetInst()->SetLimitPosX(EditStage->GetSTGLength());
+
 			if (EditStage == nullptr) return(INT_PTR)FALSE;
 
 			if (Obj == L"OBSTACLE")
@@ -1383,7 +1387,7 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				{
 					CBackground* CurBG = EditStage->GetBG(static_cast<BG_TYPE>(i));
 					if (CurBG == nullptr) break;
-					count = (int)(EditStage->GetSTGLength() / CurBG->GetScale().x);
+					count = (int)(EditStage->GetSTGLength() / CurBG->GetScale().x) + 1;
 
 					for (int i = 0; i < count; ++i)
 					{
@@ -1587,10 +1591,22 @@ int ExtractTypeNumber(const std::wstring& str)
 	return -1;
 }
 
-void XPositionCorrectionForObject(CObject* _Obj)
+void CLevel_Editor::XPositionCorrectionForObject(CObject* _Obj)
 {
 	CCollider* CurObjCol = _Obj->GetComponent<CCollider>();
 	if (CurObjCol == nullptr) return;
+	
+	if (m_CurEditStage->GetSTGLength() < _Obj->GetPos().x + (CurObjCol->GetScale().x / 2.f))
+	{
+		Vec2D CorrectPos = Vec2D(m_CurEditStage->GetSTGLength() - (CurObjCol->GetScale().x / 2.f), _Obj->GetPos().y);
+		_Obj->SetPos(CorrectPos);
+	}
+	else if (CurObjCol->GetFinalPos().x - (CurObjCol->GetScale().x / 2.f) < 0)
+	{
+		Vec2D CorrectPos = Vec2D((CurObjCol->GetScale().x / 2.f), _Obj->GetPos().y);
+		_Obj->SetPos(CorrectPos);
+	}
+
 	if (CurObjCol->GetOverlapCount() > 0)
 	{
 		CCollider* CollidingCol = CurObjCol->GetCollidingCol();
@@ -1622,7 +1638,7 @@ void XPositionCorrectionForObject(CObject* _Obj)
 	}
 }
 
-void YPositionCorrectionForObject(CObject* _Obj)
+void CLevel_Editor::YPositionCorrectionForObject(CObject* _Obj)
 {
 	switch (_Obj->GetLayerType())
 	{

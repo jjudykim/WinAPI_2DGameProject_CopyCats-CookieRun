@@ -76,6 +76,15 @@ void CPlayer::render()
 
 void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
+	if (!CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
+	{
+		if (_OtherObj->GetLayerType() == LAYER_TYPE::OBSTACLE)
+		{
+			TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
+			m_FSM->ChangeState(L"Damage");
+		}
+	}
+
 	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
 	{
 		++m_OverlapPLTCount;
@@ -95,15 +104,6 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 				m_RigidBody->SetGround(true);
 				LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 			}
-		}
-	}
-
-	if (!CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
-	{
-		if (_OtherObj->GetLayerType() == LAYER_TYPE::OBSTACLE)
-		{
-			TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
-			m_FSM->ChangeState(L"Damage");
 		}
 	}
 }

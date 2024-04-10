@@ -15,6 +15,7 @@ private:
     float       m_ResolutionWidth;
     float       m_ActingPosX;
     float       m_DeletePosX;
+    float       m_PostStageStartPosX;
 
     CPlayer*    m_Cookie;
     CPet*       m_Pet;

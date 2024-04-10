@@ -92,6 +92,8 @@ public:
     bool GetBGSetted() { return m_BGSetted; }
    
     void ResetForLoadStage();
+    void XPositionCorrectionForObject(CObject* _Obj);
+    void YPositionCorrectionForObject(CObject* _Obj);
     //void AddAnimFrm(AniFrm _frm) { m_vecFrm.push_back(_frm); }
     //const int& GetAnimFrmCount() { return m_vecFrm.size(); }
 

@@ -25,6 +25,7 @@ CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
 	, m_ActingPosX(0)
 	, m_DeletePosX(0)
+	, m_PostStageStartPosX(0)
 {
 	
 }
@@ -102,8 +103,6 @@ void CLevel_Game::tick()
 		}
 	}
 
-
-
 	// Delete Passed Stage Object
 	for (int i = 0; i < (UINT)LAYER_TYPE::END; ++i)
 	{
@@ -143,6 +142,34 @@ void CLevel_Game::tick()
 		}
 	}
 
+	// Stage Change Check
+	if (m_PostStageStartPosX < StandardPosX + m_ResolutionWidth)
+	{
+		CStageMgr::GetInst()->ChangeNextStage();
+		m_PostStage = CStageMgr::GetInst()->GetCurrentStage();
+		m_PostStage->LoadSTObjectsFromFile();
+		
+		// Static Object 배치
+		for (int i = 0; i < 3; i++)
+		{
+			vector<StageSTObjInfo>& vecStageInfo = m_PostStage->m_vecSTObjInfo[i];
+			vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
+
+			for (; iter < vecStageInfo.end(); ++iter)
+			{
+				SpawnStageObject(*iter);
+			}
+		}
+	}
+
+	if (m_PostStageStartPosX < StandardPosX)
+	{
+		m_CurStage = m_PostStage;
+		m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
+		m_PostStageStartPosX = m_PostStage->GetSTGLength();
+	}
+
+
 	// Cookie Debug Info
 	if (m_QuaterSecond >= 0.25f)
 	{
@@ -175,6 +202,7 @@ void CLevel_Game::Enter()
 	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
 	m_CurStage->LoadSTObjectsFromFile();
+	m_PostStage = m_CurStage;
 
 	// Static Object 배치
 	for (int i = 0; i < 3; i++)
@@ -214,6 +242,8 @@ void CLevel_Game::Enter()
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::OBSTACLE);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
+
+	m_PostStageStartPosX = m_CurStage->GetSTGLength();
 }
 
 void CLevel_Game::Exit()
@@ -227,17 +257,17 @@ void CLevel_Game::SpawnStageObject(StageSTObjInfo& _ObjInfo)
 
 	LAYER_TYPE type = _ObjInfo._objType;
 	UINT index = _ObjInfo._typeIndex;
-	if (type == LAYER_TYPE::BACKGROUND)	pObject = (m_CurStage->GetBG(static_cast<BG_TYPE>(index)))->Clone();
-	else if (type == LAYER_TYPE::PLATFORM) pObject = (m_CurStage->GetPLT(static_cast<PLT_TYPE>(index)))->Clone();
-	else if (type == LAYER_TYPE::OBSTACLE) pObject = (m_CurStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
+	if (type == LAYER_TYPE::BACKGROUND)	pObject = (m_PostStage->GetBG(static_cast<BG_TYPE>(index)))->Clone();
+	else if (type == LAYER_TYPE::PLATFORM) pObject = (m_PostStage->GetPLT(static_cast<PLT_TYPE>(index)))->Clone();
+	else if (type == LAYER_TYPE::OBSTACLE) pObject = (m_PostStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
 
 	if ((type == LAYER_TYPE::OBSTACLE) && (index == 3 || index == 6))
 	{
-		pObject->SetPos(Vec2D(_ObjInfo._pos.x, 0.0f));
+		pObject->SetPos(Vec2D(_ObjInfo._pos.x + m_PostStageStartPosX, 0.0f));
 	}
 	else
 	{
-		pObject->SetPos(_ObjInfo._pos);
+		pObject->SetPos(_ObjInfo._pos.x + m_PostStageStartPosX, _ObjInfo._pos.y);
 	}
 
 	task.Type = TASK_TYPE::SPAWN_OBJECT;

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CObstacle.h"
 
+#include "CLevelMgr.h"
+
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CMouseMgr.h"
@@ -41,7 +43,7 @@ CObstacle::~CObstacle()
 
 void CObstacle::begin()
 {
-	m_Collider->SetScale(Vec2D(GetScale().x, GetScale().y));
+	m_Collider->SetScale(Vec2D(GetScale().x * 0.75f, GetScale().y * 0.75f));
 }
 
 void CObstacle::tick()
@@ -56,39 +58,41 @@ void CObstacle::render()
 {
 	if (!(RENDER_MINPOSX <= (GetPos().x + GetScale().x) && GetPos().x - GetScale().x <= RENDER_MAXPOSX)) return;
 
-	if (GetAnimator() == nullptr)
+	if (CLevelMgr::GetInst()->GetCurrentLevelType() != LEVEL_TYPE::EDITOR)
 	{
-		BLENDFUNCTION bf = {};
-
-		bf.BlendOp = AC_SRC_OVER;
-		bf.BlendFlags = 0;
-		bf.SourceConstantAlpha = (int)255;
-		bf.AlphaFormat = AC_SRC_ALPHA;
-
-		if (m_Type == OBS_TYPE::SLIDE_A || m_Type == OBS_TYPE::SLIDE_B)
+		if (GetAnimator() != nullptr)
 		{
-			AlphaBlend(DC
-				, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-				, (int)(GetRenderPos().y)
-				, m_Texture->GetWidth(), m_Texture->GetHeight()
-				, m_Texture->GetDC(), 0, 0
-				, m_Texture->GetWidth(), m_Texture->GetHeight()
-				, bf);
+			GetAnimator()->render(' ');
+			return;
 		}
-		else
-		{
-			AlphaBlend(DC
-				, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
-				, (int)(GetRenderPos().y - m_Texture->GetHeight())
-				, m_Texture->GetWidth(), m_Texture->GetHeight()
-				, m_Texture->GetDC(), 0, 0
-				, m_Texture->GetWidth(), m_Texture->GetHeight()
-				, bf);
-		}
+	}
+
+	BLENDFUNCTION bf = {};
+
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.SourceConstantAlpha = (int)255;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+
+	if (m_Type == OBS_TYPE::SLIDE_A || m_Type == OBS_TYPE::SLIDE_B)
+	{
+		AlphaBlend(DC
+			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+			, (int)(GetRenderPos().y)
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, m_Texture->GetDC(), 0, 0
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, bf);
 	}
 	else
 	{
-		GetAnimator()->render(' ');
+		AlphaBlend(DC
+			, (int)(GetRenderPos().x - m_Texture->GetWidth() / 2.f)
+			, (int)(GetRenderPos().y - m_Texture->GetHeight())
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, m_Texture->GetDC(), 0, 0
+			, m_Texture->GetWidth(), m_Texture->GetHeight()
+			, bf);
 	}
 }
 

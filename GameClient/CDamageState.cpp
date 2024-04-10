@@ -2,6 +2,7 @@
 #include "CDamageState.h"
 
 #include "CTimeMgr.h"
+#include "CRigidBody.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
 
@@ -31,6 +32,7 @@ void CDamageState::Enter()
 {
 	m_Timer = 0.f;
 	GetOwnerAnimator()->Play(L"Damage", false);
+	GetOwnerRigidBody()->SetUseGravity(true);
 }
 
 void CDamageState::FinalTick()
