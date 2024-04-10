@@ -184,6 +184,7 @@
     <ClInclude Include="CState.h" />
     <ClInclude Include="CTaskMgr.h" />
     <ClInclude Include="CTexture.h" />
+    <ClInclude Include="CTile.h" />
     <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="CUI.h" />
     <ClInclude Include="define.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="CState.cpp" />
     <ClCompile Include="CTaskMgr.cpp" />
     <ClCompile Include="CTexture.cpp" />
+    <ClCompile Include="CTile.cpp" />
     <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="func.cpp" />

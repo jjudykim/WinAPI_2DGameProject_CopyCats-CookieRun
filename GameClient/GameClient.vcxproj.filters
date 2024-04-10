@@ -145,6 +145,9 @@
     <Filter Include="03. Game\03. Manager\StageMgr">
       <UniqueIdentifier>{46afaeb6-f62e-44fa-8fd3-ad573503c664}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Object\Tile">
+      <UniqueIdentifier>{d62f9707-2562-45e4-8e15-16d1227e22ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -318,6 +321,9 @@
     <ClInclude Include="CStageMgr.h">
       <Filter>03. Game\03. Manager\StageMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CTile.h">
+      <Filter>03. Game\06. Object\Tile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -469,6 +475,9 @@
     </ClCompile>
     <ClCompile Include="CStageMgr.cpp">
       <Filter>03. Game\03. Manager\StageMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CTile.cpp">
+      <Filter>03. Game\06. Object\Tile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -290,3 +290,10 @@ struct StageSTObjInfo
 	UINT			_typeIndex;
 	Vec2D			_pos;
 };
+
+struct StageDNObjInfo
+{
+	LAYER_TYPE		_objType;
+	UINT			_typeIndex;
+	Vec2D			_pos;
+};

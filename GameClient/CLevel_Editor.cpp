@@ -21,14 +21,13 @@
 #include "CTexture.h"
 #include "CDraw.h"
 #include "CStage.h"
+#include "CTile.h"
 #include "CBackground.h"
 #include "CObstacle.h"
 #include "CPlatform.h"
 #include "CCollisionMgr.h"
 
 int ExtractTypeNumber(const std::wstring& str);
-void XPositionCorrectionForObject(CObject* _Obj);
-void YPositionCorrectionForObject(CObject* _Obj);
 
 // global
 wstring g_DialogText = L"";
@@ -1547,7 +1546,17 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			}
 
 			OpenSaveFile(L"", L"stg");
+
+			for (int i = 0; i < 3; ++i)
+			{
+				if (pEditorLevel->GetEditStage() != nullptr)
+				{
+					pEditorLevel->GetEditStage()->ClearSTObjInfo(i);
+				}
+			}
+			return (INT_PTR)TRUE;
 		}
+
 		if (LOWORD(wParam) == IDCANCEL)
 		{
 			for (int i = 0; i < 3; ++i)
@@ -1567,6 +1576,120 @@ INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	}
 	break;
 	}
+	return (INT_PTR)FALSE;
+}
+
+
+INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	CLevel_Editor* pEditorLevel = dynamic_cast<CLevel_Editor*>(pLevel);
+	assert(pEditorLevel);
+
+	pEditorLevel->SetEditMode(2);
+
+	HWND hEditDNStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_DYNAMIC);
+
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	case WM_INITDIALOG:
+	{
+		hEditDNStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_DYNAMIC);
+
+		HWND hCombo = GetDlgItem(hDlg, IDC_EPISODE);
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP1");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP2");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP3");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP4");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"EP5");
+		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
+
+		hCombo = GetDlgItem(hDlg, IDC_STAGE);
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG1");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG2");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG3");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG4");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG5");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"STG6");
+		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
+
+		hCombo = GetDlgItem(hDlg, IDC_OBJTYPE);
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"OBSTACLE");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"PLATFORM");
+		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
+
+		return (INT_PTR)TRUE;
+	}
+	case WM_COMMAND:
+	{
+		if (LOWORD(wParam) == IDC_LOAD)
+		{
+			pEditorLevel->ResetForLoadStage();
+
+			CCamera::GetInst()->SetCameraDefault();
+
+			Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_GETCURSEL, (WPARAM)0, 0);
+			Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_GETCURSEL, (WPARAM)0, 0);
+
+			wchar_t szBuff[256] = {};
+			GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
+			wstring Obj = szBuff;
+
+			CStageMgr::GetInst()->LoadStageInfo(static_cast<EPISODE_TYPE>(Ep));
+			pEditorLevel->SetEditStage(CStageMgr::GetInst()->GetStage(Ep, Stg));
+			CStage* EditStage = pEditorLevel->GetEditStage();
+			EditStage->SetTile(new CTile);
+			UINT TileCol = (EditStage->GetSTGLength() / TILE_SIZE) + 1;
+			UINT TileRow = ((CEngine::GetInst()->GetResolution().y - 120) / TILE_SIZE) + 1;
+			EditStage->GetTile()->SetRowCol(TileRow, TileCol);
+
+			pEditorLevel->AddObject(LAYER_TYPE::TILE, EditStage->GetTile());
+
+			CCamera::GetInst()->SetLimitPosX(EditStage->GetSTGLength());
+
+			// Add All Object
+			if (EditStage->LoadSTObjectsFromFile() == S_OK)
+			{
+				for (int i = 0; i < 3; ++i)
+				{
+					CObject* pObject = nullptr;
+
+					const vector<StageSTObjInfo>& vecStageInfo = EditStage->GetSTObjInfo(i);
+					vector<StageSTObjInfo>::const_iterator iter = vecStageInfo.begin();
+					for (; iter != vecStageInfo.end(); ++iter)
+					{
+						LAYER_TYPE type = iter->_objType;
+						UINT index = iter->_typeIndex;
+						if (type == LAYER_TYPE::BACKGROUND)
+						{
+							pObject = (EditStage->GetBG(static_cast<BG_TYPE>(index)))->Clone();
+							pObject->SetSpeed(0);
+							pEditorLevel->SetBGSetted(true);
+						}
+						else if (type == LAYER_TYPE::PLATFORM) pObject = (EditStage->GetPLT(static_cast<PLT_TYPE>(index)))->Clone();
+						else if (type == LAYER_TYPE::OBSTACLE) pObject = (EditStage->GetOBS(static_cast<OBS_TYPE>(index)))->Clone();
+						pObject->SetPos(iter->_pos);
+
+						pEditorLevel->AddObject(type, pObject);
+					}
+				}
+			}
+
+
+
+			if (EditStage == nullptr) return(INT_PTR)FALSE;
+		}
+		if (LOWORD(wParam) == IDCANCEL)
+		{
+			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_DYNAMIC);
+			DestroyWindow(hEditDNStage);
+			return (INT_PTR)TRUE;
+		}
+	}
+	break;
+	}
+
 	return (INT_PTR)FALSE;
 }
 

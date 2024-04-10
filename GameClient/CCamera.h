@@ -24,6 +24,8 @@ class CCamera
 private:
 	CObject*		m_FocusObj;
 
+	float			m_CameraMinX;
+	float			m_CameraMaxX;
 	Vec2D			m_LookAt;
 	Vec2D			m_PrevLookAt;
 	Vec2D			m_Diff;
@@ -38,6 +40,8 @@ public:
 	Vec2D GetRenderPos(Vec2D _RealPos) { return _RealPos - m_Diff; }
 	Vec2D GetRealPos(Vec2D _RenderPos) { return _RenderPos + m_Diff; }
 	Vec2D GetLookAt() { return m_LookAt; }
+	float GetCameraMaxX() { return m_CameraMaxX; }
+	float GetCameraMinX() { return m_CameraMinX; }
 	void SetLimitPosX(float _PosX) { m_LimitPosX = _PosX; }
 	void SetCameraDefault();
 	void SetCameraFocus();

@@ -11,6 +11,8 @@ private:
 	int					  m_LogSpace;
 	Vec2D				  m_LogStartPos;
 
+	bool				  m_bRender;
+
 public:
 	void AddDbgRenderInfo(const DbgRenderInfo& _info)
 	{
@@ -26,6 +28,8 @@ public:
 	{
 		m_InfoList.push_back(_info);
 	}
+
+	bool IsDbgRender() { return m_bRender; }
 
 public:
 	void tick();

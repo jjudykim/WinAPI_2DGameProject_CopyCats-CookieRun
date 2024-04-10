@@ -4,6 +4,7 @@
 class CBackground;
 class CPlatform;
 class CObstacle;
+class CTile;
 
 
 class CStage :
@@ -14,11 +15,13 @@ private:
 	STAGE_TYPE				  m_StageType;
 	float					  m_StageLength;
 
+	CTile*				      m_DNObjTile;
 	CBackground*			  m_arrBG[(UINT)BG_TYPE::END];
 	CPlatform*				  m_arrPLT[(UINT)PLT_TYPE::END];
 	CObstacle*				  m_arrOBS[(UINT)OBS_TYPE::END];
 	
     vector<StageSTObjInfo>      m_vecSTObjInfo[3];                  // 0 : BG, 1 : PLT, 2 : OBS
+	vector<StageDNObjInfo>      m_vecDNObjInfo[4];                    // 0 : Jelly, 1 : Coin, 2 : Item, 3 : BonusTime
 
 public:
 	void Enter();
@@ -27,18 +30,23 @@ public:
 	
 
 public:
+	void SetTile(CTile* _Tile) { m_DNObjTile = _Tile; }
 	void SetEPType(EPISODE_TYPE _Type) { m_EpisodeType = _Type; }
 	void SetSTGType(STAGE_TYPE _Type) { m_StageType = _Type; }
 
 	void AddSTObjInfo(StageSTObjInfo _info, int _index) { m_vecSTObjInfo[_index].push_back(_info); }
 	const vector<StageSTObjInfo>& GetSTObjInfo(int _index) { return m_vecSTObjInfo[_index]; }
 	void ClearSTObjInfo(int _index) { m_vecSTObjInfo[_index].clear(); }
+
 	EPISODE_TYPE GetEPType() { return m_EpisodeType; }
 	STAGE_TYPE GetSTGType() { return m_StageType; }
 	float GetSTGLength() { return m_StageLength; }
+
+	CTile* GetTile() { return m_DNObjTile; }
 	CBackground* GetBG(BG_TYPE _type) { return m_arrBG[(UINT)_type]; }
 	CPlatform* GetPLT(PLT_TYPE _type) { return m_arrPLT[(UINT)_type]; }
 	CObstacle* GetOBS(OBS_TYPE _type) { return m_arrOBS[(UINT)_type]; }
+
 	int LoadSTObjectsFromFile();
 
 public:

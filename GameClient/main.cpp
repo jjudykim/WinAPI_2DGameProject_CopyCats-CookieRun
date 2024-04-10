@@ -154,6 +154,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 INT_PTR CALLBACK EditAnimProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK EditStaticStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -188,6 +189,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 if (CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_STATIC) != nullptr) break;
                 HWND StageDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITSTAGE_STATIC), hWnd, EditStaticStgProc);
                 CHandleMgr::GetInst()->AddHandle(IDD_EDITSTAGE_STATIC, StageDlg);
+                if (StageDlg != nullptr) { ShowWindow(StageDlg, SW_SHOW); }
+            }
+                break;
+            case ID_EDITSTAGE_DYNAMIC:
+            {
+                if (CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_DYNAMIC) != nullptr) break;
+                HWND StageDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_EDITSTAGE_DYNAMIC), hWnd, EditDynamicStgProc);
+                CHandleMgr::GetInst()->AddHandle(IDD_EDITSTAGE_DYNAMIC, StageDlg);
                 if (StageDlg != nullptr) { ShowWindow(StageDlg, SW_SHOW); }
             }
                 break;

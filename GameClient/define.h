@@ -15,7 +15,7 @@
 						public:\
 							~type();
 
-#define USE_PEN(DC, Type) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetPen(Type));
+#define USE_PEN(DC, Type) CSelectObj SelectPen(DC, CEngine::GetInst()->GetPen(Type));
 #define USE_BRUSH(DC, Type) CSelectObj SelectBrush(DC, CEngine::GetInst()->GetBrush(Type));
 
 #define DT CTimeMgr::GetInst()->GetDeltaTime()
@@ -50,3 +50,5 @@
 #define KEY_PRESSED(Key)	KEY_CHECK(Key, KEY_STATE::PRESSED)
 #define KEY_RELEASED(Key)	KEY_CHECK(Key, KEY_STATE::RELEASED)
 #define KEY_NONE(Key)		KEY_CHECK(Key, KEY_STATE::NONE)
+
+#define TILE_SIZE 50

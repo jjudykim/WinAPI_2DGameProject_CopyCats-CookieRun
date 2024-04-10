@@ -160,13 +160,15 @@ void CLevel_Game::tick()
 				SpawnStageObject(*iter);
 			}
 		}
+
+		m_PostStageStartPosX += m_PostStage->GetSTGLength();
 	}
 
-	if (m_PostStageStartPosX < StandardPosX)
+	if (m_CurStage->GetSTGLength() < StandardPosX)
 	{
 		m_CurStage = m_PostStage;
 		m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
-		m_PostStageStartPosX = m_PostStage->GetSTGLength();
+		
 	}
 
 

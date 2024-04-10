@@ -91,17 +91,17 @@ void CMouseMgr::LButtonDown()
 {
 	m_MouseLbtnDown = true;
 	m_MouseDownPos = m_MousePos;
-	LOG(LOG_TYPE::DBG_WARNING, L"LButtonDown");
+	//LOG(LOG_TYPE::DBG_WARNING, L"LButtonDown");
 }
 
 void CMouseMgr::LButtonUp()
 {
 	m_MouseLbtnDown = false;
-	LOG(LOG_TYPE::DBG_LOG, L"LButtonUp");
+	//LOG(LOG_TYPE::DBG_LOG, L"LButtonUp");
 }
 
 void CMouseMgr::LButtonClicked()
 {
 	m_MouseLbtnDown = false;
-	LOG(LOG_TYPE::DBG_ERROR, L"LButtonClicked");
+	//LOG(LOG_TYPE::DBG_ERROR, L"LButtonClicked");
 }
