@@ -60,8 +60,8 @@ void CTile::render_grid()
 	{
 		for (UINT j = 0; j < m_Row; ++j)
 		{
-			if (CCamera::GetInst()->GetCameraMaxX() < vRealPos.x + m_TileSize.x * i
-				|| vRealPos.x + m_TileSize.x * i + m_TileSize.x < CCamera::GetInst()->GetCameraMinX())
+			if (RENDER_MAXPOSX < vRealPos.x + m_TileSize.x * i
+				|| vRealPos.x + m_TileSize.x * i + m_TileSize.x < RENDER_MINPOSX)
 			{
 				break;
 			}
@@ -70,22 +70,6 @@ void CTile::render_grid()
 				, (int)(vRenderPos.x + m_TileSize.x * i + m_TileSize.x), (int)(vRenderPos.y + m_TileSize.y * j + m_TileSize.y));
 		}
 	}
-
-	//for (UINT i = 0; i < m_Row; ++i)
-	//{
-	//	for (UINT j = 0; j < m_Col; ++j)
-	//	{
-	//		if (CEngine::GetInst()->GetResolution().x < vRenderPos.x + m_TileSize.x * j
-	//			|| vRenderPos.x + m_TileSize.x * j + m_TileSize.x < 0)
-	//		{
-	//			return;
-	//		}
-
-	//		Rectangle(DC, (int)(vRenderPos.x + m_TileSize.x * j), (int)(vRenderPos.y + m_TileSize.y * i)
-	//					, (int)(vRenderPos.x + m_TileSize.x * j + m_TileSize.x), (int)(vRenderPos.y + m_TileSize.y * i + m_TileSize.y));
-	//	}
-	//}
-
 }
 
 void CTile::SaveToFile(const wstring& _FullPath)

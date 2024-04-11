@@ -15,7 +15,6 @@ CCamera::CCamera()
 	, m_FadeTex(nullptr)
 	, m_FocusObj(nullptr)
 	, m_LimitPosX(FLT_MAX)
-
 {
 }
 
@@ -35,9 +34,6 @@ void CCamera::tick()
 {
 	CLevel* pLevel = GET_CUR_LEVEL;
 	LEVEL_TYPE curLevel = GET_CUR_LEVELTYPE;
-
-	m_CameraMinX = m_LookAt.x - CEngine::GetInst()->GetResolution().x / 2.f;
-	m_CameraMaxX = m_LookAt.x + CEngine::GetInst()->GetResolution().x / 2.f;
 	
 	if (curLevel == LEVEL_TYPE::GAME)
 	{

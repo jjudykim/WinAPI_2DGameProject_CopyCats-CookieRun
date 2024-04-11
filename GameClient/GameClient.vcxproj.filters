@@ -148,6 +148,9 @@
     <Filter Include="03. Game\06. Object\Tile">
       <UniqueIdentifier>{d62f9707-2562-45e4-8e15-16d1227e22ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\JellyMgr">
+      <UniqueIdentifier>{30542c94-f32e-4edc-ab0a-8cfee0597d36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -324,6 +327,9 @@
     <ClInclude Include="CTile.h">
       <Filter>03. Game\06. Object\Tile</Filter>
     </ClInclude>
+    <ClInclude Include="CJellyMgr.h">
+      <Filter>03. Game\03. Manager\JellyMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -478,6 +484,9 @@
     </ClCompile>
     <ClCompile Include="CTile.cpp">
       <Filter>03. Game\06. Object\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="CJellyMgr.cpp">
+      <Filter>03. Game\03. Manager\JellyMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

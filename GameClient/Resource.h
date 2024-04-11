@@ -82,6 +82,7 @@
 #define IDC_STAGE                       1041
 #define IDC_OFFSETY_SPIN                1042
 #define IDC_OBJTYPE                     1042
+#define IDC_STAGE2                      1042
 #define IDC_COLPOSX_SPIN                1043
 #define IDC_LOAD                        1043
 #define IDC_COLPOSY_SPIN                1044
@@ -97,7 +98,6 @@
 #define IDC_DEL                         1051
 #define IDC_DELMODE                     1051
 #define IDC_ADDMODE                     1053
-#define IDC_D_DELMODE                   1059
 #define ID_EDITMODE_ANIMATIONEDITMODE   32771
 #define ID_EDITMODE_STAGEEDITMODE       32772
 #define ID_EDITANIM                     32773
@@ -115,7 +115,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1060
+#define _APS_NEXT_CONTROL_VALUE         1061
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

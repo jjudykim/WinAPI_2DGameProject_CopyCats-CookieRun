@@ -43,7 +43,7 @@ CObstacle::~CObstacle()
 
 void CObstacle::begin()
 {
-	m_Collider->SetScale(Vec2D(GetScale().x * 0.75f, GetScale().y * 0.75f));
+	m_Collider->SetScale(Vec2D(GetScale().x * 0.75f, GetScale().y));
 }
 
 void CObstacle::tick()

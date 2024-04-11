@@ -53,6 +53,7 @@ enum class LAYER_TYPE
 	TILE,
 	PLATFORM,
 	OBSTACLE,
+	EFFECT,
 	JELLY,
 	PLAYER,
 	DRAW,
@@ -93,29 +94,25 @@ enum class PET_TYPE
 
 enum class COOKIE_COMPLEX_STATE : int
 {
-	NONE		= 0,
-	INVINCIBLE	= 1 << 0,
-	BOOST		= 1 << 1,
-	GIANT		= 1 << 2,
-	ATTRACT     = 1 << 3,
-	COINMAGIC   = 1 << 4,
-	GUMMYPARTY  = 1 << 5,
+	NONE, 	
+	INVINCIBLE,
+	BOOST, 
+	GIANT, 
+	ATTRACT, 
+	COINMAGIC, 
+	GUMMYPARTY , 
 
-	END         = 1 << 7,
+	END,
 };
 
-enum class COOKIE_SINGLESTATE
+enum class DYNAMIC_OBJ_TYPE
 {
-	NONE,
-	RUN,
-	JUMP,
-	DBJUMP,
-	SLIDE,
-	DAMAGE,
-	DEADBYLIFE,
-	DEADBYDMG,
+	JELLY,
+	COIN,
+	BONUSTIME,
+	ITEM,
 
-	END
+	END,
 };
 
 enum class JELLY_TYPE
@@ -127,15 +124,21 @@ enum class JELLY_TYPE
 	SMALL_PINK_BEAR,
 	BIG_PINK_BEAR,
 
-	SMALL_SILVER_COIN,
-	BIG_SILVER_COIN,
+	END,
+};
+
+enum class COIN_TYPE
+{
+	SMALL_SILVER_COIN,   
 	SMALL_GOLD_COIN,
 	BIG_GOLD_COIN,
 
-	// Bonus Time
-	BONUSTIME,
-
 	END,
+};
+
+enum class BONUSTIME_TYPE
+{
+	B, O, N, U, S, T, I, M, E, END,
 };
 
 enum class ITEM_TYPE
@@ -148,11 +151,14 @@ enum class ITEM_TYPE
 	GET_MAGNETISM,
 	GET_DASH,
 	GET_GIANT,
+	GET_DASHWITHGIANT,
 
 	// Change Obstacle To Jelly
 	CHANGE_TO_COIN,
 	CHANGE_TO_BEAR,
 	CHANGE_TO_BONUSTIME,
+
+	END,
 };
 
 enum class BG_TYPE

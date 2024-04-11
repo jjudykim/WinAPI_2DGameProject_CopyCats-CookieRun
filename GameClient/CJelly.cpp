@@ -8,26 +8,34 @@
 #include "CCollider.h"
 
 CJelly::CJelly()
-	: m_type(JELLY_TYPE::END)
+	: m_ObjType(DYNAMIC_OBJ_TYPE::END)
+	, m_Index(0)
+	, m_Value(0)
+	, m_Texture(nullptr)
+	, m_Animator(nullptr)
+	, m_Collider(nullptr)
+
 {
-	//m_Animator = (CAnimator*)AddComponent(new CAnimator);
-	//CTexture* pAtlas = CAssetMgr::GetInst()->LoadTexture(L"JelliesAtlasTex", L"texture\\GeneralJellies_Atlas.png");
+	SetLayerType(LAYER_TYPE::JELLY);
+	m_Animator = nullptr;
+	m_Collider = (CCollider*)AddComponent(new CCollider);
 }
 
-CJelly::CJelly(JELLY_TYPE _type)
-	: m_type(_type)
+CJelly::CJelly(const CJelly& _Other)
+	: CObject(_Other)
+	, m_ObjType(_Other.m_ObjType)
+	, m_AtlasInfo(_Other.m_AtlasInfo)
+	, m_Index(_Other.m_Index)
+	, m_Value(_Other.m_Value)
+	, m_Texture(_Other.m_Texture)
+	, m_Animator(nullptr)
+	, m_Collider(nullptr)
 {
-	m_Collider = (CCollider*)AddComponent(new CCollider);
-	
-	if ((UINT)_type < 5)
+	if (_Other.m_Animator != nullptr)
 	{
-		m_Collider->SetScale(Vec2D(30.f, 30.f));
+		m_Animator = GetComponent<CAnimator>();
 	}
-	else
-	{
-		m_Collider->SetScale(Vec2D(40.f, 50.f));
-	}
-	
+	m_Collider = GetComponent<CCollider>();
 }
 
 CJelly::~CJelly()
@@ -37,6 +45,7 @@ CJelly::~CJelly()
 
 void CJelly::begin()
 {
+	m_Collider->SetScale(Vec2D(GetScale().x, GetScale().y));
 }
 
 void CJelly::tick()
@@ -45,41 +54,11 @@ void CJelly::tick()
 
 void CJelly::render()
 {
-	Vec2D vPos = GetRenderPos();
-	Vec2D vScale = GetScale();
 
-	if (m_type == JELLY_TYPE::NORMAL_JELLY)
-	{
-		USE_BRUSH(DC, BRUSH_TYPE::BRUSH_BLUE);
-		Rectangle(DC, (int)(vPos.x - vScale.x * 0.5f)
-			, (int)(vPos.y - vScale.y * 0.5f)
-			, (int)(vPos.x + vScale.x * 0.5f)
-			, (int)(vPos.y + vScale.y * 0.5f));
-	}
-	/*else if (m_type == JELLY_TYPE::PINK_BEAN)
-	{
-		USE_BRUSH(DC, BRUSH_TYPE::BRUSH_RED);
-		Rectangle(DC, (int)(vPos.x - vScale.x * 0.5f)
-			, (int)(vPos.y - vScale.y * 0.5f)
-			, (int)(vPos.x + vScale.x * 0.5f)
-			, (int)(vPos.y + vScale.y * 0.5f));
-	}
-	else if (m_type == JELLY_TYPE::GENERAL_YELLOW_BEAR)
-	{
-		USE_BRUSH(DC, BRUSH_TYPE::BRUSH_GREEN);
-		Ellipse(DC, (int)(vPos.x - vScale.x * 0.5f)
-			, (int)(vPos.y - vScale.y * 0.5f)
-			, (int)(vPos.x + vScale.x * 0.5f)
-			, (int)(vPos.y + vScale.y * 0.5f));
-	}*/
-	else
-	{
-		LOG(LOG_TYPE::DBG_ERROR, L"Not defineded Jelly")
-	}
 }
 
 void CJelly::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
-	Destroy();
+	// Destroy();
 }
 

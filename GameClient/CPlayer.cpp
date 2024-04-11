@@ -102,7 +102,7 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 					}
 				}
 				m_RigidBody->SetGround(true);
-				LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
+				//LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 			}
 		}
 	}

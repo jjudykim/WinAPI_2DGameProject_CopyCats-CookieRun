@@ -7,9 +7,14 @@ class CJelly :
     public CObject
 {
 private:
-    JELLY_TYPE  m_type;
+    DYNAMIC_OBJ_TYPE    m_ObjType;
+    UINT                m_Index;
+    int                 m_Value;
+    AtlasInfo           m_AtlasInfo;
+    CTexture*           m_Texture;
 
-    CCollider* m_Collider;
+    CAnimator*          m_Animator;
+    CCollider*          m_Collider;
 
 public:
     virtual void begin() override;
@@ -19,15 +24,24 @@ public:
     virtual void BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
 
 public:
-    JELLY_TYPE GetJellyType() { return m_type; }
-    void SetJellyType(JELLY_TYPE _type) { m_type = _type; }
+    void SetObjType(DYNAMIC_OBJ_TYPE _Type) { m_ObjType = _Type; }
+    void SetIndex(UINT _Index) { m_Index = _Index; }
+    void SetValue(int _Value) { m_Value = _Value; }
+    void SetAtlasInfo(AtlasInfo _Info) { m_AtlasInfo = _Info; }
+    void SetTexture(CTexture* _Tex) { m_Texture = _Tex; }
+
+    DYNAMIC_OBJ_TYPE GetObjType() { return m_ObjType; }
+    Vec2D GetAtlasStartPos() { return m_AtlasInfo.StartPos; }
+    Vec2D GetAtlasSliceSize() { return m_AtlasInfo.SliceSize; }
+    CTexture* GetTexture() { return m_Texture; }
+    UINT GetIndex() { return m_Index; }
 
 public:
     CLONE(CJelly);
 
 public:
     CJelly();
-    CJelly(JELLY_TYPE _type);
+    CJelly(const CJelly& _Other);
     ~CJelly();
     
 };

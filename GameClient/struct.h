@@ -256,10 +256,9 @@ struct PetInfo
 
 struct JellyInfo
 {
-	JELLY_TYPE	_type;
-	Vec2D		_frmSize;
-	int			_frmCount;
-	int			_dividerSize;
+	UINT	    _type;
+	AtlasInfo	_info;
+	int			_value;
 };
 
 //struct BGInfo

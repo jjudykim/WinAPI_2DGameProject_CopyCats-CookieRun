@@ -7,6 +7,7 @@
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
 #include "CStageMgr.h"
+#include "CJellyMgr.h"
 #include "CResourceMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CTaskMgr.h"
@@ -21,6 +22,7 @@
 #include "CTexture.h"
 #include "CDraw.h"
 #include "CStage.h"
+#include "CJelly.h"
 #include "CTile.h"
 #include "CBackground.h"
 #include "CObstacle.h"
@@ -28,6 +30,8 @@
 #include "CCollisionMgr.h"
 
 int ExtractTypeNumber(const std::wstring& str);
+void CreateJellyIconForList(HIMAGELIST _list, CJelly* _Jelly);
+void CreateJellyItemForList(int _index, wstring _Text, HWND _ListView);
 
 // global
 wstring g_DialogText = L"";
@@ -389,7 +393,6 @@ void CLevel_Editor::render()
 			, (int)m_EditTex->GetWidth(), (int)m_EditTex->GetHeight(), bf);
 	}
 	
-
 	CLevel::render();
 }
 
@@ -1588,6 +1591,9 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 	pEditorLevel->SetEditMode(2);
 
+	HIMAGELIST hImageList = nullptr;
+	HWND hWndListView = nullptr;
+
 	HWND hEditDNStage = CHandleMgr::GetInst()->FindHandle(IDD_EDITSTAGE_DYNAMIC);
 
 	UNREFERENCED_PARAMETER(lParam);
@@ -1615,9 +1621,17 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
 
 		hCombo = GetDlgItem(hDlg, IDC_OBJTYPE);
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"OBSTACLE");
-		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"PLATFORM");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"JELLY");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"COIN");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"BONUS TIME");
+		SendMessage(hCombo, CB_ADDSTRING, 0, (LPARAM)L"ITEM");
 		SendMessage(hCombo, CB_SETCURSEL, (WPARAM)0, 0);
+
+		CJellyMgr::GetInst()->LoadJellyInfo();
+
+		hImageList = ImageList_Create(32, 32, ILC_COLOR32 | ILC_MASK, 0, 4);
+		hWndListView = GetDlgItem(hDlg, IDC_LIST);
+		ListView_DeleteAllItems(hWndListView);
 
 		return (INT_PTR)TRUE;
 	}
@@ -1629,6 +1643,10 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 			CCamera::GetInst()->SetCameraDefault();
 
+			hImageList = ImageList_Create(32, 32, ILC_COLOR32 | ILC_MASK, 0, 4);
+			hWndListView = GetDlgItem(hDlg, IDC_LIST);
+			ListView_DeleteAllItems(hWndListView);
+
 			Ep = SendMessage(GetDlgItem(hDlg, IDC_EPISODE), CB_GETCURSEL, (WPARAM)0, 0);
 			Stg = SendMessage(GetDlgItem(hDlg, IDC_STAGE), CB_GETCURSEL, (WPARAM)0, 0);
 
@@ -1639,15 +1657,76 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			CStageMgr::GetInst()->LoadStageInfo(static_cast<EPISODE_TYPE>(Ep));
 			pEditorLevel->SetEditStage(CStageMgr::GetInst()->GetStage(Ep, Stg));
 			CStage* EditStage = pEditorLevel->GetEditStage();
+
+			// Tile Set
 			EditStage->SetTile(new CTile);
 			UINT TileCol = (EditStage->GetSTGLength() / TILE_SIZE) + 1;
 			UINT TileRow = ((CEngine::GetInst()->GetResolution().y - 120) / TILE_SIZE) + 1;
 			EditStage->GetTile()->SetRowCol(TileRow, TileCol);
-
 			pEditorLevel->AddObject(LAYER_TYPE::TILE, EditStage->GetTile());
 
 			CCamera::GetInst()->SetLimitPosX(EditStage->GetSTGLength());
 
+			CJelly* curJelly = nullptr;
+			if (Obj == L"JELLY")
+			{
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(0).size(); ++i)
+				{
+					curJelly = CJellyMgr::GetInst()->GetVecJelly(0)[i];
+					CreateJellyIconForList(hImageList, curJelly);
+				}
+				ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(0).size(); ++i)
+				{
+					CreateJellyItemForList(i, L"Jelly_" + std::to_wstring(i), hWndListView);
+				}
+			}
+			else if (Obj == L"COIN")
+			{
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(1).size(); ++i)
+				{
+					curJelly = CJellyMgr::GetInst()->GetVecJelly(1)[i];
+					CreateJellyIconForList(hImageList, curJelly);
+				}
+				ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(1).size(); ++i)
+				{
+					CreateJellyItemForList(i, L"Coin_" + std::to_wstring(i), hWndListView);
+				}
+			}
+			else if (Obj == L"BONUS TIME")
+			{
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(2).size(); ++i)
+				{
+					curJelly = CJellyMgr::GetInst()->GetVecJelly(2)[i];
+					CreateJellyIconForList(hImageList, curJelly);
+				}
+				ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(2).size(); ++i)
+				{
+					wstring text = L"BONUSTIME";
+					wchar_t Select_text = text[i];
+					CreateJellyItemForList(i, wstring(1, Select_text), hWndListView);
+				}
+			}
+			else if (Obj == L"ITEM")
+			{
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(3).size(); ++i)
+				{
+					curJelly = CJellyMgr::GetInst()->GetVecJelly(3)[i];
+					CreateJellyIconForList(hImageList, curJelly);
+				}
+				ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+				for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(3).size(); ++i)
+				{
+					CreateJellyItemForList(i, L"Coin_" + std::to_wstring(i), hWndListView);
+				}
+			}
+			 
 			// Add All Object
 			if (EditStage->LoadSTObjectsFromFile() == S_OK)
 			{
@@ -1676,8 +1755,6 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				}
 			}
 
-
-
 			if (EditStage == nullptr) return(INT_PTR)FALSE;
 		}
 		if (LOWORD(wParam) == IDCANCEL)
@@ -1693,7 +1770,35 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	return (INT_PTR)FALSE;
 }
 
+void CreateJellyIconForList(HIMAGELIST _list, CJelly* _Jelly)
+{
+	HICON hIcon;
 
+	RectF cloneRect(_Jelly->GetAtlasStartPos().x, _Jelly->GetAtlasStartPos().y
+		, _Jelly->GetAtlasSliceSize().x, _Jelly->GetAtlasSliceSize().y);
+
+	// Icon Setting
+	Bitmap* pAtlasBitmap = _Jelly->GetTexture()->GetpBit();
+	Bitmap* pClonedBitmap = pAtlasBitmap->Clone(cloneRect, PixelFormat32bppARGB);
+
+	pClonedBitmap->GetHICON(&hIcon);
+
+	ImageList_ReplaceIcon(_list, -1, hIcon);
+	DestroyIcon(hIcon);
+	delete pClonedBitmap;
+}
+
+void CreateJellyItemForList(int _index, wstring _Text, HWND _ListView)
+{
+	LV_ITEM lvItem;
+	lvItem.mask = LVIF_TEXT | LVIF_IMAGE;
+	lvItem.iItem = _index;
+	lvItem.iSubItem = 0;
+	lvItem.pszText = (LPWSTR)_Text.c_str();
+	lvItem.iImage = _index;
+
+	ListView_InsertItem(_ListView, &lvItem);
+}
 
 int ExtractTypeNumber(const std::wstring& str)
 {

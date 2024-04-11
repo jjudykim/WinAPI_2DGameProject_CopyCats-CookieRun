@@ -8,6 +8,7 @@
 #include "CMouseMgr.h"
 #include "CStageMgr.h"
 #include "CLevelMgr.h"
+#include "CJellyMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CCollisionMgr.h"
 #include "CTaskMgr.h"
@@ -67,6 +68,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CLevelMgr::GetInst()->init();
 	CCamera::GetInst()->init();
 	CStageMgr::GetInst()->init();
+	CJellyMgr::GetInst()->init();
 
 	return S_OK;
 }
