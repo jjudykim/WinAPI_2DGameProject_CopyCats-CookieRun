@@ -22,6 +22,7 @@ public:
 	void ChangeNextStage();
 	void LoadStageInfo(EPISODE_TYPE _EPType);
 	void SaveStageSTObject(CStage* _SaveStage);
+	void SaveStageDNObject(CStage* _SaveStage);
 
 public:
 	CStage* GetCurrentStage() { return m_pCurrentStage; }

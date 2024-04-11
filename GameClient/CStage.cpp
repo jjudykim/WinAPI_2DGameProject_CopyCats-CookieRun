@@ -89,4 +89,74 @@ int CStage::LoadSTObjectsFromFile()
 	return S_OK;
 }
 
+int CStage::LoadDNObjectsFromFile()
+{
+	wstring FileName = L"EP" + std::to_wstring((UINT)m_EpisodeType + 1)
+		+ L"_STG" + std::to_wstring((UINT)m_StageType + 1)
+		+ L"_DNObj.stg";
+
+	wstring FilePath = CPathMgr::GetInst()->GetContentPath() + L"stage\\" + FileName;
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, FilePath.c_str(), L"r");
+	if (pFile == nullptr) { return E_FAIL; }
+
+	wchar_t szReadBuff[256] = {};
+	UINT Col = 0;
+	UINT Row = 0;
+
+	while (EOF != fwscanf_s(pFile, L"%s", szReadBuff, 256))
+	{
+		while (true)
+		{
+			if (wstring(szReadBuff) == L"[COL]") break;
+			fwscanf_s(pFile, L"%s", szReadBuff, 256);
+		}
+
+		Row = 0;
+		int index = 0;
+		while (true)
+		{
+			fwscanf_s(pFile, L"%s", szReadBuff, 256);
+
+			if (wstring(szReadBuff) == L"[END]") break;
+			else index = std::stoi(szReadBuff);
+
+			if (index != -1)
+			{
+				StageDNObjInfo info = {};
+				if (index > 16)
+				{
+					info._objType = DYNAMIC_OBJ_TYPE::ITEM;
+					info._typeIndex = index - 17;
+				}
+				else if (index > 7)
+				{
+					info._objType = DYNAMIC_OBJ_TYPE::BONUSTIME;
+					info._typeIndex = index - 8;
+				}
+				else if (index > 4)
+				{
+					info._objType = DYNAMIC_OBJ_TYPE::COIN;
+					info._typeIndex = index - 5;
+				}
+				else
+				{
+					info._objType = DYNAMIC_OBJ_TYPE::JELLY;
+					info._typeIndex = index;
+				}
+				info._pos = Vec2D((int)Col * TILE_SIZE + (TILE_SIZE / 2.f), (int)Row * TILE_SIZE + (TILE_SIZE / 2.f));
+
+				AddDNObjInfo(info);
+			}
+			++Row;
+		}
+		++Col;
+	}
+	
+	fclose(pFile);
+
+	return S_OK;
+}
+
 

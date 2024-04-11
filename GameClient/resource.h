@@ -18,6 +18,7 @@
 #define IDD_EDITTEX                     133
 #define IDD_ADDTEX                      134
 #define IDD_EDITSTAGE_STATIC            135
+#define IDD_EDITSTAGE_DYNAMIC           137
 #define IDC_TEX                         1000
 #define ID_TEXBTN                       1001
 #define IDC_ANIM                        1002
@@ -81,6 +82,7 @@
 #define IDC_STAGE                       1041
 #define IDC_OFFSETY_SPIN                1042
 #define IDC_OBJTYPE                     1042
+#define IDC_STAGE2                      1042
 #define IDC_COLPOSX_SPIN                1043
 #define IDC_LOAD                        1043
 #define IDC_COLPOSY_SPIN                1044
@@ -92,10 +94,10 @@
 #define IDC_SPINPOSX                    1048
 #define IDC_SPINPOSY                    1049
 #define IDC_ADD                         1050
-#define IDC_EDIT                        1050
 #define IDC_EDITMODE                    1050
 #define IDC_DEL                         1051
 #define IDC_DELMODE                     1051
+#define IDC_ADDMODE                     1053
 #define ID_EDITMODE_ANIMATIONEDITMODE   32771
 #define ID_EDITMODE_STAGEEDITMODE       32772
 #define ID_EDITANIM                     32773
@@ -111,9 +113,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        136
+#define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1051
+#define _APS_NEXT_CONTROL_VALUE         1061
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

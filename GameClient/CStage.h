@@ -21,7 +21,7 @@ private:
 	CObstacle*				  m_arrOBS[(UINT)OBS_TYPE::END];
 	
     vector<StageSTObjInfo>      m_vecSTObjInfo[3];                  // 0 : BG, 1 : PLT, 2 : OBS
-	vector<StageDNObjInfo>      m_vecDNObjInfo[4];                    // 0 : Jelly, 1 : Coin, 2 : Item, 3 : BonusTime
+	vector<StageDNObjInfo>      m_vecDNObjInfo;                    
 
 public:
 	void Enter();
@@ -35,8 +35,11 @@ public:
 	void SetSTGType(STAGE_TYPE _Type) { m_StageType = _Type; }
 
 	void AddSTObjInfo(StageSTObjInfo _info, int _index) { m_vecSTObjInfo[_index].push_back(_info); }
+	void AddDNObjInfo(StageDNObjInfo _info) { m_vecDNObjInfo.push_back(_info); }
 	const vector<StageSTObjInfo>& GetSTObjInfo(int _index) { return m_vecSTObjInfo[_index]; }
+	const vector<StageDNObjInfo>& GetDNObjInfo() { return m_vecDNObjInfo; }
 	void ClearSTObjInfo(int _index) { m_vecSTObjInfo[_index].clear(); }
+	void ClearDNObjInfo() { m_vecDNObjInfo.clear(); }
 
 	EPISODE_TYPE GetEPType() { return m_EpisodeType; }
 	STAGE_TYPE GetSTGType() { return m_StageType; }
@@ -48,6 +51,7 @@ public:
 	CObstacle* GetOBS(OBS_TYPE _type) { return m_arrOBS[(UINT)_type]; }
 
 	int LoadSTObjectsFromFile();
+	int LoadDNObjectsFromFile();
 
 public:
 	CLONE(CStage);

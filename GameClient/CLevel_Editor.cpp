@@ -45,6 +45,7 @@ RECT g_DrawSize = {};
 
 // For Stage Editor ================================
 CObject* SelectObj = nullptr;
+CJelly* SelectJelly = nullptr;
 UINT Ep = (UINT)EPISODE_TYPE::END;
 UINT Stg = (UINT)STAGE_TYPE::END;
 
@@ -180,6 +181,7 @@ void CLevel_Editor::tick()
 		{
 			if (m_CurEditObject == nullptr)
 			{
+				if(SelectObj == nullptr) return;
 				CObject* clone = SelectObj->Clone();
 				AddObject(clone->GetLayerType(), clone);
 				m_CurEditObject = clone;
@@ -350,6 +352,70 @@ void CLevel_Editor::tick()
 					m_Dragging = false;
 				}
 			}
+		}
+	}
+	else if (m_EditMode == 2)
+	{
+		if (m_Assigning)
+		{
+			DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(600, 20)), 0, L"Add Mode 실행 중 / 타일을 클릭해 원하는 젤리를 배치합니다" };
+			CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+
+			if (CMouseMgr::GetInst()->IsAbleClick() == false)
+			{
+				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, true });
+			}
+
+			if (CMouseMgr::GetInst()->IsLbtnDowned())
+			{
+				Vec2D MousePos = CMouseMgr::GetInst()->GetMouseDownPos();
+				if (m_CurEditStage != nullptr)
+				{
+					CTile* Tile = m_CurEditStage->GetTile();
+					if (Tile->CheckJellyOnTile(MousePos) == false)
+					{
+						CJelly* clone = SelectJelly->Clone();
+						clone->SetPos(Tile->CorrectClickedTile(MousePos));
+						AddObject(clone->GetLayerType(), clone);
+
+						Tile->SetEditRowCol(Tile->ConvertToRowFromMousePos(MousePos), Tile->ConvertToColFromMousePos(MousePos));
+						Tile->SetJellyData((char)SelectJelly->GetIndex());
+						Tile->SetEditRowCol(0, 0);
+					}
+				}
+
+			}
+		}
+		else if (m_Deleting)
+		{
+			DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(600, 20)), 0, L"Delete Mode 실행 중 / 타일을 클릭해 배치된 젤리를 삭제합니다" };
+			CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
+			
+			if (CMouseMgr::GetInst()->IsAbleClick() == false)
+			{
+				CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, true });
+			}
+
+			if (CMouseMgr::GetInst()->IsLbtnDowned())
+			{
+				Vec2D MousePos = CMouseMgr::GetInst()->GetMouseDownPos();
+				const vector<CObject*> vecObj = GetObjectsByLayerType(LAYER_TYPE::JELLY);
+				for (int i = 0; i < vecObj.size(); ++i)
+				{
+					CJelly* Jelly = static_cast<CJelly*>(vecObj[i]);
+					if (Jelly->IsMouseOn() == true)
+					{
+						CTile* Tile = m_CurEditStage->GetTile();
+
+						Tile->SetEditRowCol(Tile->ConvertToRowFromMousePos(MousePos), Tile->ConvertToColFromMousePos(MousePos));
+						Tile->SetJellyData((char)-1);
+						Tile->SetEditRowCol(0, 0);
+
+						CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)Jelly });
+					}
+				}
+			}
+			
 		}
 	}
 }
@@ -1635,6 +1701,27 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 		return (INT_PTR)TRUE;
 	}
+	case WM_NOTIFY:
+	{
+		LPNMITEMACTIVATE pnmItem = (LPNMITEMACTIVATE)lParam;
+		if (pnmItem->hdr.idFrom == IDC_LIST && pnmItem->hdr.code == NM_CLICK)
+		{
+			LVHITTESTINFO hitTestInfo = { 0 };
+			hitTestInfo.pt = pnmItem->ptAction;
+			ListView_HitTest(pnmItem->hdr.hwndFrom, &hitTestInfo);
+
+			if (hitTestInfo.flags & LVHT_ONITEM)
+			{
+				int index = hitTestInfo.iItem;
+
+				HWND hCombo = GetDlgItem(hDlg, IDC_OBJTYPE);
+				UINT ObjType = SendMessage(hCombo, CB_GETCURSEL, (WPARAM)0, 0);
+
+				SelectJelly = CJellyMgr::GetInst()->GetVecJelly(ObjType)[index];
+			}
+		}
+		break;
+	}
 	case WM_COMMAND:
 	{
 		if (LOWORD(wParam) == IDC_LOAD)
@@ -1657,14 +1744,18 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			CStageMgr::GetInst()->LoadStageInfo(static_cast<EPISODE_TYPE>(Ep));
 			pEditorLevel->SetEditStage(CStageMgr::GetInst()->GetStage(Ep, Stg));
 			CStage* EditStage = pEditorLevel->GetEditStage();
+			EditStage->ClearDNObjInfo();
+			if (EditStage == nullptr) return(INT_PTR)FALSE;
+
 
 			// Tile Set
 			EditStage->SetTile(new CTile);
 			UINT TileCol = (EditStage->GetSTGLength() / TILE_SIZE) + 1;
 			UINT TileRow = ((CEngine::GetInst()->GetResolution().y - 120) / TILE_SIZE) + 1;
 			EditStage->GetTile()->SetRowCol(TileRow, TileCol);
-			pEditorLevel->AddObject(LAYER_TYPE::TILE, EditStage->GetTile());
 
+			EditStage->GetTile()->InitJellyData();
+			pEditorLevel->AddObject(LAYER_TYPE::TILE, EditStage->GetTile());
 			CCamera::GetInst()->SetLimitPosX(EditStage->GetSTGLength());
 
 			CJelly* curJelly = nullptr;
@@ -1755,10 +1846,174 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				}
 			}
 
-			if (EditStage == nullptr) return(INT_PTR)FALSE;
+			if (EditStage->LoadDNObjectsFromFile() == S_OK)
+			{
+				const vector<StageDNObjInfo>& vecStageInfo = EditStage->GetDNObjInfo();
+				vector<StageDNObjInfo>::const_iterator iter = vecStageInfo.begin();
+				for (; iter != vecStageInfo.end(); ++iter)
+				{
+					CJelly* pJelly = CJellyMgr::GetInst()->GetVecJelly((UINT)iter->_objType)[iter->_typeIndex]->Clone();
+					pJelly->SetPos(iter->_pos);
+
+					char index = 0;
+					EditStage->GetTile()->SetEditRowCol((int)((iter->_pos.y - TILE_SIZE / 2.f) / TILE_SIZE), (int)((iter->_pos.x - TILE_SIZE / 2.f) / TILE_SIZE));
+					if ((UINT)iter->_objType == 0) index = iter->_typeIndex;
+					else if ((UINT)iter->_objType == 1) index = 5 + iter->_typeIndex;
+					else if ((UINT)iter->_objType == 2) index = 8 + iter->_typeIndex;
+					else if ((UINT)iter->_objType == 3) index = 17 + iter->_typeIndex;
+					EditStage->GetTile()->SetJellyData(index);
+					EditStage->GetTile()->SetEditRowCol(0, 0);
+
+					pEditorLevel->AddObject(LAYER_TYPE::JELLY, pJelly);
+				}
+			}
+		}
+		else if (HIWORD(wParam) == CBN_SELCHANGE)
+		{
+			if (pEditorLevel->GetEditStage() == nullptr) return (INT_PTR)TRUE;
+			else
+			{
+				hImageList = ImageList_Create(32, 32, ILC_COLOR32 | ILC_MASK, 0, 4);
+				hWndListView = GetDlgItem(hDlg, IDC_LIST);
+				ListView_DeleteAllItems(hWndListView);
+
+				wchar_t szBuff[256] = {};
+				GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
+				wstring Obj = szBuff;
+
+				CJelly* curJelly = nullptr;
+				if (Obj == L"JELLY")
+				{
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(0).size(); ++i)
+					{
+						curJelly = CJellyMgr::GetInst()->GetVecJelly(0)[i];
+						CreateJellyIconForList(hImageList, curJelly);
+					}
+					ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(0).size(); ++i)
+					{
+						CreateJellyItemForList(i, L"Jelly_" + std::to_wstring(i), hWndListView);
+					}
+				}
+				else if (Obj == L"COIN")
+				{
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(1).size(); ++i)
+					{
+						curJelly = CJellyMgr::GetInst()->GetVecJelly(1)[i];
+						CreateJellyIconForList(hImageList, curJelly);
+					}
+					ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(1).size(); ++i)
+					{
+						CreateJellyItemForList(i, L"Coin_" + std::to_wstring(i), hWndListView);
+					}
+				}
+				else if (Obj == L"BONUS TIME")
+				{
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(2).size(); ++i)
+					{
+						curJelly = CJellyMgr::GetInst()->GetVecJelly(2)[i];
+						CreateJellyIconForList(hImageList, curJelly);
+					}
+					ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(2).size(); ++i)
+					{
+						wstring text = L"BONUSTIME";
+						wchar_t Select_text = text[i];
+						CreateJellyItemForList(i, wstring(1, Select_text), hWndListView);
+					}
+				}
+				else if (Obj == L"ITEM")
+				{
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(3).size(); ++i)
+					{
+						curJelly = CJellyMgr::GetInst()->GetVecJelly(3)[i];
+						CreateJellyIconForList(hImageList, curJelly);
+					}
+					ListView_SetImageList(hWndListView, hImageList, LVSIL_SMALL);
+
+					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(3).size(); ++i)
+					{
+						CreateJellyItemForList(i, L"Coin_" + std::to_wstring(i), hWndListView);
+					}
+				}
+			}
+		}
+		if (LOWORD(wParam) == IDC_ADDMODE)
+		{
+			if (pEditorLevel->GetAssigning() == false)
+			{
+				if (pEditorLevel->GetDeleting() == true)
+				{ 
+					LOG(LOG_TYPE::DBG_WARNING, L"Delete Mode 실행 중, 종료 후 실행해주세요");
+					return (INT_PTR)TRUE;
+				}
+				pEditorLevel->SetAssigning(true);
+			}
+			else
+			{
+				if (CMouseMgr::GetInst()->IsAbleClick() == true)
+				{
+					CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, false });
+				}
+
+				pEditorLevel->SetAssigning(false);
+			}
+		}
+		if (LOWORD(wParam) == IDC_DELMODE)
+		{
+			if (pEditorLevel->GetDeleting() == false)
+			{
+				if (pEditorLevel->GetAssigning() == true)
+				{
+					LOG(LOG_TYPE::DBG_WARNING, L"Add Mode 실행 중, 종료 후 실행해주세요");
+					return (INT_PTR)TRUE;
+				}
+				pEditorLevel->SetDeleting(true);
+				const vector<CObject*>& vecObj = pEditorLevel->GetObjectsByLayerType(LAYER_TYPE::JELLY);
+				for (int i = 0; i < vecObj.size(); ++i)
+				{
+					CJelly* Jelly = static_cast<CJelly*>(vecObj[i]);
+					Jelly->SetUseMouseOn(true);
+				}
+			}
+			else
+			{
+				if (CMouseMgr::GetInst()->IsAbleClick() == true)
+				{
+					CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::CHANGE_CLICKABLE, false });
+				}
+
+				const vector<CObject*>& vecObj = pEditorLevel->GetObjectsByLayerType(LAYER_TYPE::JELLY);
+				for (int i = 0; i < vecObj.size(); ++i)
+				{
+					CJelly* Jelly = static_cast<CJelly*>(vecObj[i]);
+					Jelly->SetUseMouseOn(false);
+				}
+
+				pEditorLevel->SetDeleting(false);
+			}
+		}
+		if (LOWORD(wParam) == IDSAVE)
+		{
+			if (pEditorLevel->GetEditStage() != nullptr)
+			{
+				pEditorLevel->GetEditStage()->ClearDNObjInfo();
+			}
+
+			OpenSaveFile(L"", L"stg");
 		}
 		if (LOWORD(wParam) == IDCANCEL)
 		{
+			pEditorLevel->ResetForLoadStage();
+
+			if (pEditorLevel->GetEditStage() != nullptr)
+			{
+				pEditorLevel->GetEditStage()->ClearDNObjInfo();
+			}
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_DYNAMIC);
 			DestroyWindow(hEditDNStage);
 			return (INT_PTR)TRUE;
@@ -1969,7 +2224,9 @@ void OpenSaveFile(wstring _Key, wstring _FileType)
 			size_t pos = SelectedFileName.find(L".stg");
 			SelectedFileName = SelectedFileName.substr(0, pos);
 
-			CStageMgr::GetInst()->SaveStageSTObject(pEditorLevel->GetEditStage());
+			if (pEditorLevel->GetEditMode() == 1) CStageMgr::GetInst()->SaveStageSTObject(pEditorLevel->GetEditStage());
+			else if (pEditorLevel->GetEditMode() == 2) CStageMgr::GetInst()->SaveStageDNObject(pEditorLevel->GetEditStage());
+			
 		}
 
 	}

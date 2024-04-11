@@ -120,6 +120,16 @@ void CJellyMgr::LoadJellyInfo()
 
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
 			fwscanf_s(pFile, L"%f%f%f%f", &info.StartPos.x, &info.StartPos.y, &info.SliceSize.x, &info.SliceSize.y);
+			if (ObjType == 0 && (i == 2 || i == 4))
+			{
+				curJelly->SetScale(info.SliceSize * 2.f);
+			}
+			else if (ObjType == 3 && i == 1)
+			{
+				curJelly->SetScale(info.SliceSize);
+			}
+			else curJelly->SetScale(info.SliceSize * 0.75f);
+
 			curJelly->SetAtlasInfo(info);
 
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
@@ -128,7 +138,9 @@ void CJellyMgr::LoadJellyInfo()
 			if (wstring(szReadBuff) != L"NONE")
 			{
 				pAnim = (CAnimator*)curJelly->AddComponent(new CAnimator);
-				pAnim->LoadAnimation(L"Jelly_" + std::to_wstring(ObjType) + L"_" + std::to_wstring(index), szReadBuff);
+				wstring NameStr = L"Jelly_" + std::to_wstring(ObjType) + L"_" + std::to_wstring(index);
+				pAnim->LoadAnimation(NameStr, szReadBuff);
+				pAnim->Play(NameStr, true);
 			}
 			
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);

@@ -28,7 +28,7 @@ private:
     bool            m_Drawable;
     bool            m_Drawing;
 
-    // Stage Editor
+    // Stage Editor(Static)
     CObject*        m_CurEditObject;
     CStage*         m_CurEditStage;
     CDraw*          m_GuideDraw;
@@ -38,6 +38,9 @@ private:
     bool            m_Deleting;
     bool            m_Dragging;
     bool            m_BGSetted;
+
+    // Stage Editor(Dynamic)
+
 
 public:
     virtual void begin() override;

@@ -8,6 +8,7 @@
 #include "CKeyMgr.h"
 #include "CLevelMgr.h"
 #include "CStageMgr.h"
+#include "CJellyMgr.h"
 #include "CTaskMgr.h"
 
 #include "CEngine.h"
@@ -18,6 +19,7 @@
 #include "CPlatform.h"
 #include "CObstacle.h"
 #include "CStage.h"
+#include "CJelly.h"
 
 #include "CAnimator.h"
 
@@ -157,7 +159,7 @@ void CLevel_Game::tick()
 
 			for (; iter < vecStageInfo.end(); ++iter)
 			{
-				SpawnStageObject(*iter);
+				SpawnStageSTObject(*iter);
 			}
 		}
 
@@ -204,6 +206,9 @@ void CLevel_Game::Enter()
 	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
 	m_CurStage->LoadSTObjectsFromFile();
+
+	CJellyMgr::GetInst()->LoadJellyInfo();
+	m_CurStage->LoadDNObjectsFromFile();
 	m_PostStage = m_CurStage;
 
 	// Static Object 배치
@@ -214,8 +219,17 @@ void CLevel_Game::Enter()
 
 		for (; iter < vecStageInfo.end(); ++iter)
 		{
-			SpawnStageObject(*iter);
+			SpawnStageSTObject(*iter);
 		}
+	}
+
+	// Dynamic Object 배치
+	vector<StageDNObjInfo>& vecStageInfo = m_CurStage->m_vecDNObjInfo;
+	vector<StageDNObjInfo>::iterator iter = vecStageInfo.begin();
+
+	for (; iter < vecStageInfo.end(); ++iter)
+	{
+		SpawnStageDNObject(*iter);
 	}
 
 	CObject* pObject = new CPlayer;
@@ -239,7 +253,6 @@ void CLevel_Game::Enter()
 
 	m_Pet = pPet;
 	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PET, (DWORD_PTR)pObject });
-	//AddObject(LAYER_TYPE::PET, pObject);
 	
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::OBSTACLE);
@@ -252,7 +265,7 @@ void CLevel_Game::Exit()
 {
 }
 
-void CLevel_Game::SpawnStageObject(StageSTObjInfo& _ObjInfo)
+void CLevel_Game::SpawnStageSTObject(StageSTObjInfo& _ObjInfo)
 {
 	Task task = {};
 	CObject* pObject = nullptr;
@@ -275,6 +288,21 @@ void CLevel_Game::SpawnStageObject(StageSTObjInfo& _ObjInfo)
 	task.Type = TASK_TYPE::SPAWN_OBJECT;
 	task.Param1 = (DWORD_PTR)type;
 	task.Param2 = (DWORD_PTR)pObject;
+
+	CTaskMgr::GetInst()->AddTask(task);
+}
+
+void CLevel_Game::SpawnStageDNObject(StageDNObjInfo& _ObjInfo)
+{
+	Task task = {};
+	CJelly* pJelly = nullptr;
+
+	pJelly = CJellyMgr::GetInst()->GetVecJelly((UINT)_ObjInfo._objType)[_ObjInfo._typeIndex]->Clone();
+	pJelly->SetPos(_ObjInfo._pos);
+
+	task.Type = TASK_TYPE::SPAWN_OBJECT;
+	task.Param1 = (DWORD_PTR)LAYER_TYPE::JELLY;
+	task.Param2 = (DWORD_PTR)pJelly;
 
 	CTaskMgr::GetInst()->AddTask(task);
 }

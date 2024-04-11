@@ -292,7 +292,7 @@ struct StageSTObjInfo
 
 struct StageDNObjInfo
 {
-	LAYER_TYPE		_objType;
-	UINT			_typeIndex;
-	Vec2D			_pos;
+	DYNAMIC_OBJ_TYPE	_objType;
+	UINT				_typeIndex;
+	Vec2D				_pos;
 };

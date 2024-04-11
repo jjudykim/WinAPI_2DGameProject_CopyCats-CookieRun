@@ -8,6 +8,7 @@
 #include "CBackground.h"
 #include "CPlatform.h"
 #include "CObstacle.h"
+#include "CTile.h"
 
 #include "CAnimation.h"
 #include "CAnimator.h"
@@ -215,8 +216,6 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 		}
 	}
 
-	
-
 	fclose(pFile);
 }
 
@@ -266,7 +265,38 @@ void CStageMgr::SaveStageSTObject(CStage* _SaveStage)
 		_SaveStage->ClearSTObjInfo(i);
 	}
 
-	
+	fclose(pFile);
+}
+
+void CStageMgr::SaveStageDNObject(CStage* _SaveStage)
+{
+	wstring FileName = L"EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)           // TODO: 시험 완료 후 파일명에서 TEST 제거하기
+		+ L"_STG" + std::to_wstring((UINT)_SaveStage->GetSTGType() + 1)
+		+ L"_DNObj.stg";
+
+	wstring FilePath = CPathMgr::GetInst()->GetContentPath() + L"stage\\" + FileName;
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, FilePath.c_str(), L"w");
+
+	if (nullptr == pFile)
+	{
+		LOG(LOG_TYPE::DBG_ERROR, L"스테이지 다이나믹 오브젝트 저장 실패");
+		return;
+	}
+
+	for (UINT i = 0; i < _SaveStage->GetTile()->GetCol(); ++i)
+	{
+		fwprintf_s(pFile, L"[COL] ");
+		for (UINT j = 0; j < _SaveStage->GetTile()->GetRow(); ++j)
+		{
+			char Row = _SaveStage->GetTile()->GetJellyDataByCol(i)[j];
+			fwprintf_s(pFile, L"%d ", (int)Row);
+		}
+		fwprintf_s(pFile, L"[END]\n");
+	}
+
+	_SaveStage->ClearDNObjInfo();
 
 	fclose(pFile);
 }

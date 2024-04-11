@@ -16,6 +16,9 @@ private:
     CAnimator*          m_Animator;
     CCollider*          m_Collider;
 
+    bool                m_UseMouse;
+    bool                m_MouseOn;
+
 public:
     virtual void begin() override;
     virtual void tick() override;
@@ -29,12 +32,17 @@ public:
     void SetValue(int _Value) { m_Value = _Value; }
     void SetAtlasInfo(AtlasInfo _Info) { m_AtlasInfo = _Info; }
     void SetTexture(CTexture* _Tex) { m_Texture = _Tex; }
+    void SetUseMouseOn(bool _use) { m_UseMouse = _use; }
+    bool IsMouseOn() { return m_MouseOn; }
 
     DYNAMIC_OBJ_TYPE GetObjType() { return m_ObjType; }
     Vec2D GetAtlasStartPos() { return m_AtlasInfo.StartPos; }
     Vec2D GetAtlasSliceSize() { return m_AtlasInfo.SliceSize; }
     CTexture* GetTexture() { return m_Texture; }
     UINT GetIndex() { return m_Index; }
+
+public:
+    void CheckMouseOn();
 
 public:
     CLONE(CJelly);

@@ -3,7 +3,7 @@ Jelly_3_23
 
 [ATLAS_TEXTURE]
 [ATLAS_KEY]	Jellies_Atlas
-[ATLAS_PATH]	texture\GeneralJellies_Atlas.png
+[ATLAS_PATH]	texture\Jellies_Atlas.png
 
 [COLLIDER_INFO]
 [COLLIDER_POS]	0.000000  0.000000
