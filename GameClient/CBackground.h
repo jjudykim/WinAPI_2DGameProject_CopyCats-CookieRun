@@ -17,6 +17,7 @@ public:
 
 public:
     BG_TYPE GetBGType() { return m_type; }
+    CTexture* GetTexture() { return m_BGAtlas; }
     void SetBGType(BG_TYPE _type) { m_type = _type; }
     void SetAtlas(CTexture* _tex) { m_BGAtlas = _tex; }
     void SetAtlasInfo(Vec2D _StartPos, Vec2D _SlicePos);

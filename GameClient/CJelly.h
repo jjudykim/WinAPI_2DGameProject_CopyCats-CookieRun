@@ -12,6 +12,7 @@ private:
     int                 m_Value;
     AtlasInfo           m_AtlasInfo;
     CTexture*           m_Texture;
+    CSound*             m_Sound;
 
     CAnimator*          m_Animator;
     CCollider*          m_Collider;
@@ -29,6 +30,7 @@ public:
 public:
     void SetObjType(DYNAMIC_OBJ_TYPE _Type) { m_ObjType = _Type; }
     void SetIndex(UINT _Index) { m_Index = _Index; }
+    void SetSound(CSound* _sound) { m_Sound = _sound; }
     void SetValue(int _Value) { m_Value = _Value; }
     void SetAtlasInfo(AtlasInfo _Info) { m_AtlasInfo = _Info; }
     void SetTexture(CTexture* _Tex) { m_Texture = _Tex; }
@@ -36,6 +38,7 @@ public:
     bool IsMouseOn() { return m_MouseOn; }
 
     DYNAMIC_OBJ_TYPE GetObjType() { return m_ObjType; }
+    CSound* GetSound() { return m_Sound; }
     Vec2D GetAtlasStartPos() { return m_AtlasInfo.StartPos; }
     Vec2D GetAtlasSliceSize() { return m_AtlasInfo.SliceSize; }
     CTexture* GetTexture() { return m_Texture; }

@@ -36,6 +36,8 @@ public:
 	void LoadPetInfo();
 	PetInfo FindPetInfo(const UINT& _Key);
 
+	int CheckAllResource();
+
 	friend class CLevel_Editor;
 };
 

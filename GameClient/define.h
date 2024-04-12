@@ -38,10 +38,10 @@
 #define RENDER_MINPOSX CCamera::GetInst()->GetLookAt().x - (CEngine::GetInst()->GetResolution().x / 2.f)
 #define RENDER_MAXPOSX CCamera::GetInst()->GetLookAt().x + (CEngine::GetInst()->GetResolution().x / 2.f)
 
-#define COOKIE_DEFAULT_POSX 0.f
+#define COOKIE_DEFAULT_POSX 200.f
 #define COOKIE_DEFAULT_POSY 610.f
 
-#define PET_DEFAULT_POSX -100.f
+#define PET_DEFAULT_POSX 100.f
 #define PET_DEFAULT_POSY 350.f
 
 #define KEY_CHECK(Key, State) CKeyMgr::GetInst()->GetKeyState(Key) == State

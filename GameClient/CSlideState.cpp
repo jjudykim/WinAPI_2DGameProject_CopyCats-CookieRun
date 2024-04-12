@@ -25,6 +25,7 @@ void CSlideState::Set()
 	strFilePath += L"\\" + GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"Slide", strFilePath + L"_Slide.anim");
+	SetSoundEffect(CResourceMgr::GetInst()->FindSound(L"Effect_CharJump"));
 }
 
 void CSlideState::Enter()
@@ -34,8 +35,7 @@ void CSlideState::Enter()
 	GetOwnerRigidBody()->SetUseGravity(true);
 	GetOwnerAnimator()->Play(L"Slide", true);
 
-	CSound* pSound = CResourceMgr::GetInst()->FindSound(L"Effect_CharSlide");
-	//pSound->Play();
+	//GetSoundEffect()->Play();
 }
 
 void CSlideState::FinalTick()

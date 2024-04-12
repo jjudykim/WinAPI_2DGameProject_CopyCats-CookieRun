@@ -9,6 +9,7 @@ class CPlayerState :
     public CState
 {
     CPlayer*              m_pOwner;
+    CSound*               m_SoundEffect;
     CAnimator*            m_pOwnerAnimator;
     CRigidBody*           m_pOwnerRigidBody;
     CCollider*            m_pOwnerCollider;
@@ -21,10 +22,12 @@ public:
     virtual void Exit() override;
 
 public:
+    void SetSoundEffect(CSound* _sound) { m_SoundEffect = _sound; }
     void SetOwnerAnimator(CAnimator* _animator) { m_pOwnerAnimator = _animator; }
     void SetOwnerCollider(CCollider* _collider) { m_pOwnerCollider = _collider; }
 
     CPlayer* GetCurPlayer() { return m_pOwner; }
+    CSound* GetSoundEffect() { return m_SoundEffect; }
     CCollider* GetOwnerCollider() { return m_pOwnerCollider; }
     CAnimator* GetOwnerAnimator() { return m_pOwnerAnimator; }
     CRigidBody* GetOwnerRigidBody() { return m_pOwnerRigidBody; }

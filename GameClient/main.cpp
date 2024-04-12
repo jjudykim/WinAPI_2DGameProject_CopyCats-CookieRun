@@ -6,6 +6,7 @@
 #include "CEngine.h"
 #include "CTexture.h"
 #include "CResourceMgr.h"
+#include "CLevel_Game.h"
 
 #define MAX_LOADSTRING 100
 
@@ -165,8 +166,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CUSTOM_LOAD_COMPLETE:
         {
+            LOG(LOG_TYPE::DBG_LOG, L"리소스 유효성 검사중...");
+            int result = 0;
+            //do { result = CResourceMgr::GetInst()->CheckAllResource(); } while (FAILED(result));
+            LOG(LOG_TYPE::DBG_LOG, L"데이터 로딩 완료, 게임 시작");
             CLevelMgr::GetInst()->LoadLevelDataDone();
-            MessageBox(hWnd, L"Loading COmplete!", L"Notification", MB_OK);
             return 0;
         }
     case WM_COMMAND:

@@ -3,6 +3,7 @@
 
 #include "CEngine.h"
 #include "CTexture.h"
+#include "CSound.h"
 #include "CPathMgr.h"
 #include "CResourceMgr.h"
 #include "CCollisionMgr.h"
@@ -73,7 +74,11 @@ void CLevelMgr::ChangeLevel(LEVEL_TYPE _NextLevelType)
 void CLevelMgr::LoadLevelDataDone()
 {
 	CLevel_Game* level = static_cast<CLevel_Game*>(m_pCurrentLevel);
+	level->m_BGM->SetVolume(50.f);
+	level->m_BGM->PlayToBGM();
+
 	level->SetLoadDone(true);
+	level->begin();
 }
 
 CObject* CLevelMgr::FindObjectByName(const wstring& _strName)

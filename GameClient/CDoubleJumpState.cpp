@@ -27,14 +27,14 @@ void CDoubleJumpState::Set()
 	strFilePath += L"\\" + GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"DoubleJump", strFilePath + L"_DoubleJump.anim");
+	SetSoundEffect(CResourceMgr::GetInst()->FindSound(L"Effect_CharJump"));
 }
 
 void CDoubleJumpState::Enter()
 {
 	GetOwnerAnimator()->Play(L"DoubleJump", false);
 
-	CSound* pSound = CResourceMgr::GetInst()->FindSound(L"Effect_CharJump");
-	//pSound->Play();
+	//GetSoundEffect()->Play();
 }
 
 void CDoubleJumpState::FinalTick()

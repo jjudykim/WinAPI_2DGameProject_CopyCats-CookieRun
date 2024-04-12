@@ -378,3 +378,29 @@ PetInfo CResourceMgr::FindPetInfo(const UINT& _Key)
 
 	return iter->second;
 }
+
+int CResourceMgr::CheckAllResource()
+{
+	// m_mapTex;
+	map<wstring, CTexture*>::iterator texiter = m_mapTex.begin();
+	for (; m_mapTex.end() != texiter; ++texiter)
+	{
+		if (texiter->second == nullptr) return false;
+	}
+
+	// m_mapSound;
+	map<wstring, CSound*>::iterator waviter = m_mapSound.begin();
+	for (; m_mapSound.end() != waviter; ++waviter)
+	{
+		if (waviter->second == nullptr) return false;
+	}
+	
+	// m_mapAnim;
+	map<wstring, CAnimation*>::iterator animiter = m_mapAnim.begin();
+	for (; m_mapAnim.end() != animiter; ++animiter)
+	{
+		if (animiter->second == nullptr) return false;
+	}
+
+	return true;
+}

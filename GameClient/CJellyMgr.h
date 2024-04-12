@@ -11,6 +11,7 @@ private:
 public:
 	void init();
 	void LoadJellyInfo();
+	int CheckJellyData();
 	const vector<CJelly*>& GetVecJelly(UINT _Type) { return m_arrJelly[_Type]; }
 };
 

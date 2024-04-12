@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CTimeMgr.h"
 #include "CEngine.h"
+#include "CLevelMgr.h"
 
 float CTimeMgr::AccTime = 0.f;
 wchar_t CTimeMgr::szBuff[255] = {};

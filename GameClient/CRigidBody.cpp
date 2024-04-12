@@ -15,6 +15,7 @@ CRigidBody::CRigidBody()
 	, m_GroundInst(nullptr)
 	, m_GroundDelegate(nullptr)
 	, m_GroundStandardPosY(COOKIE_DEFAULT_POSY)
+	, m_Loaded(false)
 {
 	
 }
@@ -23,9 +24,9 @@ CRigidBody::~CRigidBody()
 {
 }
 
-void CRigidBody::Walk(Vec2D& _originPos)
+void CRigidBody::Walk(Vec2D& _originPos, float _dt)
 {
-	_originPos += Vec2D(1.0f, 0.0f) * (m_WalkSpeed * DT);
+	_originPos += Vec2D(1.0f, 0.0f) * (m_WalkSpeed * _dt);
 }
 
 void CRigidBody::Jump()
@@ -37,22 +38,27 @@ void CRigidBody::Jump()
 
 void CRigidBody::finaltick()
 {
+	float dt = DT;
+
+	// 만약 로딩 후 첫 틱이라면
+	if (m_Loaded == false) { dt = 0.f; }
+
 	m_WalkSpeed = GetOwner()->GetSpeed();
 	Vec2D vObjPos = GetOwner()->GetPos();
 	
-	Walk(vObjPos);
+	Walk(vObjPos, dt);
 	if (m_UseGravity == true)
 	{
 		if (!m_Ground)
 		{
-			Vec2D vGravitySpeed = Vec2D(0.f, 1.0f) * m_GravityAccel * DT;
+			Vec2D vGravitySpeed = Vec2D(0.f, 1.0f) * m_GravityAccel * dt;
 			if (m_Descending && vGravitySpeed.y >= 30)
 			{
  				vGravitySpeed.y = 30;
 			}
 			m_VelocityByJump += vGravitySpeed;
 			if (m_VelocityByJump.y > 0) m_Descending = true;
-			vObjPos += m_VelocityByJump * DT;
+			vObjPos += m_VelocityByJump * dt;
 		}
 		else if (m_Ground && m_Descending)
 		{
@@ -62,6 +68,7 @@ void CRigidBody::finaltick()
 		}
 	}
 	GetOwner()->SetPos(vObjPos);
+	if (m_Loaded == false) { m_Loaded = true; }
 	DrawDebugLine(PEN_TYPE::PEN_BLUE, GetOwner()->GetRenderPos(), GetOwner()->GetRenderPos() + m_VelocityByJump, 0.f);
 }
 

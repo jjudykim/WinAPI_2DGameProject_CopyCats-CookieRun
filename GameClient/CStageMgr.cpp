@@ -63,6 +63,44 @@ void CStageMgr::ChangeNextStage()
 	
 }
 
+int CStageMgr::CheckStageData(CStage* _Stage)
+{
+	// Background Check
+	for (UINT i = 0; i < (UINT)BG_TYPE::END; ++i)
+	{
+		CBackground* bg = _Stage->GetBG(static_cast<BG_TYPE>(i));
+		if (bg == nullptr || bg->GetTexture() == nullptr)
+		{
+			LOG(LOG_TYPE::DBG_WARNING, L"Static Object - BG Load 중 오류 발생");
+			return false;
+		}
+	}
+
+	// PLT Check
+	for (UINT i = 0; i < (UINT)PLT_TYPE::END; ++i)
+	{
+		CPlatform* plt = _Stage->GetPLT(static_cast<PLT_TYPE>(i));
+		if (plt == nullptr || plt->GetTexture() == nullptr)
+		{
+			LOG(LOG_TYPE::DBG_WARNING, L"Static Object - PLT Load 중 오류 발생");
+			return false;
+		}
+	}
+	
+	// OBS Check
+	for (UINT i = 0; i < (UINT)OBS_TYPE::END; ++i)
+	{
+		CObstacle* obs = _Stage->GetOBS(static_cast<OBS_TYPE>(i));
+		if (obs == nullptr || obs->GetTexture() == nullptr)
+		{
+			LOG(LOG_TYPE::DBG_WARNING, L"Static Object - OBS Load 중 오류 발생");
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 {
 	FILE* pFile = nullptr;

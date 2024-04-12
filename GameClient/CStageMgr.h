@@ -20,6 +20,7 @@ public:
 		m_pCurrentStage = m_arrStage[(UINT)_Ep].at(0);
 	}
 	void ChangeNextStage();
+	int CheckStageData(CStage* _Stage);
 	void LoadStageInfo(EPISODE_TYPE _EPType);
 	void SaveStageSTObject(CStage* _SaveStage);
 	void SaveStageDNObject(CStage* _SaveStage);

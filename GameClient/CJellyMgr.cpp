@@ -4,6 +4,7 @@
 #include "CJelly.h"
 #include "CPathMgr.h"
 #include "CAnimator.h"
+#include "CLevelMgr.h"
 
 CJellyMgr::CJellyMgr()
 {
@@ -72,18 +73,6 @@ void CJellyMgr::init()
 		break;
 		}
 	}
-
-	// Jelly Sound Load
-	CSound* pSound = CResourceMgr::GetInst()->LoadSound(L"Bgm_MainGame", L"sound\\Bgm_MainGame.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetAlphabetJelly", L"sound\\Effect_GetAlphabetJelly.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigBearJelly", L"sound\\Effect_GetBigBearJelly.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigCoinJelly", L"sound\\Effect_GetBigCoinJelly.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetCoinJelly", L"sound\\Effect_GetCoinJelly.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetItemJelly", L"sound\\Effect_GetItemJelly.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetNormalJelly", L"sound\\Effect_GetNormalJelly.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetBearJelly", L"sound\\Effect_GetBearJelly.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_SmallEnergy", L"sound\\Effect_SmallEnergy.wav");
-	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_LargeEnergy", L"sound\\Effect_LargeEnergy.wav");
 }
 
 void CJellyMgr::LoadJellyInfo()
@@ -154,11 +143,60 @@ void CJellyMgr::LoadJellyInfo()
 				pAnim->LoadAnimation(NameStr, szReadBuff);
 				pAnim->Play(NameStr, true);
 			}
-			
+
+			if (CLevelMgr::GetInst()->GetCurrentLevelType() == LEVEL_TYPE::GAME)
+			{
+				// Sound Set
+				if (ObjType == 0)
+				{
+					if (index == 0) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetNormalJelly"));
+					else if (index == 1 || index == 3) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBearJelly"));
+					else if (index == 2 || index == 4) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBigBearJelly"));
+				}
+				else if (ObjType == 1)
+				{
+					if (index == 0 || index == 1) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetCoinJelly"));
+					else if (index == 2) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBigCoinJelly"));
+				}
+				else if (ObjType == 2)
+				{
+					curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetAlphabetJelly"));
+				}
+				else if (ObjType == 3)
+				{
+					if (index == 0) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_SmallEnergy"));
+					else if (index == 1) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_LargeEnergy"));
+					else
+					{
+						curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_ItemJelly"));
+					}
+				}
+			}
+
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
 			fwscanf_s(pFile, L"%d", &value);
 		}
 	}
 
+	LOG(LOG_TYPE::DBG_LOG, L"Jelly Dummy Create Success");
+
 	fclose(pFile);
+}
+
+int CJellyMgr::CheckJellyData()
+{
+	for (UINT i = 0; i < (UINT)DYNAMIC_OBJ_TYPE::END; ++i)
+	{
+		for (size_t j = 0; j < m_arrJelly[i].size(); ++j)
+		{
+			CJelly* jelly = m_arrJelly[i][j];
+			if (jelly == nullptr || jelly->GetSound() == nullptr || jelly->GetTexture() == nullptr)
+			{
+				LOG(LOG_TYPE::DBG_WARNING, L"Dynamic Object - Jelly Load 중 오류 발생");
+				return false;
+			}
+		}
+	}
+
+	return true;
 }

@@ -32,6 +32,7 @@ CLevel_Game::CLevel_Game()
 	, m_DeletePosX(0)
 	, m_PostStageStartPosX(0)
 	, m_LoadDone(false)
+	, m_LevelBegin(false)
 {
 	
 }
@@ -44,19 +45,22 @@ void CLevel_Game::begin()
 {
 	if (m_LoadDone == false) return;
 
-	CLevel::begin();
-
 	m_ActingPosX = 0;
 	m_DeletePosX = m_ResolutionWidth;
 
-	CSound* pSound = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
-	pSound->SetVolume(30.f);
-	pSound->PlayToBGM();
+	m_Cookie->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
+	m_Pet->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
+
+	m_LevelBegin = true;
 }
 
 void CLevel_Game::tick()
 {
-	if (m_LoadDone ==  false) return;
+	DbgObjInfo Cookieinfo = { CCamera::GetInst()->GetRealPos(Vec2D(500, 50)), 0,
+						L"Cookie : " + std::to_wstring(m_Cookie->GetPos().x)
+					 + L", " + std::to_wstring(m_Cookie->GetPos().y) };
+
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(Cookieinfo);
 
 	// Editor Level 진입
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
@@ -64,6 +68,7 @@ void CLevel_Game::tick()
 		ChangeLevel(LEVEL_TYPE::EDITOR);
 	}
 
+	if (m_LoadDone == false || m_LevelBegin == false) return;
 
 	CLevel::tick();
 
@@ -100,8 +105,8 @@ void CLevel_Game::tick()
 
 				vecObs[i]->GetAnimator()->ChangePlayingAnim(AnimName, false);
 				//sound = CResourceMgr::GetInst()->FindSound(L"Effect_PopUpObstacle");
-				sound->SetVolume(50.f);
-				sound->Play();
+				//sound->SetVolume(50.f);
+				//sound->Play();
 			}
 			else if (obs->GetOBSType() == OBS_TYPE::JUMP_DOWN || obs->GetOBSType() == OBS_TYPE::DBJUMP_DOWN)
 			{
@@ -217,14 +222,14 @@ void CLevel_Game::tick()
 
 void CLevel_Game::finaltick()
 {
-	if (m_LoadDone == false) return;
+	if (m_LoadDone == false || m_LevelBegin == false) return;
 
 	CLevel::finaltick();
 }
 
 void CLevel_Game::render()
 {
-	if (m_LoadDone == false)
+	if (m_LoadDone == false || m_LevelBegin == false)
 	{
 		BLENDFUNCTION bf = {};
 
@@ -260,7 +265,7 @@ void CLevel_Game::Enter()
 	pPlayer->SetSpeed(400.f);
 
 	m_Cookie = pPlayer;
-	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PLAYER, (DWORD_PTR)pObject});
+	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PLAYER, (DWORD_PTR)pObject });
 
 	pObject = new CPet;
 	pObject->SetName(L"Pet");
@@ -282,14 +287,65 @@ void CLevel_Game::Exit()
 {
 }
 
-void CLevel_Game::LoadGameData()
+int CLevel_Game::LoadGameData()
 {
+	// 사용되는 Sound Asset 로드
+
+	// BGM
+	CResourceMgr::GetInst()->LoadSound(L"Bgm_MainGame", L"sound\\Bgm_MainGame.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Bgm_MainLobby", L"sound\\Bgm_MainLobby.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Bgm_BonusTime", L"sound\\Bgm_BonusTime.wav");
+
+	// Player Effect
+	// TODO : 사운드 재생 안댐... 파일 재변환해보기
+	//CResourceMgr::GetInst()->LoadSound(L"Effect_CharJump", L"sound\\Effect_CharJump.wav");
+	//CResourceMgr::GetInst()->LoadSound(L"Effect_CharSlide", L"sound\\Effect_CharSlide.wav");
+
+	// Obstacle Effect
+	CResourceMgr::GetInst()->LoadSound(L"Effect_PopUpObstacle", L"sound\\Effect_PopUpObstacle.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_ObstacleDown", L"sound\\Effect_ObstacleDown.wav");
+
+	// Jelly Effect
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetAlphabetJelly", L"sound\\Effect_GetAlphabetJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigBearJelly", L"sound\\Effect_GetBigBearJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigCoinJelly", L"sound\\Effect_GetBigCoinJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetCoinJelly", L"sound\\Effect_GetCoinJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetItemJelly", L"sound\\Effect_GetItemJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetNormalJelly", L"sound\\Effect_GetNormalJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBearJelly", L"sound\\Effect_GetBearJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_SmallEnergy", L"sound\\Effect_SmallEnergy.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_LargeEnergy", L"sound\\Effect_LargeEnergy.wav");
+
+	// Item Effect Sound
+	CResourceMgr::GetInst()->LoadSound(L"Effect_BigToSmall", L"sound\\Effect_BigToSmall.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_SmallToBig", L"sound\\Effect_SmallToBig.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_CrashWithBody", L"sound\\Effect_CrashWithBody.wav");
+
+	// Turn Scene
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GameEnd", L"sound\\Effect_GameEnd.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Result_NewRecord", L"sound\\Result_NewRecord.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Result_ScreenChange", L"sound\\Result_ScreenChange.wav");
+
+	m_BGM = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
+
+	LOG(LOG_TYPE::DBG_LOG, L"Sound Asset Loading Success");
+
 	// 현재 스테이지 맵 데이터 불러오기
 	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
 	m_CurStage->LoadSTObjectsFromFile();
+	if (FAILED(CStageMgr::GetInst()->CheckStageData(m_CurStage)))
+	{
+		LOG(LOG_TYPE::DBG_WARNING, L"Static Object Data Load 실패");
+		return false;
+	};
 
 	CJellyMgr::GetInst()->LoadJellyInfo();
+	if (FAILED(CJellyMgr::GetInst()->CheckJellyData()))
+	{
+		LOG(LOG_TYPE::DBG_WARNING, L"Dynamic Object Data Load 실패");
+		return false;
+	}
 	m_CurStage->LoadDNObjectsFromFile();
 	m_PostStage = m_CurStage;
 
@@ -303,6 +359,7 @@ void CLevel_Game::LoadGameData()
 		{
 			SpawnStageSTObject(*iter);
 		}
+		LOG(LOG_TYPE::DBG_LOG, L"Spawn All Static Object Success");
 	}
 
 	// Dynamic Object 배치
@@ -313,20 +370,11 @@ void CLevel_Game::LoadGameData()
 	{
 		SpawnStageDNObject(*iter);
 	}
+	LOG(LOG_TYPE::DBG_LOG, L"Spawn All Dynamic Object Success");
 
 	m_PostStageStartPosX = m_CurStage->GetSTGLength();
 
-	// 사용되는 Sound Asset 로드
-
-	// BGM
-	CSound* pSound = CResourceMgr::GetInst()->LoadSound(L"Bgm_MainGame", L"sound\\Bgm_MainGame.wav");
-	pSound->SetVolume(30.f);
-	pSound->PlayToBGM();
-
-	// Obstacle Effect
-	CResourceMgr::GetInst()->LoadSound(L"Effect_PopUpObstacle", L"sound\\Effect_PopUpObstacle.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_ObstacleDown", L"sound\\Effect_ObstacleDown.wav");
-
+	return true;
 }
 
 void CLevel_Game::SpawnStageSTObject(StageSTObjInfo& _ObjInfo)
@@ -377,9 +425,9 @@ static DWORD WINAPI LoadGameDataThread(LPVOID lpParam)
 	CLevel_Game* CurGameLevel = dynamic_cast<CLevel_Game*>(CurLevel);
 	if (CurGameLevel == nullptr) assert(nullptr);
 
-	CurGameLevel->LoadGameData();
-
-	Sleep(100);
+	int result = 0;
+	do { result = CurGameLevel->LoadGameData(); } while (FAILED(result));
+	
 	PostMessage((HWND)lpParam, WM_CUSTOM_LOAD_COMPLETE, 0, 0);
 	return 0;
 }

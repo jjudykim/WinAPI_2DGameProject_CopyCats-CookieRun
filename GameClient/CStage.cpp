@@ -86,6 +86,7 @@ int CStage::LoadSTObjectsFromFile()
 
 	fclose(pFile);
 
+	LOG(LOG_TYPE::DBG_LOG, L"Static Object Loading Success");
 	return S_OK;
 }
 
@@ -156,6 +157,7 @@ int CStage::LoadDNObjectsFromFile()
 	
 	fclose(pFile);
 
+	LOG(LOG_TYPE::DBG_LOG, L"Dynamic Objects Load Success");
 	return S_OK;
 }
 

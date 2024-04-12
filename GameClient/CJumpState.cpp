@@ -29,6 +29,7 @@ void CJumpState::Set()
 	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"Jump", strFilePath + L"_Jump.anim");
+	SetSoundEffect(CResourceMgr::GetInst()->FindSound(L"Effect_CharJump"));
 }
 
 void CJumpState::Enter()
@@ -37,8 +38,9 @@ void CJumpState::Enter()
 	LOG(LOG_TYPE::DBG_WARNING, L"Jump State 진입");
 
 	GetOwnerAnimator()->Play(L"Jump", false);
-	CSound* pSound = CResourceMgr::GetInst()->FindSound(L"Effect_CharJump");
-	//pSound->Play();
+
+	// TODO : Sound 에셋 조정 후 주석 해제
+	//GetSoundEffect()->Play();
 
 	GetOwnerRigidBody()->SetUseGravity(true);
 }

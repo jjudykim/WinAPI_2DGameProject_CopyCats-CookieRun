@@ -5,6 +5,7 @@ class CStage;
 class CPlayer;
 class CPet;
 class CTexture;
+class CSound;
 
 class CLevel_Game :
     public CLevel
@@ -22,6 +23,7 @@ private:
     CPet*       m_Pet;
 
     CTexture*   m_LoadingTex;
+    CSound*     m_BGM;
 
     // Timer & Log
     float       m_Second;
@@ -31,6 +33,7 @@ private:
     Vec2D       m_LogPetPos;
 
     bool        m_LoadDone;
+    bool        m_LevelBegin;
 
 public:
     virtual void begin() override;
@@ -43,7 +46,7 @@ public:
 
 
 public:
-    void LoadGameData();
+    int LoadGameData();
     void SpawnStageSTObject(StageSTObjInfo& _ObjInfo);
     void SpawnStageDNObject(StageDNObjInfo& _ObjInfo);
 
@@ -56,5 +59,7 @@ public:
 public:
     CLevel_Game();
     ~CLevel_Game();
+
+    friend class CLevelMgr;
 };
 
