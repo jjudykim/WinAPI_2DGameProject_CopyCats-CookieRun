@@ -1,6 +1,7 @@
 #pragma once
 
 class CLevel;
+class CLevel_Game;
 
 class CLevelMgr
 {
@@ -19,6 +20,7 @@ public:
 	void render();
 
 	void ChangeLevel(LEVEL_TYPE _NextLevelType);
+	void LoadLevelDataDone();
 
 public:
 	CLevel* GetSelectLevel(LEVEL_TYPE _SelectLevel) { return m_arrLevel[(UINT)_SelectLevel]; }

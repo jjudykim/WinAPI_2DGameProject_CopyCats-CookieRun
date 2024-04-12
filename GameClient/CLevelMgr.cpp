@@ -2,13 +2,14 @@
 #include "CLevelMgr.h"
 
 #include "CEngine.h"
+#include "CTexture.h"
 #include "CPathMgr.h"
+#include "CResourceMgr.h"
 #include "CCollisionMgr.h"
 #include "CLevel.h"
 #include "CLevel_Editor.h"
 #include "CLevel_Game.h"
 #include "CLevel_Stage01.h"
-
 
 CLevelMgr::CLevelMgr()
 	: m_arrLevel{}
@@ -67,6 +68,12 @@ void CLevelMgr::ChangeLevel(LEVEL_TYPE _NextLevelType)
 
 	m_pCurrentLevel->Enter();
 	m_pCurrentLevel->begin();
+}
+
+void CLevelMgr::LoadLevelDataDone()
+{
+	CLevel_Game* level = static_cast<CLevel_Game*>(m_pCurrentLevel);
+	level->SetLoadDone(true);
 }
 
 CObject* CLevelMgr::FindObjectByName(const wstring& _strName)

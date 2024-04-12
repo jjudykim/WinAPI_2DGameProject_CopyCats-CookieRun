@@ -60,6 +60,10 @@ void CPlayer::begin()
 
 
 	m_FSM->ChangeState(L"Run");
+
+	// Sound Setting
+	//CSound* pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_CharJump", L"sound\\Effect_CharJump.wav");
+	//pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_CharSlide", L"sound\\Effect_CharSilde.wav");
 }
 
 void CPlayer::tick()

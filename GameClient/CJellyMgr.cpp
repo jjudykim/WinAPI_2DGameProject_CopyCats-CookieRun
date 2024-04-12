@@ -72,6 +72,18 @@ void CJellyMgr::init()
 		break;
 		}
 	}
+
+	// Jelly Sound Load
+	CSound* pSound = CResourceMgr::GetInst()->LoadSound(L"Bgm_MainGame", L"sound\\Bgm_MainGame.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetAlphabetJelly", L"sound\\Effect_GetAlphabetJelly.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigBearJelly", L"sound\\Effect_GetBigBearJelly.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigCoinJelly", L"sound\\Effect_GetBigCoinJelly.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetCoinJelly", L"sound\\Effect_GetCoinJelly.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetItemJelly", L"sound\\Effect_GetItemJelly.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetNormalJelly", L"sound\\Effect_GetNormalJelly.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_GetBearJelly", L"sound\\Effect_GetBearJelly.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_SmallEnergy", L"sound\\Effect_SmallEnergy.wav");
+	pSound = CResourceMgr::GetInst()->LoadSound(L"Effect_LargeEnergy", L"sound\\Effect_LargeEnergy.wav");
 }
 
 void CJellyMgr::LoadJellyInfo()

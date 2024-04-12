@@ -4,6 +4,7 @@
 class CStage;
 class CPlayer;
 class CPet;
+class CTexture;
 
 class CLevel_Game :
     public CLevel
@@ -20,25 +21,34 @@ private:
     CPlayer*    m_Cookie;
     CPet*       m_Pet;
 
+    CTexture*   m_LoadingTex;
 
     // Timer & Log
+    float       m_Second;
     float       m_QuaterSecond;
     float       m_ThreeSecond;
     Vec2D       m_LogPos;
     Vec2D       m_LogPetPos;
 
+    bool        m_LoadDone;
+
 public:
     virtual void begin() override;
     virtual void tick() override;
+    virtual void finaltick() override;
+    virtual void render() override;
 
     virtual void Enter() override;
     virtual void Exit() override;
 
-    
 
 public:
+    void LoadGameData();
     void SpawnStageSTObject(StageSTObjInfo& _ObjInfo);
     void SpawnStageDNObject(StageDNObjInfo& _ObjInfo);
+
+    void SetLoadDone(bool _Load) { m_LoadDone = _Load; }
+    
     //void DeleteStageObject(CObject* _Obj);
 public:
     CLONE_DISABLE(CLevel_Game);

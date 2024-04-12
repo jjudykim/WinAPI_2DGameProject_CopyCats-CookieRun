@@ -4,8 +4,11 @@
 #include "framework.h"
 #include "GameClient.h"
 #include "CEngine.h"
+#include "CTexture.h"
+#include "CResourceMgr.h"
 
 #define MAX_LOADSTRING 100
+
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -160,6 +163,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_CUSTOM_LOAD_COMPLETE:
+        {
+            CLevelMgr::GetInst()->LoadLevelDataDone();
+            MessageBox(hWnd, L"Loading COmplete!", L"Notification", MB_OK);
+            return 0;
+        }
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -240,3 +249,5 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+
+

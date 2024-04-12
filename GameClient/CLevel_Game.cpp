@@ -22,12 +22,16 @@
 #include "CJelly.h"
 
 #include "CAnimator.h"
+#include "CSound.h"
+
+static DWORD WINAPI LoadGameDataThread(LPVOID lpParam);
 
 CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
 	, m_ActingPosX(0)
 	, m_DeletePosX(0)
 	, m_PostStageStartPosX(0)
+	, m_LoadDone(false)
 {
 	
 }
@@ -38,15 +42,22 @@ CLevel_Game::~CLevel_Game()
 
 void CLevel_Game::begin()
 {
+	if (m_LoadDone == false) return;
+
 	CLevel::begin();
 
 	m_ActingPosX = 0;
 	m_DeletePosX = m_ResolutionWidth;
 
+	CSound* pSound = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
+	pSound->SetVolume(30.f);
+	pSound->PlayToBGM();
 }
 
 void CLevel_Game::tick()
 {
+	if (m_LoadDone ==  false) return;
+
 	// Editor Level 진입
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
 	{
@@ -72,6 +83,7 @@ void CLevel_Game::tick()
 	// Obstacle Animation Play
 	const vector<CObject*>& vecObs = GET_CUR_LEVEL->GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
 	CObstacle* obs = nullptr;
+	CSound* sound = nullptr;
 	float tPosX = 0;
 
 	for (size_t i = 0; i < vecObs.size(); ++i)
@@ -87,12 +99,18 @@ void CLevel_Game::tick()
 					+ L"_OBS" + std::to_wstring((UINT)obs->GetOBSType());
 
 				vecObs[i]->GetAnimator()->ChangePlayingAnim(AnimName, false);
+				//sound = CResourceMgr::GetInst()->FindSound(L"Effect_PopUpObstacle");
+				sound->SetVolume(50.f);
+				sound->Play();
 			}
 			else if (obs->GetOBSType() == OBS_TYPE::JUMP_DOWN || obs->GetOBSType() == OBS_TYPE::DBJUMP_DOWN)
 			{
 				if (600.f <= obs->GetPos().y)
 				{
 					obs->SetPos(obs->GetPos().x, 600.f);
+					//sound = CResourceMgr::GetInst()->FindSound(L"Effect_ObstacleDown");
+					//sound->SetVolume(50.f);
+					//sound->Play();
 					continue;
 				}
 				else
@@ -197,11 +215,75 @@ void CLevel_Game::tick()
 	m_QuaterSecond += DT;
 }
 
+void CLevel_Game::finaltick()
+{
+	if (m_LoadDone == false) return;
+
+	CLevel::finaltick();
+}
+
+void CLevel_Game::render()
+{
+	if (m_LoadDone == false)
+	{
+		BLENDFUNCTION bf = {};
+
+		bf.BlendOp = AC_SRC_OVER;
+		bf.BlendFlags = 0;
+		bf.SourceConstantAlpha = (int)255;
+		bf.AlphaFormat = AC_SRC_ALPHA;
+
+		AlphaBlend(DC, 0, 0, CEngine::GetInst()->GetResolution().x, CEngine::GetInst()->GetResolution().y
+			, m_LoadingTex->GetDC(), 0, 0, m_LoadingTex->GetWidth(), m_LoadingTex->GetHeight(), bf);
+
+		return;
+	}
+
+	CLevel::render();
+}
 
 void CLevel_Game::Enter()
 {
+	m_LoadingTex = CResourceMgr::GetInst()->LoadTexture(L"Loading_GameLevel", L"texture\\Loading_GameLevel.png");
+
+	// 게임 데이터 로딩 쓰레드
+	CreateThread(NULL, 0, &LoadGameDataThread, CEngine::GetInst()->GetMainWnd(), 0, NULL);
+
 	m_ResolutionWidth = CEngine::GetInst()->GetResolution().x;
+
+	CObject* pObject = new CPlayer;
+	pObject->SetName(L"Player");
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+	pPlayer->SetCurCookie(COOKIE_TYPE::BRAVE_COOKIE);
+	pPlayer->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
+	pPlayer->SetScale(pPlayer->GetCurCookie()._frmSize.x, pPlayer->GetCurCookie()._frmSize.y);
+	pPlayer->SetSpeed(400.f);
+
+	m_Cookie = pPlayer;
+	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PLAYER, (DWORD_PTR)pObject});
+
+	pObject = new CPet;
+	pObject->SetName(L"Pet");
+	CPet* pPet = dynamic_cast<CPet*>(pObject);
+	pPet->SetCurPet(PET_TYPE::GOLD_DROP);
+	pPet->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
+	pPet->SetScale(pPet->GetCurPet()._frmSize.x, pPet->GetCurPet()._frmSize.y);
+	pPet->SetSpeed(400.f);
+
+	m_Pet = pPet;
+	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PET, (DWORD_PTR)pObject });
 	
+	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
+	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::OBSTACLE);
+	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
+}
+
+void CLevel_Game::Exit()
+{
+}
+
+void CLevel_Game::LoadGameData()
+{
 	// 현재 스테이지 맵 데이터 불러오기
 	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
@@ -232,37 +314,19 @@ void CLevel_Game::Enter()
 		SpawnStageDNObject(*iter);
 	}
 
-	CObject* pObject = new CPlayer;
-	pObject->SetName(L"Player");
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
-	pPlayer->SetCurCookie(COOKIE_TYPE::BRAVE_COOKIE);
-	pPlayer->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
-	pPlayer->SetScale(pPlayer->GetCurCookie()._frmSize.x, pPlayer->GetCurCookie()._frmSize.y);
-	pPlayer->SetSpeed(400.f);
-
-	m_Cookie = pPlayer;
-	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PLAYER, (DWORD_PTR)pObject});
-
-	pObject = new CPet;
-	pObject->SetName(L"Pet");
-	CPet* pPet = dynamic_cast<CPet*>(pObject);
-	pPet->SetCurPet(PET_TYPE::GOLD_DROP);
-	pPet->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
-	pPet->SetScale(pPet->GetCurPet()._frmSize.x, pPet->GetCurPet()._frmSize.y);
-	pPet->SetSpeed(400.f);
-
-	m_Pet = pPet;
-	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PET, (DWORD_PTR)pObject });
-	
-	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
-	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::OBSTACLE);
-	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
-
 	m_PostStageStartPosX = m_CurStage->GetSTGLength();
-}
 
-void CLevel_Game::Exit()
-{
+	// 사용되는 Sound Asset 로드
+
+	// BGM
+	CSound* pSound = CResourceMgr::GetInst()->LoadSound(L"Bgm_MainGame", L"sound\\Bgm_MainGame.wav");
+	pSound->SetVolume(30.f);
+	pSound->PlayToBGM();
+
+	// Obstacle Effect
+	CResourceMgr::GetInst()->LoadSound(L"Effect_PopUpObstacle", L"sound\\Effect_PopUpObstacle.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_ObstacleDown", L"sound\\Effect_ObstacleDown.wav");
+
 }
 
 void CLevel_Game::SpawnStageSTObject(StageSTObjInfo& _ObjInfo)
@@ -305,6 +369,19 @@ void CLevel_Game::SpawnStageDNObject(StageDNObjInfo& _ObjInfo)
 	task.Param2 = (DWORD_PTR)pJelly;
 
 	CTaskMgr::GetInst()->AddTask(task);
+}
+
+static DWORD WINAPI LoadGameDataThread(LPVOID lpParam)
+{
+	CLevel* CurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+	CLevel_Game* CurGameLevel = dynamic_cast<CLevel_Game*>(CurLevel);
+	if (CurGameLevel == nullptr) assert(nullptr);
+
+	CurGameLevel->LoadGameData();
+
+	Sleep(100);
+	PostMessage((HWND)lpParam, WM_CUSTOM_LOAD_COMPLETE, 0, 0);
+	return 0;
 }
 
 

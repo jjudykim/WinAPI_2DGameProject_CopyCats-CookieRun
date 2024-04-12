@@ -3,6 +3,7 @@
 
 #include "CKeyMgr.h"
 
+#include "CSound.h"
 #include "CCollider.h"
 #include "CRigidBody.h"
 #include "CAnimator.h"
@@ -36,6 +37,8 @@ void CJumpState::Enter()
 	LOG(LOG_TYPE::DBG_WARNING, L"Jump State ÁøÀÔ");
 
 	GetOwnerAnimator()->Play(L"Jump", false);
+	CSound* pSound = CResourceMgr::GetInst()->FindSound(L"Effect_CharJump");
+	//pSound->Play();
 
 	GetOwnerRigidBody()->SetUseGravity(true);
 }
