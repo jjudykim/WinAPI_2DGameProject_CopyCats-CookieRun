@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "CSlideState.h"
 
-#include "CSound.h"
 #include "CKeyMgr.h"
 #include "CCollider.h"
 #include "CRigidBody.h"
@@ -34,8 +33,6 @@ void CSlideState::Enter()
 	LOG(LOG_TYPE::DBG_WARNING, L"Slide State ÁøÀÔ");
 	GetOwnerRigidBody()->SetUseGravity(true);
 	GetOwnerAnimator()->Play(L"Slide", true);
-
-	//GetSoundEffect()->Play();
 }
 
 void CSlideState::FinalTick()

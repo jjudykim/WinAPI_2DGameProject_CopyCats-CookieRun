@@ -151,9 +151,6 @@
     <Filter Include="03. Game\03. Manager\JellyMgr">
       <UniqueIdentifier>{30542c94-f32e-4edc-ab0a-8cfee0597d36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. Game\03. Manager\SoundMgr">
-      <UniqueIdentifier>{db98693f-9ebc-4ce5-a29a-200d72e940cc}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -333,9 +330,6 @@
     <ClInclude Include="CJellyMgr.h">
       <Filter>03. Game\03. Manager\JellyMgr</Filter>
     </ClInclude>
-    <ClInclude Include="CSoundMgr.h">
-      <Filter>03. Game\03. Manager\SoundMgr</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -493,9 +487,6 @@
     </ClCompile>
     <ClCompile Include="CJellyMgr.cpp">
       <Filter>03. Game\03. Manager\JellyMgr</Filter>
-    </ClCompile>
-    <ClCompile Include="CSoundMgr.cpp">
-      <Filter>03. Game\03. Manager\SoundMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

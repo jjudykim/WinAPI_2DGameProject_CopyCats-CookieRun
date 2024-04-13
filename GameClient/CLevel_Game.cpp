@@ -22,17 +22,12 @@
 #include "CJelly.h"
 
 #include "CAnimator.h"
-#include "CSound.h"
-
-static DWORD WINAPI LoadGameDataThread(LPVOID lpParam);
 
 CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
 	, m_ActingPosX(0)
 	, m_DeletePosX(0)
 	, m_PostStageStartPosX(0)
-	, m_LoadDone(false)
-	, m_LevelBegin(false)
 {
 	
 }
@@ -43,25 +38,15 @@ CLevel_Game::~CLevel_Game()
 
 void CLevel_Game::begin()
 {
-	if (m_LoadDone == false) return;
+	CLevel::begin();
 
 	m_ActingPosX = 0;
 	m_DeletePosX = m_ResolutionWidth;
 
-	m_Cookie->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
-	m_Pet->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
-
-	m_LevelBegin = true;
 }
 
 void CLevel_Game::tick()
 {
-	DbgObjInfo Cookieinfo = { CCamera::GetInst()->GetRealPos(Vec2D(500, 50)), 0,
-						L"Cookie : " + std::to_wstring(m_Cookie->GetPos().x)
-					 + L", " + std::to_wstring(m_Cookie->GetPos().y) };
-
-	CDbgRenderMgr::GetInst()->AddDbgObjInfo(Cookieinfo);
-
 	// Editor Level 진입
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
 	{
@@ -88,7 +73,6 @@ void CLevel_Game::tick()
 	// Obstacle Animation Play
 	const vector<CObject*>& vecObs = GET_CUR_LEVEL->GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
 	CObstacle* obs = nullptr;
-	CSound* sound = nullptr;
 	float tPosX = 0;
 
 	for (size_t i = 0; i < vecObs.size(); ++i)
@@ -104,18 +88,12 @@ void CLevel_Game::tick()
 					+ L"_OBS" + std::to_wstring((UINT)obs->GetOBSType());
 
 				vecObs[i]->GetAnimator()->ChangePlayingAnim(AnimName, false);
-				//sound = CResourceMgr::GetInst()->FindSound(L"Effect_PopUpObstacle");
-				//sound->SetVolume(50.f);
-				//sound->Play();
 			}
 			else if (obs->GetOBSType() == OBS_TYPE::JUMP_DOWN || obs->GetOBSType() == OBS_TYPE::DBJUMP_DOWN)
 			{
 				if (600.f <= obs->GetPos().y)
 				{
 					obs->SetPos(obs->GetPos().x, 600.f);
-					//sound = CResourceMgr::GetInst()->FindSound(L"Effect_ObstacleDown");
-					//sound->SetVolume(50.f);
-					//sound->Play();
 					continue;
 				}
 				else
@@ -220,41 +198,40 @@ void CLevel_Game::tick()
 	m_QuaterSecond += DT;
 }
 
-void CLevel_Game::finaltick()
-{
-	if (m_LoadDone == false || m_LevelBegin == false) return;
-
-	CLevel::finaltick();
-}
-
-void CLevel_Game::render()
-{
-	if (m_LoadDone == false || m_LevelBegin == false)
-	{
-		BLENDFUNCTION bf = {};
-
-		bf.BlendOp = AC_SRC_OVER;
-		bf.BlendFlags = 0;
-		bf.SourceConstantAlpha = (int)255;
-		bf.AlphaFormat = AC_SRC_ALPHA;
-
-		AlphaBlend(DC, 0, 0, CEngine::GetInst()->GetResolution().x, CEngine::GetInst()->GetResolution().y
-			, m_LoadingTex->GetDC(), 0, 0, m_LoadingTex->GetWidth(), m_LoadingTex->GetHeight(), bf);
-
-		return;
-	}
-
-	CLevel::render();
-}
 
 void CLevel_Game::Enter()
 {
-	m_LoadingTex = CResourceMgr::GetInst()->LoadTexture(L"Loading_GameLevel", L"texture\\Loading_GameLevel.png");
-
-	// 게임 데이터 로딩 쓰레드
-	CreateThread(NULL, 0, &LoadGameDataThread, CEngine::GetInst()->GetMainWnd(), 0, NULL);
-
 	m_ResolutionWidth = CEngine::GetInst()->GetResolution().x;
+	
+	// 현재 스테이지 맵 데이터 불러오기
+	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
+	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
+	m_CurStage->LoadSTObjectsFromFile();
+
+	CJellyMgr::GetInst()->LoadJellyInfo();
+	m_CurStage->LoadDNObjectsFromFile();
+	m_PostStage = m_CurStage;
+
+	// Static Object 배치
+	for (int i = 0; i < 3; i++)
+	{
+		vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecSTObjInfo[i];
+		vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
+
+		for (; iter < vecStageInfo.end(); ++iter)
+		{
+			SpawnStageSTObject(*iter);
+		}
+	}
+
+	// Dynamic Object 배치
+	vector<StageDNObjInfo>& vecStageInfo = m_CurStage->m_vecDNObjInfo;
+	vector<StageDNObjInfo>::iterator iter = vecStageInfo.begin();
+
+	for (; iter < vecStageInfo.end(); ++iter)
+	{
+		SpawnStageDNObject(*iter);
+	}
 
 	CObject* pObject = new CPlayer;
 	pObject->SetName(L"Player");
@@ -281,100 +258,12 @@ void CLevel_Game::Enter()
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::PLATFORM);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::OBSTACLE);
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
+
+	m_PostStageStartPosX = m_CurStage->GetSTGLength();
 }
 
 void CLevel_Game::Exit()
 {
-}
-
-int CLevel_Game::LoadGameData()
-{
-	// 사용되는 Sound Asset 로드
-
-	// BGM
-	CResourceMgr::GetInst()->LoadSound(L"Bgm_MainGame", L"sound\\Bgm_MainGame.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Bgm_MainLobby", L"sound\\Bgm_MainLobby.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Bgm_BonusTime", L"sound\\Bgm_BonusTime.wav");
-
-	// Player Effect
-	// TODO : 사운드 재생 안댐... 파일 재변환해보기
-	//CResourceMgr::GetInst()->LoadSound(L"Effect_CharJump", L"sound\\Effect_CharJump.wav");
-	//CResourceMgr::GetInst()->LoadSound(L"Effect_CharSlide", L"sound\\Effect_CharSlide.wav");
-
-	// Obstacle Effect
-	CResourceMgr::GetInst()->LoadSound(L"Effect_PopUpObstacle", L"sound\\Effect_PopUpObstacle.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_ObstacleDown", L"sound\\Effect_ObstacleDown.wav");
-
-	// Jelly Effect
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GetAlphabetJelly", L"sound\\Effect_GetAlphabetJelly.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigBearJelly", L"sound\\Effect_GetBigBearJelly.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigCoinJelly", L"sound\\Effect_GetBigCoinJelly.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GetCoinJelly", L"sound\\Effect_GetCoinJelly.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GetItemJelly", L"sound\\Effect_GetItemJelly.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GetNormalJelly", L"sound\\Effect_GetNormalJelly.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBearJelly", L"sound\\Effect_GetBearJelly.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_SmallEnergy", L"sound\\Effect_SmallEnergy.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_LargeEnergy", L"sound\\Effect_LargeEnergy.wav");
-
-	// Item Effect Sound
-	CResourceMgr::GetInst()->LoadSound(L"Effect_BigToSmall", L"sound\\Effect_BigToSmall.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_SmallToBig", L"sound\\Effect_SmallToBig.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Effect_CrashWithBody", L"sound\\Effect_CrashWithBody.wav");
-
-	// Turn Scene
-	CResourceMgr::GetInst()->LoadSound(L"Effect_GameEnd", L"sound\\Effect_GameEnd.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Result_NewRecord", L"sound\\Result_NewRecord.wav");
-	CResourceMgr::GetInst()->LoadSound(L"Result_ScreenChange", L"sound\\Result_ScreenChange.wav");
-
-	m_BGM = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
-
-	LOG(LOG_TYPE::DBG_LOG, L"Sound Asset Loading Success");
-
-	// 현재 스테이지 맵 데이터 불러오기
-	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
-	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
-	m_CurStage->LoadSTObjectsFromFile();
-	if (FAILED(CStageMgr::GetInst()->CheckStageData(m_CurStage)))
-	{
-		LOG(LOG_TYPE::DBG_WARNING, L"Static Object Data Load 실패");
-		return false;
-	};
-
-	CJellyMgr::GetInst()->LoadJellyInfo();
-	if (FAILED(CJellyMgr::GetInst()->CheckJellyData()))
-	{
-		LOG(LOG_TYPE::DBG_WARNING, L"Dynamic Object Data Load 실패");
-		return false;
-	}
-	m_CurStage->LoadDNObjectsFromFile();
-	m_PostStage = m_CurStage;
-
-	// Static Object 배치
-	for (int i = 0; i < 3; i++)
-	{
-		vector<StageSTObjInfo>& vecStageInfo = m_CurStage->m_vecSTObjInfo[i];
-		vector<StageSTObjInfo>::iterator iter = vecStageInfo.begin();
-
-		for (; iter < vecStageInfo.end(); ++iter)
-		{
-			SpawnStageSTObject(*iter);
-		}
-		LOG(LOG_TYPE::DBG_LOG, L"Spawn All Static Object Success");
-	}
-
-	// Dynamic Object 배치
-	vector<StageDNObjInfo>& vecStageInfo = m_CurStage->m_vecDNObjInfo;
-	vector<StageDNObjInfo>::iterator iter = vecStageInfo.begin();
-
-	for (; iter < vecStageInfo.end(); ++iter)
-	{
-		SpawnStageDNObject(*iter);
-	}
-	LOG(LOG_TYPE::DBG_LOG, L"Spawn All Dynamic Object Success");
-
-	m_PostStageStartPosX = m_CurStage->GetSTGLength();
-
-	return true;
 }
 
 void CLevel_Game::SpawnStageSTObject(StageSTObjInfo& _ObjInfo)
@@ -417,19 +306,6 @@ void CLevel_Game::SpawnStageDNObject(StageDNObjInfo& _ObjInfo)
 	task.Param2 = (DWORD_PTR)pJelly;
 
 	CTaskMgr::GetInst()->AddTask(task);
-}
-
-static DWORD WINAPI LoadGameDataThread(LPVOID lpParam)
-{
-	CLevel* CurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
-	CLevel_Game* CurGameLevel = dynamic_cast<CLevel_Game*>(CurLevel);
-	if (CurGameLevel == nullptr) assert(nullptr);
-
-	int result = 0;
-	do { result = CurGameLevel->LoadGameData(); } while (FAILED(result));
-	
-	PostMessage((HWND)lpParam, WM_CUSTOM_LOAD_COMPLETE, 0, 0);
-	return 0;
 }
 
 

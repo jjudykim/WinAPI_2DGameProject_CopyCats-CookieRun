@@ -260,7 +260,7 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 void CStageMgr::SaveStageSTObject(CStage* _SaveStage)
 {
 	// ex) EP1_STG1_STObj.stg
-	wstring FileName = L"EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)
+	wstring FileName = L"EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)           // TODO: 시험 완료 후 파일명에서 TEST 제거하기
 		+ L"_STG" + std::to_wstring((UINT)_SaveStage->GetSTGType() + 1)
 		+ L"_STObj.stg";
 
@@ -308,7 +308,7 @@ void CStageMgr::SaveStageSTObject(CStage* _SaveStage)
 
 void CStageMgr::SaveStageDNObject(CStage* _SaveStage)
 {
-	wstring FileName = L"EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)    
+	wstring FileName = L"EP" + std::to_wstring((UINT)_SaveStage->GetEPType() + 1)           // TODO: 시험 완료 후 파일명에서 TEST 제거하기
 		+ L"_STG" + std::to_wstring((UINT)_SaveStage->GetSTGType() + 1)
 		+ L"_DNObj.stg";
 

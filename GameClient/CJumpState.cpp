@@ -3,7 +3,6 @@
 
 #include "CKeyMgr.h"
 
-#include "CSound.h"
 #include "CCollider.h"
 #include "CRigidBody.h"
 #include "CAnimator.h"
@@ -38,9 +37,6 @@ void CJumpState::Enter()
 	LOG(LOG_TYPE::DBG_WARNING, L"Jump State 진입");
 
 	GetOwnerAnimator()->Play(L"Jump", false);
-
-	// TODO : Sound 에셋 조정 후 주석 해제
-	//GetSoundEffect()->Play();
 
 	GetOwnerRigidBody()->SetUseGravity(true);
 }

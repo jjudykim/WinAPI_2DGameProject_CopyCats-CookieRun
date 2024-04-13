@@ -42,13 +42,3 @@ using namespace Gdiplus;
 // MFC, Common Controls
 #include <CommCtrl.h>
 #pragma comment(lib, "comctl32.lib")
-
-// Sound
-#include <mmsystem.h>
-#include <dsound.h>
-#include <dinput.h>
-#pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "dsound.lib")
-
-// Loading
-#define WM_CUSTOM_LOAD_COMPLETE (WM_USER + 1)

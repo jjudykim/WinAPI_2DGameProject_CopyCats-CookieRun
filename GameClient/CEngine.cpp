@@ -9,7 +9,6 @@
 #include "CStageMgr.h"
 #include "CLevelMgr.h"
 #include "CJellyMgr.h"
-#include "CSoundMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CCollisionMgr.h"
 #include "CTaskMgr.h"
@@ -66,7 +65,6 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CKeyMgr::GetInst()->init();
 	CMouseMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
-	CSoundMgr::GetInst()->init();
 	CLevelMgr::GetInst()->init();
 	CCamera::GetInst()->init();
 	CStageMgr::GetInst()->init();
@@ -148,4 +146,3 @@ void CEngine::ChangeWindowSize(Vec2D _Resolution, bool _bMenu)
 
 	SetWindowPos(m_hMainWnd, nullptr, 200, 80, rt.right - rt.left, rt.bottom - rt.top, 0);
 }
-

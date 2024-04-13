@@ -4,7 +4,6 @@
 #include "CPlayer.h"
 #include "CKeyMgr.h"
 
-#include "CSound.h"
 #include "CRigidBody.h"
 #include "CCollider.h"
 #include "CAnimator.h"
@@ -33,8 +32,6 @@ void CDoubleJumpState::Set()
 void CDoubleJumpState::Enter()
 {
 	GetOwnerAnimator()->Play(L"DoubleJump", false);
-
-	//GetSoundEffect()->Play();
 }
 
 void CDoubleJumpState::FinalTick()
