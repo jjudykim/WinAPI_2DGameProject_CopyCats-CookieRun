@@ -8,6 +8,7 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+#include "CSound.h"
 
 CDoubleJumpState::CDoubleJumpState()
 {
@@ -32,6 +33,8 @@ void CDoubleJumpState::Set()
 void CDoubleJumpState::Enter()
 {
 	GetOwnerAnimator()->Play(L"DoubleJump", false);
+	GetSoundEffect()->SetVolume(70.f);
+	GetSoundEffect()->Play();
 }
 
 void CDoubleJumpState::FinalTick()

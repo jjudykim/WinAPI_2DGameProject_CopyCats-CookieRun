@@ -43,6 +43,7 @@ void CTimeMgr::tick()
 
 	AccTime += m_DeltaTime;
 
+	TimerUpdate();
 	if (1.f < AccTime)
 	{
 		swprintf_s(szBuff, L"DeltaTime : %f, FPS : %d", m_DeltaTime, m_FPS);
@@ -55,4 +56,25 @@ void CTimeMgr::render()
 {
 	CEngine* pEngine = CEngine::GetInst();
 	TextOut(DC, (int)pEngine->GetResolution().x - 250, 10, szBuff, (int)wcslen(szBuff));
+}
+
+void CTimeMgr::TimerUpdate()
+{
+	for (size_t i = 0; i < m_VecTimers.size(); ++i)
+	{
+		m_VecTimers[i].currentTime += DT;
+		if (m_VecTimers[i].duration <= m_VecTimers[i].currentTime)
+		{
+			m_VecTimers[i].callback();
+			if (m_VecTimers[i].repeat)
+			{
+				m_VecTimers[i].currentTime = 0.0f;
+			}
+			else
+			{
+				m_VecTimers.erase(m_VecTimers.begin() + i);
+				continue;
+			}
+		}
+	}
 }

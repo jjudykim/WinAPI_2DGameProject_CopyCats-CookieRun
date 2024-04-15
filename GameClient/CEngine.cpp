@@ -11,8 +11,10 @@
 #include "CJellyMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CCollisionMgr.h"
+#include "CSoundMgr.h"
 #include "CTaskMgr.h"
 #include "CCamera.h"
+
 
 CEngine::CEngine()
 	: m_hMainWnd(nullptr)
@@ -69,6 +71,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CCamera::GetInst()->init();
 	CStageMgr::GetInst()->init();
 	CJellyMgr::GetInst()->init();
+	CSoundMgr::GetInst()->init();
 
 	return S_OK;
 }

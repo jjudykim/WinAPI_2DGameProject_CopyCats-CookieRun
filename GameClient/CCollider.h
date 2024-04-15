@@ -37,6 +37,7 @@ public:
     CCollider(const CCollider& _Other);
     ~CCollider();
 
+    friend class CPlayer;
     friend class CCollisionMgr;
 };
 

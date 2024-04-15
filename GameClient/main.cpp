@@ -162,12 +162,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-    case WM_CUSTOM_LOAD_COMPLETE:
-        {
-            CLevelMgr::GetInst()->LoadLevelDataDone();
-            MessageBox(hWnd, L"Loading COmplete!", L"Notification", MB_OK);
-            return 0;
-        }
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);

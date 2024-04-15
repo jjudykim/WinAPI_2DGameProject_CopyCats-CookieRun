@@ -78,6 +78,22 @@ UINT CTile::ConvertToRowFromMousePos(Vec2D _ClickedPos)
 	return SelectTileRow;
 }
 
+UINT CTile::ConvertToColFromRealPos(Vec2D _RealPos)
+{
+	UINT SelectTileCol = (int)(_RealPos.x / m_TileSize.x);
+
+	return SelectTileCol;
+}
+
+UINT CTile::ConvertToRowFromRealPos(Vec2D _RealPos)
+{
+	UINT SelectTileRow = (int)(_RealPos.y / m_TileSize.y);
+
+	return SelectTileRow;
+}
+
+
+
 void CTile::InitJellyData()
 {
 	m_JellyData = new char* [m_Col];
@@ -93,6 +109,19 @@ void CTile::InitJellyData()
 		{
 			m_JellyData[i][j] = -1;
 		}
+	}
+}
+
+void CTile::ReleaseJellyData()
+{
+	if (m_JellyData != nullptr)
+	{
+		for (int i = 0; i < m_Col; ++i)
+		{
+			delete[] m_JellyData[i];
+		}
+		delete[] m_JellyData;
+		m_JellyData = nullptr;
 	}
 }
 

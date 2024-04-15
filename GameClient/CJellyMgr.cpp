@@ -149,14 +149,14 @@ void CJellyMgr::LoadJellyInfo()
 				// Sound Set
 				if (ObjType == 0)
 				{
-					if (index == 0) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetNormalJelly"));
-					else if (index == 1 || index == 3) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBearJelly"));
-					else if (index == 2 || index == 4) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBigBearJelly"));
+					if (i == 0 || i == 1 || i == 3) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetNormalJelly"));
+					//else if (i == 1 || i == 3) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBearJelly"));
+					else if (i == 2 || i == 4) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBigBearJelly"));
 				}
 				else if (ObjType == 1)
 				{
-					if (index == 0 || index == 1) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetCoinJelly"));
-					else if (index == 2) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBigCoinJelly"));
+					if (i == 0 || i == 1) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetCoinJelly"));
+					else if (i == 2) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBigCoinJelly"));
 				}
 				else if (ObjType == 2)
 				{
@@ -164,8 +164,8 @@ void CJellyMgr::LoadJellyInfo()
 				}
 				else if (ObjType == 3)
 				{
-					if (index == 0) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_SmallEnergy"));
-					else if (index == 1) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_LargeEnergy"));
+					if (i == 0) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_SmallEnergy"));
+					else if (i == 1) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_LargeEnergy"));
 					else
 					{
 						curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_ItemJelly"));

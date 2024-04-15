@@ -4,6 +4,7 @@
 class CStage;
 class CPlayer;
 class CPet;
+class CSound;
 
 class CLevel_Game :
     public CLevel
@@ -17,15 +18,14 @@ private:
     float       m_DeletePosX;
     float       m_PostStageStartPosX;
 
+    CSound*     m_BGM;
     CPlayer*    m_Cookie;
     CPet*       m_Pet;
 
 
     // Timer & Log
-    float       m_QuaterSecond;
-    float       m_ThreeSecond;
+    int         m_CookieState;
     Vec2D       m_LogPos;
-    Vec2D       m_LogPetPos;
 
 public:
     virtual void begin() override;
@@ -37,8 +37,10 @@ public:
     
 
 public:
+    void LoadSoundResource();
     void SpawnStageSTObject(StageSTObjInfo& _ObjInfo);
     void SpawnStageDNObject(StageDNObjInfo& _ObjInfo);
+    void PrintCookieLog();
     //void DeleteStageObject(CObject* _Obj);
 public:
     CLONE_DISABLE(CLevel_Game);

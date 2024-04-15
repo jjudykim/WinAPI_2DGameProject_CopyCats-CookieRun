@@ -5,6 +5,7 @@
 #include "CRigidBody.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+#include "CSound.h"
 
 CDamageState::CDamageState()
 	: m_Timer(0.f)
@@ -24,6 +25,7 @@ void CDamageState::Set()
 	strFilePath += GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"Damage", strFilePath + L"_Damage.anim");
+	SetSoundEffect(CResourceMgr::GetInst()->FindSound(L"Effect_CharDamage"));
 
 	m_Timer = 0.f;
 }
@@ -32,7 +34,8 @@ void CDamageState::Enter()
 {
 	m_Timer = 0.f;
 	GetOwnerAnimator()->Play(L"Damage", false);
-	GetOwnerRigidBody()->SetUseGravity(true);
+	GetSoundEffect()->SetVolume(70.f);
+	GetSoundEffect()->Play();
 }
 
 void CDamageState::FinalTick()

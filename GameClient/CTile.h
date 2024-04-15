@@ -48,10 +48,14 @@ public:
     UINT ConvertToColFromMousePos(Vec2D _ClickedPos);
     UINT ConvertToRowFromMousePos(Vec2D _ClickedPos);
 
+    UINT ConvertToColFromRealPos(Vec2D _RealPos);
+    UINT ConvertToRowFromRealPos(Vec2D _RealPos);
+
     char* GetJellyDataByCol(UINT _Col) { return m_JellyData[_Col]; }
     void InitJellyData();
+    void ReleaseJellyData();
     void SetJellyData(char _Data) { m_JellyData[m_EditCol][m_EditRow] = _Data; }
-    bool IsFilledJellyData(UINT _Col, UINT _Row) { return m_JellyData[_Col][_Row] != -1; }
+    bool IsFilledJellyData(UINT _Col, UINT _Row) { return m_JellyData[_Col][_Row] != (char)-1; }
 
     void SaveToFile(const wstring& _FullPath);
     void LoadFromFile(const wstring& _FullPath);

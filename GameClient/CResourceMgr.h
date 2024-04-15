@@ -22,6 +22,9 @@ public:
 	CTexture* LoadTexture(const wstring& _Key, const wstring& _strRelativePath);
 	CTexture* FindTexture(const wstring& _Key);
 
+	CSound* LoadSound(const wstring& _Key, const wstring& _strRelativePath);
+	CSound* FindSound(const wstring& _Key);
+
 	void SaveAnimation(CAnimation* _TargetAnim, const wstring& _Key, const wstring& _strRelativePath);
 	CAnimation* LoadAnimation(const wstring& _Key, const wstring& _strRelativePath);
 	CAnimation* FindAnimation(const wstring& _Key);

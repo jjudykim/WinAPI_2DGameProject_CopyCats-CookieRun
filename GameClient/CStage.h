@@ -1,5 +1,6 @@
 #pragma once
 #include "CEntity.h"
+#include "CTile.h"
 
 class CBackground;
 class CPlatform;
@@ -40,6 +41,7 @@ public:
 	const vector<StageDNObjInfo>& GetDNObjInfo() { return m_vecDNObjInfo; }
 	void ClearSTObjInfo(int _index) { m_vecSTObjInfo[_index].clear(); }
 	void ClearDNObjInfo() { m_vecDNObjInfo.clear(); }
+	void ReleaseTile() { m_DNObjTile->ReleaseJellyData(); }
 
 	EPISODE_TYPE GetEPType() { return m_EpisodeType; }
 	STAGE_TYPE GetSTGType() { return m_StageType; }

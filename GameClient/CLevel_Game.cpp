@@ -2,6 +2,7 @@
 #include "CLevel_Game.h"
 
 #include "CCollisionMgr.h"
+#include "CSoundMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CTimeMgr.h"
 #include "CPathMgr.h"
@@ -20,6 +21,10 @@
 #include "CObstacle.h"
 #include "CStage.h"
 #include "CJelly.h"
+#include "CSound.h"
+
+// TODO : 테스트용. 나중에 지워도 되는 헤더들
+#include "CCollider.h"
 
 #include "CAnimator.h"
 
@@ -43,6 +48,13 @@ void CLevel_Game::begin()
 	m_ActingPosX = 0;
 	m_DeletePosX = m_ResolutionWidth;
 
+	CTimeMgr::GetInst()->AddTimer(0.25f, [this]() {
+		m_LogPos = m_Cookie->GetPos();
+		}, true);
+
+	m_BGM = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
+	m_BGM->SetVolume(50.f);
+	m_BGM->PlayToBGM();
 }
 
 void CLevel_Game::tick()
@@ -52,8 +64,6 @@ void CLevel_Game::tick()
 	{
 		ChangeLevel(LEVEL_TYPE::EDITOR);
 	}
-
-	if (m_LoadDone == false || m_LevelBegin == false) return;
 
 	CLevel::tick();
 
@@ -81,6 +91,8 @@ void CLevel_Game::tick()
 		tPosX = vecObs[i]->GetPos().x;
 		if (tPosX <= m_ActingPosX)
 		{
+			if (obs->GetActed() == true) continue;
+
 			if (obs->GetOBSType() == OBS_TYPE::DBJUMP_UP || obs->GetOBSType() == OBS_TYPE::JUMP_UP)
 			{
 				wstring AnimName = L"EP" + std::to_wstring(EP + 1)
@@ -88,13 +100,18 @@ void CLevel_Game::tick()
 					+ L"_OBS" + std::to_wstring((UINT)obs->GetOBSType());
 
 				vecObs[i]->GetAnimator()->ChangePlayingAnim(AnimName, false);
+				obs->GetEffectSound()->SetVolume(80.f);
+				obs->GetEffectSound()->Play();
+				obs->SetActed(true);
 			}
 			else if (obs->GetOBSType() == OBS_TYPE::JUMP_DOWN || obs->GetOBSType() == OBS_TYPE::DBJUMP_DOWN)
 			{
 				if (600.f <= obs->GetPos().y)
 				{
 					obs->SetPos(obs->GetPos().x, 600.f);
-					continue;
+					obs->GetEffectSound()->SetVolume(80.f);
+					obs->GetEffectSound()->Play();
+					obs->SetActed(true);
 				}
 				else
 				{
@@ -130,21 +147,44 @@ void CLevel_Game::tick()
 		}
 	}
 
+	// Cookie's Multiple State Check
 	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
 	{
 		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 50)), 0, L"INVINCIBLE ON" };
 		CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
-		m_ThreeSecond += DT;
-
-		if (m_ThreeSecond >= 3.f)
+		if (!(m_CookieState & (int)COOKIE_COMPLEX_STATE::INVINCIBLE))
 		{
-			m_ThreeSecond = 0.f;
-			m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
-			LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
+			m_CookieState |= (int)COOKIE_COMPLEX_STATE::INVINCIBLE;
+
+			CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
+				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
+				LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
+				m_CookieState &= ~(int)COOKIE_COMPLEX_STATE::INVINCIBLE;
+				}, false);
 		}
 	}
+	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::GIANT))
+	{
+		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 70)), 0, L"GIANT ON" };
+		CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
+		if (!(m_CookieState & (int)COOKIE_COMPLEX_STATE::GIANT))
+		{
+			m_CookieState |= (int)COOKIE_COMPLEX_STATE::GIANT;
+			
+			CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
+				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::GIANT);
+				LOG(LOG_TYPE::DBG_LOG, L"GIANT OFF");
+				m_CookieState &= ~(int)COOKIE_COMPLEX_STATE::GIANT;
+				}, false);
+		}
+	}
+	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::BOOST))
+	{
+
+	}
+	
 	// Stage Change Check
 	if (m_PostStageStartPosX < StandardPosX + m_ResolutionWidth)
 	{
@@ -176,26 +216,11 @@ void CLevel_Game::tick()
 
 
 	// Cookie Debug Info
-	if (m_QuaterSecond >= 0.25f)
-	{
-		m_LogPos = m_Cookie->GetPos();
-		m_LogPetPos = m_Pet->GetPos();
-		m_QuaterSecond = 0.f;
-	}
-	DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
-						L"posX : " + std::to_wstring(m_LogPos.x) +
-						L" posY : " + std::to_wstring(m_LogPos.y) };
+	CCollider* CookieCol = m_Cookie->GetComponent<CCollider>();
+	DbgObjInfo CookieColInfo = { CCamera::GetInst()->GetRealPos(Vec2D(600, 50)), 0, L"Cookie Overlap Count : " + std::to_wstring(CookieCol->GetOverlapCount()) };
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CookieColInfo);
 
-	DbgObjInfo info2 = { m_Pet->GetPos(), m_Pet->GetScale(),
-						L"posX : " + std::to_wstring(m_LogPetPos.x) +
-						L"posY : " + std::to_wstring(m_LogPetPos.y) };
-
-	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
-	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info2);
-
-
-	// Timers
-	m_QuaterSecond += DT;
+	PrintCookieLog();
 }
 
 
@@ -203,6 +228,8 @@ void CLevel_Game::Enter()
 {
 	m_ResolutionWidth = CEngine::GetInst()->GetResolution().x;
 	
+	LoadSoundResource();
+
 	// 현재 스테이지 맵 데이터 불러오기
 	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
@@ -264,7 +291,49 @@ void CLevel_Game::Enter()
 
 void CLevel_Game::Exit()
 {
+	m_BGM->Stop();
 }
+
+
+void CLevel_Game::LoadSoundResource()
+{
+	// BGM
+	CResourceMgr::GetInst()->LoadSound(L"Bgm_MainGame", L"sound\\Bgm_MainGame.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Bgm_BonusTime", L"sound\\Bgm_BonusTime.wav");
+
+	// Scene Change Effect
+	CResourceMgr::GetInst()->LoadSound(L"Effect_BonusTime_Start", L"sound\\Effect_BonusTime_Start.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Result_ScreenChange", L"sound\\Result_ScreenChange.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Result_NewRecord", L"sound\\Result_NewRecord.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GameStart", L"sound\\Effect_GameStart.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GameEnd", L"sound\\Effect_GameEnd.wav");
+
+	// Char motion Effect
+	CResourceMgr::GetInst()->LoadSound(L"Effect_CharJump", L"sound\\Effect_CharJump.wav");        
+	CResourceMgr::GetInst()->LoadSound(L"Effect_CharSlide", L"sound\\Effect_CharSlide.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_CharDamage", L"sound\\Effect_CharDamage.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_BigToSmall", L"sound\\Effect_BigToSmall.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_SmallToBig", L"sound\\Effect_SmallToBig.wav");
+	
+	// Item Effect
+	 CResourceMgr::GetInst()->LoadSound(L"Effect_CrashWithBody", L"sound\\Effect_CrashWithBody.wav");
+	// TODO : Body 착지 효과음 필요
+	
+	// Jelly Effect
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetAlphabetJelly", L"sound\\Effect_GetAlphabetJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigBearJelly", L"sound\\Effect_GetBigBearJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetBigCoinJelly", L"sound\\Effect_GetBigCoinJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetCoinJelly", L"sound\\Effect_GetCoinJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetItemJelly", L"sound\\Effect_GetItemJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_GetNormalJelly", L"sound\\Effect_GetNormalJelly.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_LargeEnergy", L"sound\\Effect_LargeEnergy.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_SmallEnergy", L"sound\\Effect_SmallEnergy.wav");
+
+	// Obstacle Effect
+	CResourceMgr::GetInst()->LoadSound(L"Effect_ObstacleDown", L"sound\\Effect_ObstacleDown.wav");
+	CResourceMgr::GetInst()->LoadSound(L"Effect_PopUpObstacle", L"sound\\Effect_PopUpObstacle.wav");
+}
+
 
 void CLevel_Game::SpawnStageSTObject(StageSTObjInfo& _ObjInfo)
 {
@@ -306,6 +375,15 @@ void CLevel_Game::SpawnStageDNObject(StageDNObjInfo& _ObjInfo)
 	task.Param2 = (DWORD_PTR)pJelly;
 
 	CTaskMgr::GetInst()->AddTask(task);
+}
+
+void CLevel_Game::PrintCookieLog()
+{
+	DbgObjInfo info = { m_Cookie->GetPos(), m_Cookie->GetScale(),
+						L"posX : " + std::to_wstring(m_LogPos.x) +
+						L" posY : " + std::to_wstring(m_LogPos.y) };
+
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 }
 
 

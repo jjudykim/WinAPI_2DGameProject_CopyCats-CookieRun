@@ -6,6 +6,7 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CMouseMgr.h"
+#include "CSound.h"
 
 CObstacle::CObstacle()
 	: m_Texture(nullptr)
@@ -14,6 +15,8 @@ CObstacle::CObstacle()
 	, m_Type(OBS_TYPE::END)
 	, m_UseMouse(false)
 	, m_MouseOn(false)
+	, m_EffectSound(nullptr)
+	, m_Acted(false)
 {
 	SetLayerType(LAYER_TYPE::OBSTACLE);
 	m_Animator = nullptr;
@@ -26,8 +29,10 @@ CObstacle::CObstacle(const CObstacle& _Other)
 	, m_Texture(_Other.m_Texture)
 	, m_Animator(nullptr)
 	, m_Collider(nullptr)
+	, m_EffectSound(_Other.m_EffectSound)
 	, m_UseMouse(_Other.m_UseMouse)
 	, m_MouseOn(false)
+	, m_Acted(_Other.m_Acted)
 {
 	if (_Other.m_Animator != nullptr)
 	{
@@ -94,6 +99,21 @@ void CObstacle::render()
 			, m_Texture->GetWidth(), m_Texture->GetHeight()
 			, bf);
 	}
+}
+
+void CObstacle::ObstacleDownAction()
+{
+	/*if (600.f <= GetPos().y)
+	{
+		SetPos(GetPos().x, 600.f);
+		m_EffectSound->Play();
+	}
+	else
+	{
+		obs->SetPos(Vec2D(obs->GetPos().x, obs->GetPos().y + (600 * DT * 4.f)));
+		Vec2D check = obs->GetPos();
+		int a = 0;
+	}*/
 }
 
 void CObstacle::CheckMouseOn()

@@ -1,4 +1,13 @@
 #pragma once
+
+struct Timer
+{
+	float duration;
+	float currentTime;
+	std::function<void()> callback;
+	bool repeat;
+};
+
 class CTimeMgr
 {
 	SINGLE(CTimeMgr);
@@ -15,6 +24,8 @@ private:
 	float m_DeltaTime;
 	float m_Time;
 
+	vector<Timer> m_VecTimers;
+
 public:
 	void init();
 	void tick();
@@ -24,5 +35,12 @@ public:
 	float GetDeltaTime() { return m_DeltaTime; }
 	float GetTime() { return m_Time; }
 	UINT GetFPS() { return m_FPS; }
+
+public:
+	void TimerUpdate();
+	void AddTimer(float duration, std::function<void()> callback, bool repeat = false)
+	{ 
+		m_VecTimers.push_back({duration, 0.0f, callback, repeat});
+	}
 };
 

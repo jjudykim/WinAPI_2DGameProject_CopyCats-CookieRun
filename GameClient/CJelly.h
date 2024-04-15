@@ -26,6 +26,7 @@ public:
     virtual void render() override;
 
     virtual void BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
+    virtual void EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) override;
 
 public:
     void SetObjType(DYNAMIC_OBJ_TYPE _Type) { m_ObjType = _Type; }

@@ -101,8 +101,11 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
 					}
 				}
+				else
+				{
+					m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
+				}
 				m_RigidBody->SetGround(true);
-				//LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 			}
 		}
 	}
@@ -110,6 +113,31 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 
 void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
+	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
+	{
+		++m_OverlapPLTCount;
+		if (m_OverlapPLTCount > 0)
+		{
+			if (!m_Jumping)
+			{
+				CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
+
+				if (plt->GetPLTType() == PLT_TYPE::FLOATED)
+				{
+					if (0 < GetPos().y - m_PrevYPos)
+					{
+						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
+					}
+				}
+				else
+				{
+					m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
+				}
+				m_RigidBody->SetGround(true);
+				//LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
+			}
+		}
+	}
 }
 
 void CPlayer::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
@@ -117,11 +145,23 @@ void CPlayer::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider*
 	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
 	{
 		--m_OverlapPLTCount;
+		CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
+		if (plt->GetPLTType() == PLT_TYPE::FLOATED)
+		{
+			m_RigidBody->SetGround(false);
+			m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
+		}
+
 		if (m_OverlapPLTCount <= 0)
 		{
 			m_RigidBody->SetGround(false);
 			m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
 			m_OverlapPLTCount = 0;
 		}
+	}
+
+	if (_OtherObj->GetLayerType() == LAYER_TYPE::JELLY)
+	{
+		--_OwnCollider->m_OverlapCount;
 	}
 }

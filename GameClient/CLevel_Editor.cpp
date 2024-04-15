@@ -407,8 +407,8 @@ void CLevel_Editor::tick()
 					{
 						CTile* Tile = m_CurEditStage->GetTile();
 
-						Tile->SetEditRowCol(Tile->ConvertToRowFromMousePos(MousePos), Tile->ConvertToColFromMousePos(MousePos));
-						Tile->SetJellyData((char)-1);
+						Tile->SetEditRowCol(Tile->ConvertToRowFromRealPos(Jelly->GetPos()), Tile->ConvertToColFromRealPos(Jelly->GetPos()));
+						Tile->SetJellyData(-1);
 						Tile->SetEditRowCol(0, 0);
 
 						CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::DELETE_OBJECT, (DWORD_PTR)Jelly });
@@ -1753,8 +1753,8 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			UINT TileCol = (EditStage->GetSTGLength() / TILE_SIZE) + 1;
 			UINT TileRow = ((CEngine::GetInst()->GetResolution().y - 120) / TILE_SIZE) + 1;
 			EditStage->GetTile()->SetRowCol(TileRow, TileCol);
-
 			EditStage->GetTile()->InitJellyData();
+
 			pEditorLevel->AddObject(LAYER_TYPE::TILE, EditStage->GetTile());
 			CCamera::GetInst()->SetLimitPosX(EditStage->GetSTGLength());
 
@@ -1877,12 +1877,12 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				hWndListView = GetDlgItem(hDlg, IDC_LIST);
 				ListView_DeleteAllItems(hWndListView);
 
-				wchar_t szBuff[256] = {};
-				GetDlgItemText(hDlg, IDC_OBJTYPE, szBuff, 256);
-				wstring Obj = szBuff;
+
+				HWND hWndComboBox = (HWND)lParam;
+				int selectedindex = SendMessage(hWndComboBox, CB_GETCURSEL, 0, 0);
 
 				CJelly* curJelly = nullptr;
-				if (Obj == L"JELLY")
+				if (selectedindex == 0)
 				{
 					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(0).size(); ++i)
 					{
@@ -1896,7 +1896,7 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 						CreateJellyItemForList(i, L"Jelly_" + std::to_wstring(i), hWndListView);
 					}
 				}
-				else if (Obj == L"COIN")
+				else if (selectedindex == 1)
 				{
 					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(1).size(); ++i)
 					{
@@ -1910,7 +1910,7 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 						CreateJellyItemForList(i, L"Coin_" + std::to_wstring(i), hWndListView);
 					}
 				}
-				else if (Obj == L"BONUS TIME")
+				else if (selectedindex == 2)
 				{
 					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(2).size(); ++i)
 					{
@@ -1926,7 +1926,7 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 						CreateJellyItemForList(i, wstring(1, Select_text), hWndListView);
 					}
 				}
-				else if (Obj == L"ITEM")
+				else if (selectedindex == 3)
 				{
 					for (size_t i = 0; i < CJellyMgr::GetInst()->GetVecJelly(3).size(); ++i)
 					{
@@ -1999,12 +1999,18 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		}
 		if (LOWORD(wParam) == IDSAVE)
 		{
+			pEditorLevel->ResetForLoadStage();
+
 			if (pEditorLevel->GetEditStage() != nullptr)
 			{
 				pEditorLevel->GetEditStage()->ClearDNObjInfo();
 			}
 
 			OpenSaveFile(L"", L"stg");
+
+			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_DYNAMIC);
+			DestroyWindow(hEditDNStage);
+			return (INT_PTR)TRUE;
 		}
 		if (LOWORD(wParam) == IDCANCEL)
 		{
@@ -2013,6 +2019,7 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			if (pEditorLevel->GetEditStage() != nullptr)
 			{
 				pEditorLevel->GetEditStage()->ClearDNObjInfo();
+				pEditorLevel->GetEditStage()->ReleaseTile();
 			}
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_DYNAMIC);
 			DestroyWindow(hEditDNStage);

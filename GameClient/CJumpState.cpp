@@ -7,6 +7,7 @@
 #include "CRigidBody.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+#include "CSound.h"
 
 CJumpState::CJumpState()
 	: m_Jumping(false)
@@ -37,8 +38,9 @@ void CJumpState::Enter()
 	LOG(LOG_TYPE::DBG_WARNING, L"Jump State ÁøÀÔ");
 
 	GetOwnerAnimator()->Play(L"Jump", false);
-
 	GetOwnerRigidBody()->SetUseGravity(true);
+	GetSoundEffect()->SetVolume(70.f);
+	GetSoundEffect()->Play();
 }
 
 void CJumpState::FinalTick()

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CResourceMgr.h"
 
+#include "CSound.h"
 #include "CTexture.h"
 #include "CAnimation.h"
 #include "CPathMgr.h"
@@ -83,6 +84,45 @@ CTexture* CResourceMgr::FindTexture(const wstring& _Key)
 
 	return iter->second;
 }
+
+CSound* CResourceMgr::LoadSound(const wstring& _Key, const wstring& _strRelativePath)
+{
+	CSound* pSound = FindSound(_Key);
+	if (nullptr != pSound)
+	{
+		return pSound;
+	}
+
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += _strRelativePath;
+
+	pSound = new CSound;
+	if (FAILED(pSound->Load(strFilePath)))
+	{
+		MessageBox(nullptr, _strRelativePath.c_str(), L"사운드 로딩 실패", MB_OK);
+		delete pSound;
+		return nullptr;
+	}
+
+	m_mapSound.insert(make_pair(_Key, pSound));
+
+	pSound->m_Key = _Key;
+	pSound->m_RelativePath = _strRelativePath;
+
+	return pSound;
+}
+
+
+CSound* CResourceMgr::FindSound(const wstring& _Key)
+{
+	map<wstring, CSound*>::iterator iter = m_mapSound.find(_Key);
+
+	if (m_mapSound.end() == iter)
+		return nullptr;
+
+	return iter->second;
+}
+
 
 void CResourceMgr::SaveAnimation(CAnimation* _TargetAnim, const wstring& _Key, const wstring& _strRelativePath)
 {

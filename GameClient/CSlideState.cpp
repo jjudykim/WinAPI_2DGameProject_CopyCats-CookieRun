@@ -6,6 +6,7 @@
 #include "CRigidBody.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+#include "CSound.h"
 
 CSlideState::CSlideState()
 {
@@ -24,7 +25,7 @@ void CSlideState::Set()
 	strFilePath += L"\\" + GetCurPlayer()->GetCurCookie()._nameStr;
 
 	GetOwnerAnimator()->LoadAnimation(L"Slide", strFilePath + L"_Slide.anim");
-	SetSoundEffect(CResourceMgr::GetInst()->FindSound(L"Effect_CharJump"));
+	SetSoundEffect(CResourceMgr::GetInst()->FindSound(L"Effect_CharSlide"));
 }
 
 void CSlideState::Enter()
@@ -33,6 +34,9 @@ void CSlideState::Enter()
 	LOG(LOG_TYPE::DBG_WARNING, L"Slide State ÁøÀÔ");
 	GetOwnerRigidBody()->SetUseGravity(true);
 	GetOwnerAnimator()->Play(L"Slide", true);
+
+	GetSoundEffect()->SetVolume(80.f);
+	GetSoundEffect()->Play();
 }
 
 void CSlideState::FinalTick()

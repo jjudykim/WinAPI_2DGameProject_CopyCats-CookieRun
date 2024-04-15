@@ -2,7 +2,6 @@
 #include "CStage.h"
 
 #include "CPathMgr.h"
-#include "CTile.h"
 #include "CBackground.h"
 #include "CPlatform.h"
 #include "CObstacle.h"

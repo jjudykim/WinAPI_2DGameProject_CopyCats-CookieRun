@@ -234,6 +234,15 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 						fwscanf_s(pFile, L"%s", szReadBuff, 256);
 						pAnimator->LoadAnimation(EP + L"_" + STG + L"_OBS" + std::to_wstring(i), szReadBuff);
 						pAnimator->Play(EP + L"_" + STG + L"_OBS_jumpNoti", true);
+						OBS->SetEffectSound(CResourceMgr::GetInst()->FindSound(L"Effect_PopUpObstacle"));
+					} 
+					else if (i == 3) // JUMP_DOWN
+					{
+						OBS->SetEffectSound(CResourceMgr::GetInst()->FindSound(L"Effect_ObstacleDown"));
+					}
+					else if (i == 6) // DBJUMP_DOWN
+					{
+						OBS->SetEffectSound(CResourceMgr::GetInst()->FindSound(L"Effect_ObstacleDown"));
 					}
 					else if (i == 7) // DBJUMP_UP
 					{
@@ -243,7 +252,9 @@ void CStageMgr::LoadStageInfo(EPISODE_TYPE _EPType)
 						fwscanf_s(pFile, L"%s", szReadBuff, 256);
 						pAnimator->LoadAnimation(EP + L"_" + STG + L"_OBS" + std::to_wstring(i), szReadBuff);
 						pAnimator->Play(EP + L"_" + STG + L"_OBS_jumpNoti", true);
+						OBS->SetEffectSound(CResourceMgr::GetInst()->FindSound(L"Effect_PopUpObstacle"));
 					}
+					
 				}
 				tex = nullptr;
 
@@ -335,6 +346,7 @@ void CStageMgr::SaveStageDNObject(CStage* _SaveStage)
 	}
 
 	_SaveStage->ClearDNObjInfo();
+	_SaveStage->ReleaseTile();
 
 	fclose(pFile);
 }

@@ -7,12 +7,15 @@
 #include "CTexture.h"
 #include "CAnimator.h"
 #include "CCollider.h"
+#include "CSound.h"
+#include "CLevel.h"
 
 CJelly::CJelly()
 	: m_ObjType(DYNAMIC_OBJ_TYPE::END)
 	, m_Index(0)
 	, m_Value(0)
 	, m_Texture(nullptr)
+	, m_Sound(nullptr)
 	, m_Animator(nullptr)
 	, m_Collider(nullptr)
 
@@ -29,6 +32,7 @@ CJelly::CJelly(const CJelly& _Other)
 	, m_Index(_Other.m_Index)
 	, m_Value(_Other.m_Value)
 	, m_Texture(_Other.m_Texture)
+	, m_Sound(_Other.m_Sound)
 	, m_Animator(nullptr)
 	, m_Collider(nullptr)
 {
@@ -110,10 +114,16 @@ void CJelly::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider
 {
 	if (m_Sound != nullptr)
 	{
-		m_Sound->SetVolume(50.f);
+		m_Sound->SetVolume(70.f);
 		m_Sound->Play();
 	}
 
+	_OtherObj->EndOverlap(_OtherCollider, this, _OwnCollider);
 	Destroy();
+}
+
+void CJelly::EndOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
+{
+	
 }
 
