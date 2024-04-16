@@ -48,10 +48,10 @@ void CStageMgr::progress()
 
 void CStageMgr::ChangeNextStage()
 {
-	if (m_pCurrentStage)
+	/*if (m_pCurrentStage)
 	{
 		m_pCurrentStage->Exit();
-	}
+	}*/
 
 	if ((UINT)m_pCurrentStage->GetSTGType() + 1 != (UINT)STAGE_TYPE::END)
 	{

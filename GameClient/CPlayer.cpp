@@ -31,6 +31,8 @@ CPlayer::CPlayer()
 	, m_Jumping(false)
 	, m_JumpStartYPos(0.f)
 	, m_PrevYPos(0.f)
+	, m_DefaultScale(0.f)
+	, m_ColliderDefualtScale(0.f)
 {
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
@@ -58,6 +60,8 @@ void CPlayer::begin()
 	m_FSM->AddState(L"Damage", new CDamageState);
 	m_FSM->SetState();
 
+	m_DefaultScale = GetScale();
+	m_ColliderDefualtScale = m_Collider->GetScale();
 
 	m_FSM->ChangeState(L"Run");
 }
@@ -74,9 +78,11 @@ void CPlayer::render()
 	m_Animator->render(0.f);
 }
 
+
+
 void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
-	if (!CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
+	if (!(CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE) || CheckCookieState(COOKIE_COMPLEX_STATE::GIANT)))
 	{
 		if (_OtherObj->GetLayerType() == LAYER_TYPE::OBSTACLE)
 		{

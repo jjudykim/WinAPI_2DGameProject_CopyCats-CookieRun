@@ -76,6 +76,8 @@ public:
 	Vec2D operator -(Vec2D _Other) { return Vec2D(x - _Other.x, y - _Other.y); }
 	Vec2D operator *(Vec2D _Other) { return Vec2D(x * _Other.x, y * _Other.y); }
 	Vec2D operator /(Vec2D _Other) { assert(!(_Other.x == 0.f || _Other.y == 0.f));  return Vec2D(x + _Other.x, y + _Other.y); }
+	bool operator <(Vec2D _Other) { return x < _Other.x && y < _Other.y; }
+	bool operator <=(Vec2D _Other) { return x <= _Other.x && y <= _Other.y; }
 
 	bool operator == (Vec2D _Other)
 	{

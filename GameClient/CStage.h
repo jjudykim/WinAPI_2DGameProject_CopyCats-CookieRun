@@ -28,8 +28,6 @@ public:
 	void Enter();
 	void Exit();
 
-	
-
 public:
 	void SetTile(CTile* _Tile) { m_DNObjTile = _Tile; }
 	void SetEPType(EPISODE_TYPE _Type) { m_EpisodeType = _Type; }

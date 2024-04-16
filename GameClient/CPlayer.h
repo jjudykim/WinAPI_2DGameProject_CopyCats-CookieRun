@@ -14,6 +14,9 @@ private:
     float   m_JumpStartYPos;
     bool    m_Jumping;
 
+    Vec2D   m_DefaultScale;
+    Vec2D   m_ColliderDefualtScale;
+
     // Component
     CCollider*          m_Collider;
     CAnimator*          m_Animator;
@@ -40,17 +43,22 @@ private:
     }
 
 public:
-    void SetJumpingState(bool _Jumping) { m_Jumping = _Jumping; }
+    
     bool IsJumping() { return m_Jumping; }
     float GetJumpStartYPos() { return m_JumpStartYPos; }
     void SetJumpStartYPos(float _PosY) { m_JumpStartYPos = _PosY; }
     int GetCurJumpCount() { return m_CurJumpCount; }
+    Vec2D GetDefaultScale() { return m_DefaultScale; }
+    Vec2D GetColliderDefaultScale() { return m_ColliderDefualtScale; }
+
+    void SetJumpingState(bool _Jumping) { m_Jumping = _Jumping; }
     void PlusJumpCount() { ++m_CurJumpCount; }
     void SetCurCookie(COOKIE_TYPE _cookieType) { m_CurCookie = CResourceMgr::GetInst()->FindCookieInfo((UINT)_cookieType); }
     bool CheckCookieState(COOKIE_COMPLEX_STATE _State) { return m_State & (int)_State; }
     void TurnOnCookieState(COOKIE_COMPLEX_STATE _State) { m_State |= (int)_State; }
     void TurnOffCookieState(COOKIE_COMPLEX_STATE _State) { m_State &= ~(int)_State; }
     const CookieInfo& GetCurCookie() { return m_CurCookie; }
+
 public:
     CLONE_DISABLE(CPlayer)
 

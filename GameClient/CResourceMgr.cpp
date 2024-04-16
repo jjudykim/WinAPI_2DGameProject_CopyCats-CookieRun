@@ -13,6 +13,7 @@ CResourceMgr::~CResourceMgr()
 {
 	Safe_Del_Map(m_mapTex);
 	Safe_Del_Map(m_mapSound);
+	Safe_Del_Map(m_mapAnim);        // TODO : 오류 발생 가능
 	m_mapCookieInfo.clear();
 	m_mapPetInfo.clear();
 }

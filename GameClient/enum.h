@@ -94,15 +94,15 @@ enum class PET_TYPE
 
 enum class COOKIE_COMPLEX_STATE : int
 {
-	NONE, 	
-	INVINCIBLE,
-	BOOST, 
-	GIANT, 
-	ATTRACT, 
-	COINMAGIC, 
-	GUMMYPARTY , 
+	NONE                = 0, 	
+	INVINCIBLE          = 1 << 0,
+	BOOST               = 1 << 1, 
+	GIANT               = 1 << 2, 
+	ATTRACT             = 1 << 3, 
+	COINMAGIC           = 1 << 4, 
+	GUMMYPARTY          = 1 << 5, 
 
-	END,
+	END                 = 1 << 8,
 };
 
 enum class DYNAMIC_OBJ_TYPE

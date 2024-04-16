@@ -10,6 +10,7 @@ class CLevel_Game :
     public CLevel
 {
 private:
+    CStage*     m_PrevStage;
     CStage*     m_CurStage;
     CStage*     m_PostStage;
     
@@ -24,7 +25,7 @@ private:
 
 
     // Timer & Log
-    int         m_CookieState;
+    int         m_CookieStateAction;
     Vec2D       m_LogPos;
 
 public:

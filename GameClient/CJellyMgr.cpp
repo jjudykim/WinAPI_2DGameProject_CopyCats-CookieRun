@@ -12,6 +12,10 @@ CJellyMgr::CJellyMgr()
 
 CJellyMgr::~CJellyMgr()
 {
+	for (size_t i = 0; i < (UINT)DYNAMIC_OBJ_TYPE::END; ++i)
+	{
+		Safe_Del_Vec(m_arrJelly[i]);
+	}
 }
 
 void CJellyMgr::init()
@@ -112,7 +116,6 @@ void CJellyMgr::LoadJellyInfo()
 		for (UINT i = 0; i < m_arrJelly[ObjType].size(); ++i)
 		{
 			do { fwscanf_s(pFile, L"%s", szReadBuff, 256); } while (wcscmp(szReadBuff, L"[TYPE_INDEX]"));
-			//fwscanf_s(pFile, L"%s", szReadBuff, 256);
 			fwscanf_s(pFile, L"%d", &index);
 			curJelly = m_arrJelly[ObjType][i];
 			curJelly->SetIndex(index);
@@ -133,8 +136,8 @@ void CJellyMgr::LoadJellyInfo()
 
 			curJelly->SetAtlasInfo(info);
 
-			fwscanf_s(pFile, L"%s", szReadBuff, 256);
-			fwscanf_s(pFile, L"%s", szReadBuff, 256);
+			fwscanf_s(pFile, L"%s", szReadBuff, 256);    // [ANIM]
+			fwscanf_s(pFile, L"%s", szReadBuff, 256);    // Path or NONE
 
 			if (wstring(szReadBuff) != L"NONE")
 			{
@@ -175,6 +178,7 @@ void CJellyMgr::LoadJellyInfo()
 
 			fwscanf_s(pFile, L"%s", szReadBuff, 256);
 			fwscanf_s(pFile, L"%d", &value);
+			curJelly->SetValue(value);
 		}
 	}
 

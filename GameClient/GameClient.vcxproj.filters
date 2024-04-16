@@ -154,6 +154,9 @@
     <Filter Include="03. Game\03. Manager\SoundMgr">
       <UniqueIdentifier>{0b4ad3f4-327b-4352-8830-d20c0d3b5ddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\GameDataMgr">
+      <UniqueIdentifier>{cd2454f8-9f14-4dc6-8b6f-25536658ec0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -336,6 +339,9 @@
     <ClInclude Include="CSoundMgr.h">
       <Filter>03. Game\03. Manager\SoundMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CGameDataMgr.h">
+      <Filter>03. Game\03. Manager\GameDataMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -496,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="CSoundMgr.cpp">
       <Filter>03. Game\03. Manager\SoundMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameDataMgr.cpp">
+      <Filter>03. Game\03. Manager\GameDataMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

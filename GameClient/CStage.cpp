@@ -13,6 +13,9 @@ CStage::CStage()
 
 CStage::~CStage()
 {
+	Safe_Del_Arr(m_arrBG);
+	Safe_Del_Arr(m_arrOBS);
+	Safe_Del_Arr(m_arrPLT);
 }
 
 void CStage::Enter()
@@ -21,6 +24,10 @@ void CStage::Enter()
 
 void CStage::Exit()
 {
+	m_DNObjTile->Destroy();
+	Safe_Del_Arr(m_arrBG);
+	Safe_Del_Arr(m_arrOBS);
+	Safe_Del_Arr(m_arrPLT);
 }
 
 int CStage::LoadSTObjectsFromFile()

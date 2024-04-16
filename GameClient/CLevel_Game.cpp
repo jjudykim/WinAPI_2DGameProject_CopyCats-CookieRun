@@ -4,6 +4,7 @@
 #include "CCollisionMgr.h"
 #include "CSoundMgr.h"
 #include "CDbgRenderMgr.h"
+#include "CGameDataMgr.h"
 #include "CTimeMgr.h"
 #include "CPathMgr.h"
 #include "CKeyMgr.h"
@@ -30,9 +31,16 @@
 
 CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
+	, m_Pet(nullptr)
 	, m_ActingPosX(0)
 	, m_DeletePosX(0)
 	, m_PostStageStartPosX(0)
+	, m_BGM(nullptr)
+	, m_CookieStateAction(0)
+	, m_PrevStage(nullptr)
+	, m_PostStage(nullptr)
+	, m_CurStage(nullptr)
+	, m_ResolutionWidth(0)
 {
 	
 }
@@ -48,8 +56,13 @@ void CLevel_Game::begin()
 	m_ActingPosX = 0;
 	m_DeletePosX = m_ResolutionWidth;
 
+	// Timer Setting
 	CTimeMgr::GetInst()->AddTimer(0.25f, [this]() {
 		m_LogPos = m_Cookie->GetPos();
+		}, true);
+
+	CTimeMgr::GetInst()->AddTimer(0.1f, [this]() {
+		CGameDataMgr::GetInst()->AddScore(10);
 		}, true);
 
 	m_BGM = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
@@ -79,6 +92,13 @@ void CLevel_Game::tick()
 	m_ActingPosX = StandardPosX + 800.f;
 	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
 
+
+	// Cookie Debug Info
+	CCollider* CookieCol = m_Cookie->GetComponent<CCollider>();
+	DbgObjInfo CookieColInfo = { CCamera::GetInst()->GetRealPos(Vec2D(600, 50)), 0, L"Cookie Overlap Count : " + std::to_wstring(CookieCol->GetOverlapCount()) };
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CookieColInfo);
+
+	PrintCookieLog();
 
 	// Obstacle Animation Play
 	const vector<CObject*>& vecObs = GET_CUR_LEVEL->GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
@@ -133,7 +153,7 @@ void CLevel_Game::tick()
 			float tPosX = 0.0f;
 			if (vecObj[j]->GetLayerType() == LAYER_TYPE::BACKGROUND)
 			{
-				tPosX = vecObj[j]->GetPos().x + vecObj[j]->GetScale().x * 2.25;
+				tPosX = vecObj[j]->GetPos().x + vecObj[j]->GetScale().x * 2.25f;
 			}
 			else
 			{
@@ -147,20 +167,20 @@ void CLevel_Game::tick()
 		}
 	}
 
-	// Cookie's Multiple State Check
+	// Cookie's Complex State Check
 	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
 	{
 		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 50)), 0, L"INVINCIBLE ON" };
 		CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
-		if (!(m_CookieState & (int)COOKIE_COMPLEX_STATE::INVINCIBLE))
+		if (!(m_CookieStateAction & (int)COOKIE_COMPLEX_STATE::INVINCIBLE))
 		{
-			m_CookieState |= (int)COOKIE_COMPLEX_STATE::INVINCIBLE;
+			m_CookieStateAction |= (int)COOKIE_COMPLEX_STATE::INVINCIBLE;
 
 			CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
 				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
 				LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
-				m_CookieState &= ~(int)COOKIE_COMPLEX_STATE::INVINCIBLE;
+				m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::INVINCIBLE;
 				}, false);
 		}
 	}
@@ -169,28 +189,76 @@ void CLevel_Game::tick()
 		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 70)), 0, L"GIANT ON" };
 		CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
-		if (!(m_CookieState & (int)COOKIE_COMPLEX_STATE::GIANT))
+
+		if (!(m_CookieStateAction & (int)COOKIE_COMPLEX_STATE::GIANT))
 		{
-			m_CookieState |= (int)COOKIE_COMPLEX_STATE::GIANT;
 			
-			CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
-				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::GIANT);
-				LOG(LOG_TYPE::DBG_LOG, L"GIANT OFF");
-				m_CookieState &= ~(int)COOKIE_COMPLEX_STATE::GIANT;
-				}, false);
+			if (m_CookieStateAction & (int)COOKIE_COMPLEX_STATE::INVINCIBLE)
+			{
+				m_Cookie->SetScale(m_Cookie->GetScale() - (m_Cookie->GetScale() * DT * 4.f));
+				CookieCol->SetScale(CookieCol->GetScale() - (CookieCol->GetScale() * DT * 4.f));
+
+				if (m_Cookie->GetScale() < m_Cookie->GetDefaultScale())
+				{
+					m_Cookie->SetScale(m_Cookie->GetDefaultScale());
+					CookieCol->SetScale(m_Cookie->GetColliderDefaultScale());
+					m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::GIANT);
+				}
+			}
+			else
+			{
+				m_CookieStateAction |= (int)COOKIE_COMPLEX_STATE::GIANT;
+				CResourceMgr::GetInst()->FindSound(L"Effect_SmallToBig")->Play();
+			}
+		}
+		else
+		{
+			if (m_Cookie->GetScale() < m_Cookie->GetDefaultScale() * 2.f)
+			{
+				m_Cookie->SetScale(m_Cookie->GetScale() + (m_Cookie->GetScale() * DT * 4.f));
+				CookieCol->SetScale(CookieCol->GetScale() + (CookieCol->GetScale() * DT * 4.f));
+			}
+			else if (m_Cookie->GetDefaultScale() * 2.f < m_Cookie->GetScale())
+			{
+				m_Cookie->SetScale(m_Cookie->GetDefaultScale() * 2.f);
+				CookieCol->SetScale(m_Cookie->GetColliderDefaultScale() * 2.f);
+
+				CTimeMgr::GetInst()->AddTimer(3.f, [this, &CookieCol]() {
+					m_Cookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
+					CResourceMgr::GetInst()->FindSound(L"Effect_BigToSmall")->Play();
+					m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::GIANT;
+					LOG(LOG_TYPE::DBG_LOG, L"GIANT OFF");
+					}, false);
+			}
 		}
 	}
 	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::BOOST))
 	{
+		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 90)), 0, L"BOOST ON" };
+		CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
+		if (!(m_CookieStateAction & (int)COOKIE_COMPLEX_STATE::BOOST))
+		{
+			m_CookieStateAction |= (int)COOKIE_COMPLEX_STATE::BOOST;
+			m_Cookie->SetSpeed(m_Cookie->GetSpeed() * 2.f);
+
+			/*CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
+				m_Cookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
+				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::BOOST);
+				LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
+				m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::BOOST;
+				}, false);*/
+		}
 	}
 	
 	// Stage Change Check
 	if (m_PostStageStartPosX < StandardPosX + m_ResolutionWidth)
 	{
+		m_PrevStage = m_CurStage;
 		CStageMgr::GetInst()->ChangeNextStage();
 		m_PostStage = CStageMgr::GetInst()->GetCurrentStage();
 		m_PostStage->LoadSTObjectsFromFile();
+		m_PostStage->LoadDNObjectsFromFile();
 		
 		// Static Object 배치
 		for (int i = 0; i < 3; i++)
@@ -204,23 +272,26 @@ void CLevel_Game::tick()
 			}
 		}
 
+		// Dynamic Object 배치
+		vector<StageDNObjInfo>& vecStageInfo = m_PostStage->m_vecDNObjInfo;
+		vector<StageDNObjInfo>::iterator iter = vecStageInfo.begin();
+
+		for (; iter < vecStageInfo.end(); ++iter)
+		{
+			SpawnStageDNObject(*iter);
+		}
+
 		m_PostStageStartPosX += m_PostStage->GetSTGLength();
 	}
 
-	if (m_CurStage->GetSTGLength() < StandardPosX)
+	if (m_PrevStage != nullptr
+		&& m_PostStageStartPosX - m_PostStage->GetSTGLength() < CCamera::GetInst()->GetRealPos(Vec2D(0, 0)).x)
 	{
+		m_PrevStage->Exit();
+		m_PrevStage = nullptr;
 		m_CurStage = m_PostStage;
-		m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
-		
+		m_PostStage = nullptr;
 	}
-
-
-	// Cookie Debug Info
-	CCollider* CookieCol = m_Cookie->GetComponent<CCollider>();
-	DbgObjInfo CookieColInfo = { CCamera::GetInst()->GetRealPos(Vec2D(600, 50)), 0, L"Cookie Overlap Count : " + std::to_wstring(CookieCol->GetOverlapCount()) };
-	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CookieColInfo);
-
-	PrintCookieLog();
 }
 
 

@@ -14,6 +14,15 @@ CTile::CTile()
 
 CTile::~CTile()
 {
+	if (m_JellyData != nullptr)
+	{
+		for (int i = 0; i < m_Col; ++i)
+		{
+			delete[] m_JellyData[i];
+		}
+		delete[] m_JellyData;
+		m_JellyData = nullptr;
+	}
 }
 
 void CTile::begin()

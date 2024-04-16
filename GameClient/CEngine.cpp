@@ -13,6 +13,7 @@
 #include "CCollisionMgr.h"
 #include "CSoundMgr.h"
 #include "CTaskMgr.h"
+#include "CGameDataMgr.h"
 #include "CCamera.h"
 
 
@@ -72,6 +73,7 @@ int CEngine::init(HINSTANCE _hInst, HWND _hWnd, POINT _Resolution)
 	CStageMgr::GetInst()->init();
 	CJellyMgr::GetInst()->init();
 	CSoundMgr::GetInst()->init();
+	CGameDataMgr::GetInst()->init();
 
 	return S_OK;
 }
@@ -86,6 +88,7 @@ void CEngine::progress()
 	CMouseMgr::GetInst()->tick();
 	CDbgRenderMgr::GetInst()->tick();
 	CCamera::GetInst()->tick();
+	CGameDataMgr::GetInst()->tick();
 
 	// ===============
 	// Level Progress

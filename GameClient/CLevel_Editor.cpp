@@ -1999,8 +1999,6 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		}
 		if (LOWORD(wParam) == IDSAVE)
 		{
-			pEditorLevel->ResetForLoadStage();
-
 			if (pEditorLevel->GetEditStage() != nullptr)
 			{
 				pEditorLevel->GetEditStage()->ClearDNObjInfo();
@@ -2008,6 +2006,7 @@ INT_PTR CALLBACK EditDynamicStgProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 			OpenSaveFile(L"", L"stg");
 
+			pEditorLevel->ResetForLoadStage();
 			CHandleMgr::GetInst()->DeleteHandle(IDD_EDITSTAGE_DYNAMIC);
 			DestroyWindow(hEditDNStage);
 			return (INT_PTR)TRUE;
