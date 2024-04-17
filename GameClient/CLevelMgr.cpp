@@ -6,6 +6,7 @@
 #include "CCollisionMgr.h"
 #include "CLevel.h"
 #include "CLevel_Editor.h"
+#include "CLevel_Logo.h"
 #include "CLevel_Game.h"
 #include "CLevel_Stage01.h"
 
@@ -25,9 +26,10 @@ CLevelMgr::~CLevelMgr()
 void CLevelMgr::init()
 {
 	m_arrLevel[(UINT)LEVEL_TYPE::EDITOR] = new CLevel_Editor;
+	m_arrLevel[(UINT)LEVEL_TYPE::LOGO_START] = new CLevel_Logo;
 	m_arrLevel[(UINT)LEVEL_TYPE::GAME] = new CLevel_Game;
 
-	m_CurrentLevelType = LEVEL_TYPE::GAME;
+	m_CurrentLevelType = LEVEL_TYPE::LOGO_START;
 	::ChangeLevel(m_CurrentLevelType);
 }
 

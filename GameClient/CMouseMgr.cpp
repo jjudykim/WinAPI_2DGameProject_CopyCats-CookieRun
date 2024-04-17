@@ -73,9 +73,19 @@ void CMouseMgr::tick()
 bool CMouseMgr::CheckMouseOnBoundary()
 {
 	bool isMouseOn = m_MousePos.x <= (float)m_ClickBoundary.right
-					&& (float)m_ClickBoundary.left <= m_MousePos.x
-					&& m_MousePos.y <= (float)m_ClickBoundary.bottom
-					&& (float)m_ClickBoundary.top <= m_MousePos.y;
+		&& (float)m_ClickBoundary.left <= m_MousePos.x
+		&& m_MousePos.y <= (float)m_ClickBoundary.bottom
+		&& (float)m_ClickBoundary.top <= m_MousePos.y;
+
+	return isMouseOn;
+}
+
+bool CMouseMgr::CheckMouseOnBoundary(RECT _rect)
+{
+	bool isMouseOn = m_MousePos.x <= (float)_rect.right
+					&& (float)_rect.left <= m_MousePos.x
+					&& m_MousePos.y <= (float)_rect.bottom
+					&& (float)_rect.top <= m_MousePos.y;
 
 	return isMouseOn;
 }

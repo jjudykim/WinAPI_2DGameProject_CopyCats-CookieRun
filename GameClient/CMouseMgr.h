@@ -23,16 +23,19 @@ public:
 
 	
 
+	
+
 public:
 	void LButtonDown();
 	void LButtonUp();
 	void LButtonClicked();
 
 private:
-	bool CheckMouseOnBoundary();
+	
 
 public:
-	void SetClickRectBoundary(RECT _Boundary) { m_ClickBoundary = _Boundary; }
+	bool CheckMouseOnBoundary();
+	bool CheckMouseOnBoundary(RECT _rect);
 	void SetUseBoundary(bool _use) { m_UseBoundary = _use; }
 	void SetUseClick(bool _use) { m_UseClick = _use; }
 

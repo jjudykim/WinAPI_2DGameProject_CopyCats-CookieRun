@@ -157,6 +157,12 @@
     <Filter Include="03. Game\03. Manager\GameDataMgr">
       <UniqueIdentifier>{cd2454f8-9f14-4dc6-8b6f-25536658ec0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Object\UI\ButtonUI">
+      <UniqueIdentifier>{c02895cd-057a-4e5b-b477-50963cccf269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\06. Object\UI\ImageUI">
+      <UniqueIdentifier>{5222b3cc-ce3c-4146-9b78-0188fbebd408}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -354,6 +360,12 @@
     <ClInclude Include="CLevel_Logo.h">
       <Filter>03. Game\04. Level\Logo_Start</Filter>
     </ClInclude>
+    <ClInclude Include="CButton.h">
+      <Filter>03. Game\06. Object\UI\ButtonUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CImageUI.h">
+      <Filter>03. Game\06. Object\UI\ImageUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -529,6 +541,12 @@
     </ClCompile>
     <ClCompile Include="CLevel_Logo.cpp">
       <Filter>03. Game\04. Level\Logo_Start</Filter>
+    </ClCompile>
+    <ClCompile Include="CButton.cpp">
+      <Filter>03. Game\06. Object\UI\ButtonUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CImageUI.cpp">
+      <Filter>03. Game\06. Object\UI\ImageUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

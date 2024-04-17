@@ -5,6 +5,7 @@
 #include "CMouseMgr.h"
 #include "CLevel.h"
 #include "CObject.h"
+#include "CUI.h"
 
 CTaskMgr::CTaskMgr()
 {}
@@ -69,6 +70,14 @@ void CTaskMgr::ExectueTask()
 		{
 			bool sign = (bool)m_vecTask[i].Param1;
 			CMouseMgr::GetInst()->SetUseClick(sign);
+		}
+		break;
+
+		case TASK_TYPE::UI_LBTN_DOWN:
+		{
+			CUI* pUI = (CUI*)m_vecTask[i].Param1;
+			bool bLbtnDown = (bool)m_vecTask[i].Param2;
+			pUI->m_MouseLbtnDown = bLbtnDown;
 		}
 		break;
 		}

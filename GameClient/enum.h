@@ -71,6 +71,7 @@ enum class TASK_TYPE
 	DELETE_OBJECT,    // 1 : Object Adress
 	CHANGE_LEVEL,
 	CHANGE_CLICKABLE, // 1 : true or false
+	UI_LBTN_DOWN,     // 1 : UI Object Adress, 2 : ture or false;
 };
 
 enum class COOKIE_TYPE

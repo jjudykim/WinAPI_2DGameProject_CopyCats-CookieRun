@@ -142,11 +142,13 @@
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CAsset.h" />
+    <ClInclude Include="CButton.h" />
     <ClInclude Include="CDashState.h" />
     <ClInclude Include="CDeadByLifeState.h" />
     <ClInclude Include="CDeadByObsState.h" />
     <ClInclude Include="CDoubleJumpState.h" />
     <ClInclude Include="CGameDataMgr.h" />
+    <ClInclude Include="CImageUI.h" />
     <ClInclude Include="CLevel_Logo.h" />
     <ClInclude Include="CPet.h" />
     <ClInclude Include="CPetDashState.h" />
@@ -209,11 +211,13 @@
     <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CAsset.cpp" />
+    <ClCompile Include="CButton.cpp" />
     <ClCompile Include="CDashState.cpp" />
     <ClCompile Include="CDeadByLifeState.cpp" />
     <ClCompile Include="CDeadByObsState.cpp" />
     <ClCompile Include="CDoubleJumpState.cpp" />
     <ClCompile Include="CGameDataMgr.cpp" />
+    <ClCompile Include="CImageUI.cpp" />
     <ClCompile Include="CLevel_Logo.cpp" />
     <ClCompile Include="CPet.cpp" />
     <ClCompile Include="CPetDashState.cpp" />

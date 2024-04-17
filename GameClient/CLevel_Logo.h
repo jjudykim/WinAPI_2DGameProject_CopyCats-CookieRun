@@ -2,14 +2,22 @@
 #include "CLevel.h"
 
 class CTexture;
+class CImageUI;
+class CButton;
 
 class CLevel_Logo :
     public CLevel
 {
 private:
-	CTexture* m_CILogo;
-	CTexture* m_OpeningBG;
-	CTexture* m_OpeningLogo;
+	CImageUI*	  m_CurBG;
+	CImageUI*	  m_Logo;
+
+	CButton*	  m_BtnEditMode;
+	CButton*	  m_BtnGameStart;
+
+	Vec2D		  m_Resolution;
+	bool		  m_OpeningDone[3];
+	bool	      m_StartGame;
 
 public:
 	virtual void begin() override;

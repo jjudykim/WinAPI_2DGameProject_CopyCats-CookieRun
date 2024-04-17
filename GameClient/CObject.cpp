@@ -69,6 +69,9 @@ void CObject::render()
 
 	if (this == nullptr)
 		return;
+
+	if (m_Animator == nullptr)
+		return;
 	
 	m_Animator->render();
 }
