@@ -45,6 +45,8 @@ void CJumpState::Enter()
 
 void CJumpState::FinalTick()
 {
+	CPlayerState::FinalTick();
+
 	if (KEY_TAP(KEY::SPACE))
 	{
 		if ( 0 < GetCurPlayer()->GetCurJumpCount()
@@ -67,14 +69,6 @@ void CJumpState::FinalTick()
 	if (!GetCurPlayer()->IsJumping() && GetOwnerRigidBody()->IsGround())
 	{
 		GetFSM()->ChangeState(L"Run");
-	}
-
-	if (GetOwnerAnimator() != nullptr)
-	{
-		Vec2D ColPos = GetOwnerAnimator()->GetCurAnim()->GetColliderPos();
-		Vec2D ColSize = GetOwnerAnimator()->GetCurAnim()->GetColliderSize();
-		GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
-		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 	}
 }
 

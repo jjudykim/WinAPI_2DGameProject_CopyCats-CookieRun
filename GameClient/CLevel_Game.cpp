@@ -18,6 +18,7 @@
 #include "CPlayer.h"
 #include "CPet.h"
 #include "CBackground.h"
+#include "CRigidBody.h"
 #include "CPlatform.h"
 #include "CObstacle.h"
 #include "CStage.h"
@@ -41,6 +42,7 @@ CLevel_Game::CLevel_Game()
 	, m_PostStage(nullptr)
 	, m_CurStage(nullptr)
 	, m_ResolutionWidth(0)
+	, m_GameOver(false)
 {
 	
 }
@@ -65,10 +67,16 @@ void CLevel_Game::begin()
 		CGameDataMgr::GetInst()->AddScore(10);
 		}, true);
 
+	CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
+		CGameDataMgr::GetInst()->DeductHP(5);
+		}, true);
+
 	m_BGM = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
 	m_BGM->SetVolume(50.f);
 	m_BGM->PlayToBGM();
 }
+
+
 
 void CLevel_Game::tick()
 {
@@ -76,6 +84,27 @@ void CLevel_Game::tick()
 	if (CKeyMgr::GetInst()->GetKeyState(KEY::E) == KEY_STATE::TAP)
 	{
 		ChangeLevel(LEVEL_TYPE::EDITOR);
+	}
+
+	if (CGameDataMgr::GetInst()->IsCookieDead() == true)
+	{
+		m_Cookie->SetSpeed(0);
+		m_Pet->SetSpeed(0);
+		
+		vector<CObject*> BG = GetObjectsByLayerType(LAYER_TYPE::BACKGROUND);
+		for (size_t i = 0; i < BG.size(); ++i)
+		{
+			BG[i]->SetSpeed(0);
+		}
+
+		CCollisionMgr::GetInst()->CollisionUnCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::OBSTACLE);
+		CCollisionMgr::GetInst()->CollisionUnCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
+		m_GameOver = true;
+	}
+
+	if (m_GameOver == true)
+	{
+		m_BGM->Stop();
 	}
 
 	CLevel::tick();
@@ -94,9 +123,25 @@ void CLevel_Game::tick()
 
 
 	// Cookie Debug Info
-	CCollider* CookieCol = m_Cookie->GetComponent<CCollider>();
-	DbgObjInfo CookieColInfo = { CCamera::GetInst()->GetRealPos(Vec2D(600, 50)), 0, L"Cookie Overlap Count : " + std::to_wstring(CookieCol->GetOverlapCount()) };
-	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CookieColInfo);
+	
+	DbgObjInfo CurCoinInfo = { CCamera::GetInst()->GetRealPos(Vec2D(600, 50)), 0, 
+								L"Coin : " + std::to_wstring(CGameDataMgr::GetInst()->GetCurGameCoin()) };
+	
+
+	DbgObjInfo HighScoreInfo = { CCamera::GetInst()->GetRealPos(Vec2D(1100, 100)), 0,
+								L"High Score : " + std::to_wstring(CGameDataMgr::GetInst()->GetHighScore()) };
+
+	DbgObjInfo CurScoreInfo = { CCamera::GetInst()->GetRealPos(Vec2D(1100, 120)), 0,
+								L"Current Score : " + std::to_wstring(CGameDataMgr::GetInst()->GetCurScore()) };
+
+	DbgObjInfo CurHPInfo = { CCamera::GetInst()->GetRealPos(Vec2D(100, 100)), 0,
+								L"HP : " + std::to_wstring(CGameDataMgr::GetInst()->GetCurHP()) + L"/" + std::to_wstring(CGameDataMgr::GetInst()->GetMaxHP())
+								+ L" (" + std::to_wstring(CGameDataMgr::GetInst()->GetRateHP()) + L"%)" };
+
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CurCoinInfo);
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(HighScoreInfo);
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CurScoreInfo);
+	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CurHPInfo);
 
 	PrintCookieLog();
 
@@ -168,6 +213,8 @@ void CLevel_Game::tick()
 	}
 
 	// Cookie's Complex State Check
+	CCollider* CookieCol = m_Cookie->GetComponent<CCollider>();
+
 	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE))
 	{
 		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 50)), 0, L"INVINCIBLE ON" };
@@ -177,7 +224,7 @@ void CLevel_Game::tick()
 		{
 			m_CookieStateAction |= (int)COOKIE_COMPLEX_STATE::INVINCIBLE;
 
-			CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
+			CTimeMgr::GetInst()->AddTimer(2.3f, [this]() {
 				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
 				LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
 				m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::INVINCIBLE;
@@ -189,10 +236,8 @@ void CLevel_Game::tick()
 		DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(300, 70)), 0, L"GIANT ON" };
 		CDbgRenderMgr::GetInst()->AddDbgObjInfo(info);
 
-
 		if (!(m_CookieStateAction & (int)COOKIE_COMPLEX_STATE::GIANT))
 		{
-			
 			if (m_CookieStateAction & (int)COOKIE_COMPLEX_STATE::INVINCIBLE)
 			{
 				m_Cookie->SetScale(m_Cookie->GetScale() - (m_Cookie->GetScale() * DT * 4.f));
@@ -215,6 +260,7 @@ void CLevel_Game::tick()
 		{
 			if (m_Cookie->GetScale() < m_Cookie->GetDefaultScale() * 2.f)
 			{
+				m_Cookie->GetComponent<CRigidBody>()->SetGiant(true);
 				m_Cookie->SetScale(m_Cookie->GetScale() + (m_Cookie->GetScale() * DT * 4.f));
 				CookieCol->SetScale(CookieCol->GetScale() + (CookieCol->GetScale() * DT * 4.f));
 			}
@@ -223,7 +269,8 @@ void CLevel_Game::tick()
 				m_Cookie->SetScale(m_Cookie->GetDefaultScale() * 2.f);
 				CookieCol->SetScale(m_Cookie->GetColliderDefaultScale() * 2.f);
 
-				CTimeMgr::GetInst()->AddTimer(3.f, [this, &CookieCol]() {
+				CTimeMgr::GetInst()->AddTimer(2.3f, [this, &CookieCol]() {
+					m_Cookie->GetComponent<CRigidBody>()->SetGiant(false);
 					m_Cookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
 					CResourceMgr::GetInst()->FindSound(L"Effect_BigToSmall")->Play();
 					m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::GIANT;
@@ -240,25 +287,28 @@ void CLevel_Game::tick()
 		if (!(m_CookieStateAction & (int)COOKIE_COMPLEX_STATE::BOOST))
 		{
 			m_CookieStateAction |= (int)COOKIE_COMPLEX_STATE::BOOST;
-			m_Cookie->SetSpeed(m_Cookie->GetSpeed() * 2.f);
+			m_Cookie->ChangeCookieFSMState(L"Dash");
+			m_Cookie->SetSpeed(m_Cookie->GetSpeed() * 1.75f);
+			m_Pet->SetSpeed(m_Pet->GetSpeed() * 1.75f);
 
-			/*CTimeMgr::GetInst()->AddTimer(3.f, [this]() {
+			CTimeMgr::GetInst()->AddTimer(2.3f, [this]() {
+				m_Cookie->SetSpeed(COOKIE_DEFAULT_SPEED);
+				m_Pet->SetSpeed(COOKIE_DEFAULT_SPEED);
 				m_Cookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
 				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::BOOST);
+				m_Cookie->ChangeCookieFSMState(L"Run");
 				LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
 				m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::BOOST;
-				}, false);*/
+				}, false);
 		}
 	}
 	
 	// Stage Change Check
 	if (m_PostStageStartPosX < StandardPosX + m_ResolutionWidth)
 	{
-		m_PrevStage = m_CurStage;
+ 		m_PrevStage = m_CurStage;
 		CStageMgr::GetInst()->ChangeNextStage();
 		m_PostStage = CStageMgr::GetInst()->GetCurrentStage();
-		m_PostStage->LoadSTObjectsFromFile();
-		m_PostStage->LoadDNObjectsFromFile();
 		
 		// Static Object ¹èÄ¡
 		for (int i = 0; i < 3; i++)
@@ -284,12 +334,14 @@ void CLevel_Game::tick()
 		m_PostStageStartPosX += m_PostStage->GetSTGLength();
 	}
 
-	if (m_PrevStage != nullptr
-		&& m_PostStageStartPosX - m_PostStage->GetSTGLength() < CCamera::GetInst()->GetRealPos(Vec2D(0, 0)).x)
+	if (m_PrevStage != nullptr && m_PostStageStartPosX - m_PostStage->GetSTGLength() < StandardPosX)
 	{
 		m_PrevStage->Exit();
-		m_PrevStage = nullptr;
+
 		m_CurStage = m_PostStage;
+		m_CurStage->Enter();
+		
+		m_PrevStage = nullptr;
 		m_PostStage = nullptr;
 	}
 }
@@ -337,7 +389,7 @@ void CLevel_Game::Enter()
 	pPlayer->SetCurCookie(COOKIE_TYPE::BRAVE_COOKIE);
 	pPlayer->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
 	pPlayer->SetScale(pPlayer->GetCurCookie()._frmSize.x, pPlayer->GetCurCookie()._frmSize.y);
-	pPlayer->SetSpeed(400.f);
+	pPlayer->SetSpeed(COOKIE_DEFAULT_SPEED);
 
 	m_Cookie = pPlayer;
 	CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::SPAWN_OBJECT, (DWORD_PTR)LAYER_TYPE::PLAYER, (DWORD_PTR)pObject });
@@ -439,7 +491,7 @@ void CLevel_Game::SpawnStageDNObject(StageDNObjInfo& _ObjInfo)
 	CJelly* pJelly = nullptr;
 
 	pJelly = CJellyMgr::GetInst()->GetVecJelly((UINT)_ObjInfo._objType)[_ObjInfo._typeIndex]->Clone();
-	pJelly->SetPos(_ObjInfo._pos);
+	pJelly->SetPos(_ObjInfo._pos.x + m_PostStageStartPosX, _ObjInfo._pos.y);
 
 	task.Type = TASK_TYPE::SPAWN_OBJECT;
 	task.Param1 = (DWORD_PTR)LAYER_TYPE::JELLY;

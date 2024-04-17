@@ -6,6 +6,7 @@
 #include "CPlatform.h"
 
 #include "CLevelMgr.h"
+#include "CGameDataMgr.h"
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "CLevel.h"
@@ -22,7 +23,10 @@
 #include "CDoubleJumpState.h"
 #include "CSlideState.h"
 #include "CDamageState.h"
-#include "CInvState.h"
+#include "CDashState.h"
+#include "CDeadByObsState.h"
+#include "CDeadByLifeState.h"
+
 
 CPlayer::CPlayer()
 	: m_DoubleJumpCount(2)
@@ -33,6 +37,7 @@ CPlayer::CPlayer()
 	, m_PrevYPos(0.f)
 	, m_DefaultScale(0.f)
 	, m_ColliderDefualtScale(0.f)
+	, m_State(0)
 {
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
@@ -58,6 +63,9 @@ void CPlayer::begin()
 	m_FSM->AddState(L"DoubleJump", new CDoubleJumpState);
 	m_FSM->AddState(L"Slide", new CSlideState);
 	m_FSM->AddState(L"Damage", new CDamageState);
+	m_FSM->AddState(L"Dash", new CDashState);
+	m_FSM->AddState(L"DeadByObs", new CDeadByObsState);
+	m_FSM->AddState(L"DeadByLife", new CDeadByLifeState);
 	m_FSM->SetState();
 
 	m_DefaultScale = GetScale();
@@ -82,12 +90,19 @@ void CPlayer::render()
 
 void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
-	if (!(CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE) || CheckCookieState(COOKIE_COMPLEX_STATE::GIANT)))
+	if (!(CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE) 
+		|| CheckCookieState(COOKIE_COMPLEX_STATE::GIANT) 
+		|| CheckCookieState(COOKIE_COMPLEX_STATE::BOOST)))
 	{
 		if (_OtherObj->GetLayerType() == LAYER_TYPE::OBSTACLE)
 		{
-			TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
-			m_FSM->ChangeState(L"Damage");
+			CGameDataMgr::GetInst()->DeductHP(30);
+			if (CGameDataMgr::GetInst()->IsCookieDead() == true) m_FSM->ChangeState(L"DeadByObs");
+			else
+			{
+				TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
+				m_FSM->ChangeState(L"Damage");
+			}
 		}
 	}
 
@@ -100,18 +115,19 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 			{
 				CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
 
-				if (plt->GetPLTType() == PLT_TYPE::FLOATED)
+				if (0 < GetPos().y - m_PrevYPos)
 				{
-					if (0 < GetPos().y - m_PrevYPos)
+					if (plt->GetPLTType() == PLT_TYPE::FLOATED)
 					{
 						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
+
 					}
+					else
+					{
+						m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
+					}
+					m_RigidBody->SetGround(true);
 				}
-				else
-				{
-					m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
-				}
-				m_RigidBody->SetGround(true);
 			}
 		}
 	}
@@ -121,25 +137,27 @@ void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* 
 {
 	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
 	{
-		++m_OverlapPLTCount;
 		if (m_OverlapPLTCount > 0)
 		{
 			if (!m_Jumping)
 			{
 				CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
 
-				if (plt->GetPLTType() == PLT_TYPE::FLOATED)
+				if (0 <= GetPos().y - m_PrevYPos)
 				{
-					if (0 < GetPos().y - m_PrevYPos)
+					if (plt->GetPLTType() == PLT_TYPE::FLOATED)
 					{
-						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
+						if (0 < GetPos().y - m_PrevYPos)
+						{
+							m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
+						}
 					}
+					else
+					{
+						m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
+					}
+					m_RigidBody->SetGround(true);
 				}
-				else
-				{
-					m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
-				}
-				m_RigidBody->SetGround(true);
 				//LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 			}
 		}

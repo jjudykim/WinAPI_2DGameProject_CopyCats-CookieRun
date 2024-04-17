@@ -39,6 +39,8 @@ void CDoubleJumpState::Enter()
 
 void CDoubleJumpState::FinalTick()
 {
+	CPlayerState::FinalTick();
+
 	if (KEY_TAP(KEY::DOWN) && GetOwnerRigidBody()->IsGround())
 	{
 		GetFSM()->ChangeState(L"Slide");

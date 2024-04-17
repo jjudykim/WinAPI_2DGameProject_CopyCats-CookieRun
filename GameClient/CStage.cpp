@@ -7,15 +7,27 @@
 #include "CObstacle.h"
 
 CStage::CStage()
-	: m_DNObjTile(nullptr)
+	: m_EpisodeType(EPISODE_TYPE::END)
+	, m_StageType(STAGE_TYPE::END)
+	, m_StageLength(0.f)
+	, m_arrBG()
+	, m_arrOBS()
+	, m_arrPLT()
+	, m_DNObjTile(nullptr)
 {
 }
 
 CStage::~CStage()
 {
+	if (m_DNObjTile != nullptr) m_DNObjTile->Destroy();
 	Safe_Del_Arr(m_arrBG);
 	Safe_Del_Arr(m_arrOBS);
 	Safe_Del_Arr(m_arrPLT);
+	for (int i = 0; i < 3; ++i)
+	{
+		if (m_vecSTObjInfo[i].size() > 0) m_vecSTObjInfo[i].clear();
+	}
+	if (m_vecDNObjInfo.size() > 0) m_vecDNObjInfo.clear();
 }
 
 void CStage::Enter()
@@ -24,10 +36,16 @@ void CStage::Enter()
 
 void CStage::Exit()
 {
-	m_DNObjTile->Destroy();
+	if (m_DNObjTile != nullptr) m_DNObjTile->Destroy();
 	Safe_Del_Arr(m_arrBG);
 	Safe_Del_Arr(m_arrOBS);
 	Safe_Del_Arr(m_arrPLT);
+
+	for (int i = 0; i < 3; ++i)
+	{
+		m_vecSTObjInfo[i].clear();
+	}
+	m_vecDNObjInfo.clear();
 }
 
 int CStage::LoadSTObjectsFromFile()

@@ -2,6 +2,7 @@
 #include "CTimeMgr.h"
 #include "CEngine.h"
 #include "CLevelMgr.h"
+#include "CGameDataMgr.h"
 
 float CTimeMgr::AccTime = 0.f;
 wchar_t CTimeMgr::szBuff[255] = {};
@@ -43,7 +44,7 @@ void CTimeMgr::tick()
 
 	AccTime += m_DeltaTime;
 
-	TimerUpdate();
+	if (CGameDataMgr::GetInst()->IsCookieDead() == false) { TimerUpdate(); }
 	if (1.f < AccTime)
 	{
 		swprintf_s(szBuff, L"DeltaTime : %f, FPS : %d", m_DeltaTime, m_FPS);

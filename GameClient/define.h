@@ -38,6 +38,8 @@
 #define RENDER_MINPOSX CCamera::GetInst()->GetLookAt().x - (CEngine::GetInst()->GetResolution().x / 2.f)
 #define RENDER_MAXPOSX CCamera::GetInst()->GetLookAt().x + (CEngine::GetInst()->GetResolution().x / 2.f)
 
+#define COOKIE_DEFAULT_SPEED 400.f
+
 #define COOKIE_DEFAULT_POSX 200.f
 #define COOKIE_DEFAULT_POSY 610.f
 

@@ -1,12 +1,8 @@
 #pragma once
-
-#include "CPlayerState.h"
-
-class CDamageState
-	: public CPlayerState
+#include "CPetState.h"
+class CPetDashState :
+    public CPetState
 {
-private:
-
 private:
 	virtual void Set() override;
 	virtual void Enter() override;
@@ -14,9 +10,9 @@ private:
 	virtual void Exit() override;
 
 
-	CLONE_DISABLE(CDamageState);
+	CLONE_DISABLE(CPetDashState);
 public:
-	CDamageState();
-	~CDamageState();
+	CPetDashState();
+	~CPetDashState();
 };
 

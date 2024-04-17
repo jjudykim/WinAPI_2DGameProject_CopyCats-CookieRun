@@ -56,9 +56,10 @@ void CStageMgr::ChangeNextStage()
 	if ((UINT)m_pCurrentStage->GetSTGType() + 1 != (UINT)STAGE_TYPE::END)
 	{
 		m_pCurrentStage = m_arrStage[(UINT)m_pCurrentStage->GetEPType()].at((UINT)m_pCurrentStage->GetSTGType() + 1);
+		m_CurrentStageType = m_pCurrentStage->GetSTGType();
 		assert(m_pCurrentStage);
-
-		m_pCurrentStage->Enter();
+		m_pCurrentStage->LoadSTObjectsFromFile();
+		m_pCurrentStage->LoadDNObjectsFromFile();
 	}
 	
 }

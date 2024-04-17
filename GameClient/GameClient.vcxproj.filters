@@ -300,9 +300,6 @@
     <ClInclude Include="CRunState.h">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
     </ClInclude>
-    <ClInclude Include="CInvState.h">
-      <Filter>03. Game\09. Module\State\PlayerState</Filter>
-    </ClInclude>
     <ClInclude Include="CDraw.h">
       <Filter>03. Game\06. Object\Draw</Filter>
     </ClInclude>
@@ -341,6 +338,21 @@
     </ClInclude>
     <ClInclude Include="CGameDataMgr.h">
       <Filter>03. Game\03. Manager\GameDataMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CDashState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeadByObsState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeadByLifeState.h">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClInclude>
+    <ClInclude Include="CPetDashState.h">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
+    </ClInclude>
+    <ClInclude Include="CLevel_Logo.h">
+      <Filter>03. Game\04. Level\Logo_Start</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -464,9 +476,6 @@
     <ClCompile Include="CRunState.cpp">
       <Filter>03. Game\09. Module\State\PlayerState</Filter>
     </ClCompile>
-    <ClCompile Include="CInvState.cpp">
-      <Filter>03. Game\09. Module\State\PlayerState</Filter>
-    </ClCompile>
     <ClCompile Include="CDraw.cpp">
       <Filter>03. Game\06. Object\Draw</Filter>
     </ClCompile>
@@ -505,6 +514,21 @@
     </ClCompile>
     <ClCompile Include="CGameDataMgr.cpp">
       <Filter>03. Game\03. Manager\GameDataMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CDashState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeadByObsState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeadByLifeState.cpp">
+      <Filter>03. Game\09. Module\State\PlayerState</Filter>
+    </ClCompile>
+    <ClCompile Include="CPetDashState.cpp">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
+    </ClCompile>
+    <ClCompile Include="CLevel_Logo.cpp">
+      <Filter>03. Game\04. Level\Logo_Start</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

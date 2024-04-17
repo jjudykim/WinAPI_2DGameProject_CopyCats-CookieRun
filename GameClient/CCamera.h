@@ -4,6 +4,8 @@ enum class CAM_EFFECT
 {
 	FADE_IN,
 	FADE_OUT,
+	WHITE_FADE_IN,
+	WHITE_FADE_OUT,
 	NONE,
 };
 
@@ -33,6 +35,8 @@ private:
 	list<CAM_EFFECT_INFO> m_EffectList;
 
 	CTexture*		m_FadeTex;
+	CTexture*		m_WhiteTex;
+
 
 public:
 	Vec2D GetRenderPos(Vec2D _RealPos) { return _RealPos - m_Diff; }

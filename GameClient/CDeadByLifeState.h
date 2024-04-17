@@ -1,12 +1,8 @@
 #pragma once
-
 #include "CPlayerState.h"
-
-class CDamageState
-	: public CPlayerState
+class CDeadByLifeState :
+    public CPlayerState
 {
-private:
-
 private:
 	virtual void Set() override;
 	virtual void Enter() override;
@@ -14,9 +10,10 @@ private:
 	virtual void Exit() override;
 
 
-	CLONE_DISABLE(CDamageState);
+	CLONE_DISABLE(CDeadByLifeState);
+
 public:
-	CDamageState();
-	~CDamageState();
+	CDeadByLifeState();
+	~CDeadByLifeState();
 };
 

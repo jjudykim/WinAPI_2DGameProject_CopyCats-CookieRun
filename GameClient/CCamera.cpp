@@ -28,6 +28,14 @@ void CCamera::init()
 
 	m_LookAt = Vec2D(vResol.x / 2.f, vResol.y / 2.f);
 	m_PrevLookAt = m_LookAt;
+
+	// FadeTex
+	m_FadeTex = CResourceMgr::GetInst()->CreateTexture(L"FadTexture", (UINT)vResol.x, (UINT)vResol.y, false);
+
+	// WhiteTex
+	m_WhiteTex = CResourceMgr::GetInst()->CreateTexture(L"WhithTexture", (UINT)vResol.x, (UINT)vResol.y, false);
+	USE_BRUSH(m_WhiteTex->GetDC(), BRUSH_TYPE::BRUSH_WHITE);
+	Rectangle(m_WhiteTex->GetDC(), -1, -1, (UINT)vResol.x + 1, (UINT)vResol.y + 1);
 }
 
 void CCamera::tick()

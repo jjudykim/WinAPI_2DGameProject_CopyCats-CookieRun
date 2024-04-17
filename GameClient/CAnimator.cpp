@@ -31,7 +31,8 @@ CAnimator::CAnimator(const CAnimator& _Other)
 
 CAnimator::~CAnimator()
 {
-	Safe_Del_Map(m_mapAnim);
+	m_CurAnim = nullptr;
+	//Safe_Del_Map(m_mapAnim);
 }
 
 void CAnimator::finaltick()

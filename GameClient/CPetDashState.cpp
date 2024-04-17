@@ -1,20 +1,19 @@
 #include "pch.h"
-#include "CPetRunState.h"
+#include "CPetDashState.h"
 
-#include "CTimeMgr.h"
 #include "CPet.h"
 #include "CAnimator.h"
-#include "CAnimation.h"
+#include "CTimeMgr.h"
 
-CPetRunState::CPetRunState()
+CPetDashState::CPetDashState()
 {
 }
 
-CPetRunState::~CPetRunState()
+CPetDashState::~CPetDashState()
 {
 }
 
-void CPetRunState::Set()
+void CPetDashState::Set()
 {
 	CPetState::Set();
 
@@ -22,23 +21,23 @@ void CPetRunState::Set()
 	strFilePath += L"Pet_" + GetCurPet()->GetCurPet()._nameStr;
 	strFilePath += L"\\" + GetCurPet()->GetCurPet()._nameStr;
 
-	GetOwnerAnimator()->LoadAnimation(L"PetRun", strFilePath + L"_Run.anim");
+	GetOwnerAnimator()->LoadAnimation(L"PetDash", strFilePath + L"_Dash.anim");
 }
 
-void CPetRunState::Enter()
+void CPetDashState::Enter()
 {
 	CPetState::Enter();
 
-	GetOwnerAnimator()->Play(L"PetRun", true);
+	GetOwnerAnimator()->Play(L"PetDash", true);
 }
 
-void CPetRunState::FinalTick()
+void CPetDashState::FinalTick()
 {
 	float Speed = GetBlackboardData<float>(L"Speed");
 	CObject* pCookie = GetBlackboardData<CObject*>(L"Cookie");
 
 	float ChaseYPos = pCookie->GetPos().y - (pCookie->GetScale().y / 2.f);
-	Vec2D Diff = (0,ChaseYPos - GetObj()->GetPos().y);
+	Vec2D Diff = (0, ChaseYPos - GetObj()->GetPos().y);
 	if (abs(Diff.y) > 5.f)
 	{
 		Speed = abs(Diff.y) / 0.3f;
@@ -48,7 +47,7 @@ void CPetRunState::FinalTick()
 	}
 }
 
-void CPetRunState::Exit()
+void CPetDashState::Exit()
 {
 }
 

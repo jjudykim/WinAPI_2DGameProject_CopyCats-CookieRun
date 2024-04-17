@@ -23,6 +23,7 @@ private:
     CPlayer*    m_Cookie;
     CPet*       m_Pet;
 
+    bool        m_GameOver;
 
     // Timer & Log
     int         m_CookieStateAction;

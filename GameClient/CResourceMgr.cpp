@@ -73,7 +73,6 @@ CTexture* CResourceMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _He
 	pTex->m_Key = _Key;
 
 	return pTex;
-	
 }
 
 CTexture* CResourceMgr::FindTexture(const wstring& _Key)
@@ -283,7 +282,7 @@ void CResourceMgr::LoadCookieInfo()
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, strFilePath.c_str(), L"r");
 
-	if (nullptr == pFile) { return; }
+	if (nullptr == pFile) { LoadCookieInfo(); }
 
 	wchar_t szReadBuff[256] = {};
 
@@ -337,7 +336,7 @@ void CResourceMgr::LoadPetInfo()
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, strFilePath.c_str(), L"r");
 
-	if (nullptr == pFile) { return; }
+	if (nullptr == pFile) { LoadPetInfo(); }
 
 	wchar_t szReadBuff[256] = {};
 

@@ -41,17 +41,8 @@ void CSlideState::Enter()
 
 void CSlideState::FinalTick()
 {
-	/*if (KEY_TAP(KEY::SPACE))
-	{
-		CPlayer* Player = GetCurPlayer();
+	CPlayerState::FinalTick();
 
-		Player->SetJumpStartYPos(Player->GetPos().y);
-		Player->SetJumpingState(true);
-		int count = Player->GetCurJumpCount();
-		GetOwnerRigidBody()->Jump();
-		
-		GetFSM()->ChangeState(L"Jump");
-	}*/
 	if (KEY_RELEASED(KEY::DOWN))
 	{
 		if (KEY_TAP(KEY::SPACE) || KEY_PRESSED(KEY::SPACE) && GetOwnerRigidBody()->IsGround())
@@ -69,14 +60,6 @@ void CSlideState::FinalTick()
 		{
 			GetFSM()->ChangeState(L"Run");
 		}
-	}
-
-	if(GetOwnerAnimator() != nullptr)
-	{
-		Vec2D ColPos = GetOwnerAnimator()->GetCurAnim()->GetColliderPos();
-		Vec2D ColSize = GetOwnerAnimator()->GetCurAnim()->GetColliderSize();
-		GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
-		GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 	}
 }
 

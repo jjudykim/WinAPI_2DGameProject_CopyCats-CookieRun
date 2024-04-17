@@ -8,7 +8,7 @@ CRigidBody::CRigidBody()
 	: m_UseGravity(true)
 	, m_MaxJumpHeight(100.f)
 	, m_WalkSpeed(0.f)
-	, m_JumpSpeed(1100.f)
+	, m_JumpSpeed(1000.f)
 	, m_GravityAccel(3000.f)
 	, m_Descending(false)
 	, m_Ground(true)
@@ -31,6 +31,9 @@ void CRigidBody::Walk(Vec2D& _originPos, float _dt)
 
 void CRigidBody::Jump()
 {
+	if (m_Giant == true) { m_JumpSpeed = 700.f; }
+	else { m_JumpSpeed = 1000.f; }
+
 	m_Ground = false;
 	m_Descending = false;
 	m_VelocityByJump = Vec2D(0.f, -1.f) * m_JumpSpeed;

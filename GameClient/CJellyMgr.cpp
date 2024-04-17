@@ -153,7 +153,6 @@ void CJellyMgr::LoadJellyInfo()
 				if (ObjType == 0)
 				{
 					if (i == 0 || i == 1 || i == 3) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetNormalJelly"));
-					//else if (i == 1 || i == 3) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBearJelly"));
 					else if (i == 2 || i == 4) curJelly->SetSound(CResourceMgr::GetInst()->FindSound(L"Effect_GetBigBearJelly"));
 				}
 				else if (ObjType == 1)

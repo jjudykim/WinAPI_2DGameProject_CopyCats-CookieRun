@@ -8,7 +8,6 @@
 #include "CSound.h"
 
 CDamageState::CDamageState()
-	: m_Timer(0.f)
 {
 }
 
@@ -26,25 +25,19 @@ void CDamageState::Set()
 
 	GetOwnerAnimator()->LoadAnimation(L"Damage", strFilePath + L"_Damage.anim");
 	SetSoundEffect(CResourceMgr::GetInst()->FindSound(L"Effect_CharDamage"));
-
-	m_Timer = 0.f;
 }
 
 void CDamageState::Enter()
 {
-	m_Timer = 0.f;
 	GetOwnerAnimator()->Play(L"Damage", false);
 	GetSoundEffect()->SetVolume(70.f);
 	GetSoundEffect()->Play();
+	CTimeMgr::GetInst()->AddTimer(0.3f, [this]() { GetFSM()->ChangeState(L"Run"); }, false);
 }
 
 void CDamageState::FinalTick()
 {
-	m_Timer += DT;
-	if (m_Timer >= 0.3f)
-	{
-		GetFSM()->ChangeState(L"Run");
-	}
+	CPlayerState::FinalTick();
 }
 
 void CDamageState::Exit()
