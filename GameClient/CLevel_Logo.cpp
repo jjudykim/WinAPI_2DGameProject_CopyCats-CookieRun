@@ -8,7 +8,7 @@
 #include "CTimeMgr.h"
 #include "CImageUI.h"
 #include "CSound.h"
-#include "CButton.h"
+#include "CButtonUI.h"
 
 void EditModeBtnCallBackFunc()
 {
@@ -127,17 +127,17 @@ void CLevel_Logo::Enter()
 	AddObject(LAYER_TYPE::DEFAULT, m_CurBG);
 
 	// Setting Button
-	m_BtnEditMode = new CButton;
+	m_BtnEditMode = new CButtonUI;
 	m_BtnEditMode->SetCallBack(&EditModeBtnCallBackFunc);
 	m_BtnEditMode->SetScale(260.f, 110.f);
-	m_BtnEditMode->SetPos(m_Resolution.x / 3.f, m_Resolution.y - (m_Resolution.y/ 4.f));
+	m_BtnEditMode->SetPos(m_Resolution.x / 3.f, m_Resolution.y - (m_Resolution.y/ 6.f));
 	m_BtnEditMode->SetHoverImage(CResourceMgr::GetInst()->LoadTexture(L"EditModeBtn_Hover", L"texture\\Button\\EditMode_Hover.png"));
 	m_BtnEditMode->SetNormalImage(CResourceMgr::GetInst()->LoadTexture(L"EditModeBtn_Normal", L"texture\\Button\\EditMode_Normal.png"));
 
-	m_BtnGameStart = new CButton;
+	m_BtnGameStart = new CButtonUI;
 	m_BtnGameStart->SetCallBack(&GameStartBtnCallBackFunc);
 	m_BtnGameStart->SetScale(260.f, 110.f);
-	m_BtnGameStart->SetPos((m_Resolution.x / 3.f) * 2.f, m_Resolution.y - (m_Resolution.y / 4.f));
+	m_BtnGameStart->SetPos((m_Resolution.x / 3.f) * 2.f, m_Resolution.y - (m_Resolution.y / 6.f));
 	m_BtnGameStart->SetHoverImage(CResourceMgr::GetInst()->LoadTexture(L"GameStartBtn_Hover", L"texture\\Button\\GameStart_Hover.png"));
 	m_BtnGameStart->SetNormalImage(CResourceMgr::GetInst()->LoadTexture(L"GameStartBtn_Normal", L"texture\\Button\\GameStart_Normal.png"));
 }

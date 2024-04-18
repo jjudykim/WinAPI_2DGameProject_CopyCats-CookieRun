@@ -19,10 +19,10 @@ CCamera::CCamera()
 	Vec2D vResol = CEngine::GetInst()->GetResolution();
 
 	// FadeTex
-	m_FadeTex = CResourceMgr::GetInst()->CreateTexture(L"FadeTexture", (UINT)vResol.x, (UINT)vResol.y, false);
+	m_FadeTex = CResourceMgr::GetInst()->CreateTexture(L"FadeTexture", (UINT)vResol.x, (UINT)vResol.y);
 
 	// WhiteTex
-	m_WhiteTex = CResourceMgr::GetInst()->CreateTexture(L"WhiteTexture", (UINT)vResol.x, (UINT)vResol.y, false);
+	m_WhiteTex = CResourceMgr::GetInst()->CreateTexture(L"WhiteTexture", (UINT)vResol.x, (UINT)vResol.y);
 	USE_BRUSH(m_WhiteTex->GetDC(), BRUSH_TYPE::BRUSH_WHITE);
 	Rectangle(m_WhiteTex->GetDC(), -1, -1, (UINT)vResol.x + 1, (UINT)vResol.y + 1);
 }

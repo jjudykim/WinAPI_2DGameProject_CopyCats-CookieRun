@@ -73,6 +73,14 @@ void CAnimator::render(char)
 	}
 }
 
+void CAnimator::render(bool)
+{
+	if (m_CurAnim != nullptr)
+	{
+		m_CurAnim->render(true);
+	}
+}
+
 CAnimation* CAnimator::FindAnimation(const wstring& _AnimName)
 {
 	map<wstring, CAnimation*>::iterator iter = m_mapAnim.find(_AnimName);

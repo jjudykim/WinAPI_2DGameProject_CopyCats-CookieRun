@@ -163,6 +163,12 @@
     <Filter Include="03. Game\06. Object\UI\ImageUI">
       <UniqueIdentifier>{5222b3cc-ce3c-4146-9b78-0188fbebd408}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\06. Object\UI\PanelUI">
+      <UniqueIdentifier>{8aa865b6-7c79-4d7c-94ae-70b67a602807}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Game\06. Object\UI\ScoreUI">
+      <UniqueIdentifier>{1fb31005-d4bd-42eb-84cb-e696633f68d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -360,11 +366,17 @@
     <ClInclude Include="CLevel_Logo.h">
       <Filter>03. Game\04. Level\Logo_Start</Filter>
     </ClInclude>
-    <ClInclude Include="CButton.h">
+    <ClInclude Include="CButtonUI.h">
       <Filter>03. Game\06. Object\UI\ButtonUI</Filter>
     </ClInclude>
     <ClInclude Include="CImageUI.h">
       <Filter>03. Game\06. Object\UI\ImageUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CPanelUI.h">
+      <Filter>03. Game\06. Object\UI\PanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CScoreUI.h">
+      <Filter>03. Game\06. Object\UI\ScoreUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -542,11 +554,17 @@
     <ClCompile Include="CLevel_Logo.cpp">
       <Filter>03. Game\04. Level\Logo_Start</Filter>
     </ClCompile>
-    <ClCompile Include="CButton.cpp">
+    <ClCompile Include="CButtonUI.cpp">
       <Filter>03. Game\06. Object\UI\ButtonUI</Filter>
     </ClCompile>
     <ClCompile Include="CImageUI.cpp">
       <Filter>03. Game\06. Object\UI\ImageUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CPanelUI.cpp">
+      <Filter>03. Game\06. Object\UI\PanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CScoreUI.cpp">
+      <Filter>03. Game\06. Object\UI\ScoreUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

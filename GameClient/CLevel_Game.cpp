@@ -24,11 +24,17 @@
 #include "CStage.h"
 #include "CJelly.h"
 #include "CSound.h"
+#include "CPanelUI.h"
+#include "CImageUI.h"
+#include "CButtonUI.h"
+#include "CScoreUI.h"
 
 // TODO : 테스트용. 나중에 지워도 되는 헤더들
 #include "CCollider.h"
 
 #include "CAnimator.h"
+
+
 
 CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
@@ -36,19 +42,25 @@ CLevel_Game::CLevel_Game()
 	, m_ActingPosX(0)
 	, m_DeletePosX(0)
 	, m_PostStageStartPosX(0)
+	, m_DestinationPosX(0)
 	, m_BGM(nullptr)
 	, m_CookieStateAction(0)
 	, m_PrevStage(nullptr)
 	, m_PostStage(nullptr)
 	, m_CurStage(nullptr)
-	, m_ResolutionWidth(0)
+	, m_Resolution(0)
 	, m_GameOver(false)
+	, m_BtnJump(nullptr)
+	, m_BtnSlide(nullptr)
+	, m_MarkMiniMap(nullptr)
+	
 {
 	
 }
 
 CLevel_Game::~CLevel_Game()
 {
+	Safe_Del_Arr(m_BTAlphabet);
 }
 
 void CLevel_Game::begin()
@@ -56,7 +68,7 @@ void CLevel_Game::begin()
 	CLevel::begin();
 
 	m_ActingPosX = 0;
-	m_DeletePosX = m_ResolutionWidth;
+	m_DeletePosX = m_Resolution.x;
 
 	// Timer Setting
 	CTimeMgr::GetInst()->AddTimer(0.25f, [this]() {
@@ -119,7 +131,7 @@ void CLevel_Game::tick()
 
 	float StandardPosX = m_Cookie->GetPos().x;
 	m_ActingPosX = StandardPosX + 800.f;
-	m_DeletePosX = StandardPosX - m_ResolutionWidth * 0.5f;
+	m_DeletePosX = StandardPosX - m_Resolution.x * 0.5f;
 
 
 	// Cookie Debug Info
@@ -144,6 +156,36 @@ void CLevel_Game::tick()
 	CDbgRenderMgr::GetInst()->AddDbgObjInfo(CurHPInfo);
 
 	PrintCookieLog();
+
+	// Update HUD ============================================
+
+	// Jump & Slide Button State Check
+	if (KEY_TAP(KEY::SPACE) || KEY_PRESSED(KEY::SPACE))
+	{
+		m_BtnJump->SetButtonState(1);
+	}
+	else if (KEY_RELEASED(KEY::SPACE))
+	{
+		m_BtnJump->SetButtonState(0);
+	}
+
+	if (KEY_TAP(KEY::DOWN) || KEY_PRESSED(KEY::DOWN))
+	{
+		m_BtnSlide->SetButtonState(1);
+	}
+	else if (KEY_RELEASED(KEY::DOWN))
+	{
+		m_BtnSlide->SetButtonState(0);
+	}
+
+	// MiniMap Update
+	float RunRateStandard = m_Cookie->GetPos().x - (m_DestinationPosX - m_CurStage->GetSTGLength());
+	float RunRate = ( RunRateStandard / m_CurStage->GetSTGLength()) * 100.f;
+	m_MarkMiniMap->SetPos(-80.f + RunRate * 1.5f, m_MarkMiniMap->GetPos().y);
+
+	// HP Update
+	m_HeartGauge->SetScale(CGameDataMgr::GetInst()->GetRateHP() * 7.5f, m_HeartGauge->GetScale().y);
+	m_HeartGaugeEffect->SetPos(m_HeartGauge->GetScale().x, 0);
 
 	// Obstacle Animation Play
 	const vector<CObject*>& vecObs = GET_CUR_LEVEL->GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
@@ -189,7 +231,7 @@ void CLevel_Game::tick()
 	}
 
 	// Delete Passed Stage Object
-	for (int i = 0; i < (UINT)LAYER_TYPE::END; ++i)
+	for (int i = 0; i < (UINT)LAYER_TYPE::UI; ++i)
 	{
 		const vector<CObject*>& vecObj = GET_CUR_LEVEL->GetObjectsByLayerType(static_cast<LAYER_TYPE>(i));
 
@@ -297,14 +339,14 @@ void CLevel_Game::tick()
 				m_Cookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
 				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::BOOST);
 				m_Cookie->ChangeCookieFSMState(L"Run");
-				LOG(LOG_TYPE::DBG_LOG, L"INVINCIBLE OFF");
+				LOG(LOG_TYPE::DBG_LOG, L"BOOST OFF");
 				m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::BOOST;
 				}, false);
 		}
 	}
 	
 	// Stage Change Check
-	if (m_PostStageStartPosX < StandardPosX + m_ResolutionWidth)
+	if (m_PostStageStartPosX < StandardPosX + m_Resolution.x)
 	{
  		m_PrevStage = m_CurStage;
 		CStageMgr::GetInst()->ChangeNextStage();
@@ -339,6 +381,7 @@ void CLevel_Game::tick()
 		m_PrevStage->Exit();
 
 		m_CurStage = m_PostStage;
+		m_DestinationPosX += m_CurStage->GetSTGLength();
 		m_CurStage->Enter();
 		
 		m_PrevStage = nullptr;
@@ -349,8 +392,9 @@ void CLevel_Game::tick()
 
 void CLevel_Game::Enter()
 {
-	m_ResolutionWidth = CEngine::GetInst()->GetResolution().x;
+	m_Resolution = CEngine::GetInst()->GetResolution();
 	
+	SetHUD();
 	LoadSoundResource();
 
 	// 현재 스테이지 맵 데이터 불러오기
@@ -410,6 +454,7 @@ void CLevel_Game::Enter()
 	CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PLAYER, LAYER_TYPE::JELLY);
 
 	m_PostStageStartPosX = m_CurStage->GetSTGLength();
+	m_DestinationPosX = m_CurStage->GetSTGLength();
 }
 
 void CLevel_Game::Exit()
@@ -417,6 +462,142 @@ void CLevel_Game::Exit()
 	m_BGM->Stop();
 }
 
+void CLevel_Game::SetHUD()
+{
+	CPanelUI*	pPanelUI = nullptr;
+	CButtonUI*	pButtonUI = nullptr;
+	CImageUI*	pImageUI = nullptr;
+	CScoreUI*   pScoreUI = nullptr;
+
+	// Jump & Slide UI
+	pButtonUI = new CButtonUI;
+	pButtonUI->SetNormalImage(CResourceMgr::GetInst()->LoadTexture(L"Jump", L"texture\\HUD\\Jump.png"));
+	pButtonUI->SetHoverImage(CResourceMgr::GetInst()->LoadTexture(L"Jump_Dim", L"texture\\HUD\\Jump_Dim.png"));
+	pButtonUI->SetScale(164.5f, 124.f);
+	pButtonUI->SetPos(130.f, m_Resolution.y - 100.f);
+	m_BtnJump = pButtonUI;
+	AddObject(LAYER_TYPE::UI, m_BtnJump);
+
+	pButtonUI = new CButtonUI;
+	pButtonUI->SetNormalImage(CResourceMgr::GetInst()->LoadTexture(L"Slide", L"texture\\HUD\\Slide.png"));
+	pButtonUI->SetHoverImage(CResourceMgr::GetInst()->LoadTexture(L"Slide_Dim", L"texture\\HUD\\Slide_Dim.png"));
+	pButtonUI->SetScale(164.5f, 124.f);
+	pButtonUI->SetPos(m_Resolution.x - 130.f, m_Resolution.y - 100.f);
+	m_BtnSlide = pButtonUI;
+	AddObject(LAYER_TYPE::UI, m_BtnSlide);
+
+
+	// HP UI
+	pPanelUI = new CPanelUI;
+	pPanelUI->SetScale(Vec2D(750.f, 30.f));
+	pPanelUI->SetPos(Vec2D(500.f, 100.f));
+	pPanelUI->SetTexture(CResourceMgr::GetInst()->CreateTextureWithAlpha(L"HP_Panel", 800, 50, Color(160, 0, 0, 0)));
+
+	pImageUI = new CImageUI;
+	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"HeartGauge", L"texture\\HUD\\HeartGauge.png"));
+	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetHeight());
+	pImageUI->SetPos(-375.f, 0.f);
+	pImageUI->SetDecreaseUI(true);
+	pPanelUI->AddChildUI(pImageUI);
+	m_HeartGauge = pImageUI;
+
+	pImageUI = new CImageUI;
+	pImageUI->AddAnimator(L"HUD_HeartGaugeEffect", L"animation\\HUD_HeartGaugeEffect.anim", true);
+	pImageUI->SetPos(m_HeartGauge->GetScale().x, 0.f);
+	pImageUI->SetScale(36.f, 44.f);
+	m_HeartGaugeEffect = pImageUI;
+	m_HeartGauge->AddChildUI(pImageUI);
+
+	pImageUI = new CImageUI;
+	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"HeartLife", L"texture\\HUD\\HeartLife.png"));
+	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetWidth());
+	pImageUI->SetPos(-375.f, 0.f);
+	pPanelUI->AddChildUI(pImageUI);
+
+	AddObject(LAYER_TYPE::UI, pPanelUI);
+
+
+	// BonusTime UI
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_B", L"texture\\HUD\\BonusTime_B.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_O", L"texture\\HUD\\BonusTime_O.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_N", L"texture\\HUD\\BonusTime_N.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_U", L"texture\\HUD\\BonusTime_U.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_S", L"texture\\HUD\\BonusTime_S.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_T", L"texture\\HUD\\BonusTime_T.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_I", L"texture\\HUD\\BonusTime_I.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_M", L"texture\\HUD\\BonusTime_M.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_E", L"texture\\HUD\\BonusTime_E.png");
+
+	for (int i = 0; i < 9; ++i)
+	{
+		pImageUI = new CImageUI;
+		pImageUI->SetScale(42.f, 46.f);
+		m_BTAlphabet[i] = pImageUI;
+	}
+
+	pImageUI = new CImageUI;
+	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"BonusTime_BG", L"texture\\HUD\\BonusTime_BG.png"));
+	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetHeight());
+	pImageUI->SetPos(30.f + pImageUI->GetScale().x / 2.f, 30.f);
+	for (int i = 0; i < 9; ++i)
+	{
+		pImageUI->AddChildUI(m_BTAlphabet[i]);
+	}
+
+	AddObject(LAYER_TYPE::UI, pImageUI);
+	
+	
+
+
+	// Minimap UI
+	pImageUI = new CImageUI;
+	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"MiniMap_Mark", L"texture\\HUD\\MiniMap_Mark.png"));
+	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetHeight());
+	pImageUI->SetPos(Vec2D(-80.f, 0.f));
+	m_MarkMiniMap = pImageUI;
+
+	pImageUI = new CImageUI;
+	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"MiniMap_BG", L"texture\\HUD\\MiniMap_BG.png"));
+	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetHeight());
+	pImageUI->SetPos(Vec2D(5.f, 10.f));
+	pImageUI->AddChildUI(m_MarkMiniMap);
+
+	pPanelUI = new CPanelUI;
+	pPanelUI->SetScale(Vec2D(200.f, 50.f));
+	pPanelUI->SetPos(Vec2D(250.f, 150.f));
+	pPanelUI->SetTexture(CResourceMgr::GetInst()->CreateTextureWithAlpha(L"MiniMap_Panel", 200, 50, Color(160, 0, 0, 0)));
+	pPanelUI->AddChildUI(pImageUI);
+
+	AddObject(LAYER_TYPE::UI, pPanelUI);
+	
+
+	// Score UI
+
+	for (int i = 0; i < 10; ++i)
+	{
+		CResourceMgr::GetInst()->LoadTexture(L"SmallScore_" + std::to_wstring(i), L"texture\\HUD\\SmallScore_" + std::to_wstring(i) + L".png");
+		CResourceMgr::GetInst()->LoadTexture(L"BigScore_" + std::to_wstring(i), L"texture\\HUD\\BigScore_" + std::to_wstring(i) + L".png");
+	}
+
+	pImageUI = new CImageUI;
+	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"ScoreCoin", L"texture\\HUD\\ScoreCoin.png"));
+	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetHeight());
+	pImageUI->SetPos(0.f, 0.f);
+
+	pScoreUI = new CScoreUI;
+	pScoreUI->SetSmallScore(0);
+	pScoreUI->SetScale(pScoreUI->GetTexture()->GetWidth(), pScoreUI->GetTexture()->GetHeight());
+	pScoreUI->SetPos(50.f, 0.f);
+
+	pPanelUI = new CPanelUI;
+	pPanelUI->SetScale(Vec2D(200.f, 0.f));
+	pPanelUI->SetPos(m_Resolution.x / 2.f - 30.f, 30.f);
+	pPanelUI->AddChildUI(pImageUI);
+	pPanelUI->AddChildUI(pScoreUI);
+
+	AddObject(LAYER_TYPE::UI, pPanelUI);
+
+}
 
 void CLevel_Game::LoadSoundResource()
 {

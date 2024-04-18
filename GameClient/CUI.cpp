@@ -57,9 +57,19 @@ void CUI::tick()
 	}
 }
 
+void CUI::finaltick()
+{
+	CObject::finaltick();
+
+	for (size_t i = 0; i < m_vecChildUI.size(); ++i)
+	{
+		m_vecChildUI[i]->finaltick();
+	}
+}
+
 void CUI::render()
 {
-	CObject::render();
+	//CObject::render();
 
 	render_ui();
 

@@ -14,7 +14,7 @@ private:
 
 private:
     int Create(UINT _Width, UINT _Height);
-    int CreateWithAlpha(UINT _Width, UINT _Height);
+    int CreateWithAlpha(UINT _Width, UINT _Height, Color _color);
     virtual int Load(const wstring& _strFilePath) override;
 
 public:

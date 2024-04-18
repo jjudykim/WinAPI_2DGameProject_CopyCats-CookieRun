@@ -101,8 +101,18 @@ void CEngine::progress()
 	// ===============
 	// Clear
 	{
-		USE_BRUSH(m_hSubDC, BRUSH_TYPE::BRUSH_WHITE);
-		Rectangle(m_hSubDC, -1, -1, m_Resolution.x + 1, m_Resolution.y + 1);
+		if (CLevelMgr::GetInst()->GetCurrentLevelType() == LEVEL_TYPE::EDITOR)
+		{
+			USE_BRUSH(m_hSubDC, BRUSH_TYPE::BRUSH_GRAY);
+			Rectangle(m_hSubDC, -1, -1, m_Resolution.x + 1, m_Resolution.y + 1);
+		}
+		else 
+		{ 
+			USE_BRUSH(m_hSubDC, BRUSH_TYPE::BRUSH_WHITE);
+			Rectangle(m_hSubDC, -1, -1, m_Resolution.x + 1, m_Resolution.y + 1);
+		}
+		
+		
 	}
 
 	CLevelMgr::GetInst()->render();

@@ -16,9 +16,10 @@ private:
 
 public:
     virtual void finaltick() override;
-    void render();
-    void render(float);
-    void render(char);
+    void render();                           // x, y가 기준
+    void render(float);                      // Player Animation 전용 render
+    void render(char);                       // x, y * 2가 기준
+    void render(bool);                       // Image UI 전용 render
 
 public:
     CAnimation* FindAnimation(const wstring& _AnimName);

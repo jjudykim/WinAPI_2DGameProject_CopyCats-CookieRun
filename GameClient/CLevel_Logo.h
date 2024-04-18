@@ -3,7 +3,7 @@
 
 class CTexture;
 class CImageUI;
-class CButton;
+class CButtonUI;
 
 class CLevel_Logo :
     public CLevel
@@ -12,8 +12,8 @@ private:
 	CImageUI*	  m_CurBG;
 	CImageUI*	  m_Logo;
 
-	CButton*	  m_BtnEditMode;
-	CButton*	  m_BtnGameStart;
+	CButtonUI*	  m_BtnEditMode;
+	CButtonUI*	  m_BtnGameStart;
 
 	Vec2D		  m_Resolution;
 	bool		  m_OpeningDone[3];

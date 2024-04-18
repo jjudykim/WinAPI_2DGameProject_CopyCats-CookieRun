@@ -31,7 +31,7 @@ void CRigidBody::Walk(Vec2D& _originPos, float _dt)
 
 void CRigidBody::Jump()
 {
-	if (m_Giant == true) { m_JumpSpeed = 700.f; }
+	if (m_Giant == true) { m_JumpSpeed = 800.f; }
 	else { m_JumpSpeed = 1000.f; }
 
 	m_Ground = false;

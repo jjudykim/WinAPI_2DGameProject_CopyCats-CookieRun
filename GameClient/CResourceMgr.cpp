@@ -46,21 +46,35 @@ CTexture* CResourceMgr::LoadTexture(const wstring& _Key, const wstring& _strRela
 	return pTex;
 }
 
-CTexture* CResourceMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height, bool _Alpha)
+CTexture* CResourceMgr::CreateTextureWithAlpha(const wstring& _Key, UINT _Width, UINT _Height, Color _color)
+{
+	assert(!FindTexture(_Key));
+
+	CTexture* pTex = new CTexture;
+	int result;
+	result = pTex->CreateWithAlpha(_Width, _Height, _color);
+
+	if (FAILED(result))
+	{
+		MessageBox(nullptr, _Key.c_str(), L"텍스쳐 생성 실패", MB_OK);
+		delete pTex;
+		return nullptr;
+	}
+
+	m_mapTex.insert(make_pair(_Key, pTex));
+	pTex->m_Key = _Key;
+
+	return pTex;
+}
+
+CTexture* CResourceMgr::CreateTexture(const wstring& _Key, UINT _Width, UINT _Height)
 {
 	// 해당 키로 등록된 텍스쳐가 있다면
 	assert(!FindTexture(_Key));
 
 	CTexture* pTex = new CTexture;
 	int result;
-	if (_Alpha == true)
-	{
-		result = pTex->CreateWithAlpha(_Width, _Height);
-	}
-	else
-	{
-		result = pTex->Create(_Width, _Height);
-	}
+	result = pTex->Create(_Width, _Height);
 
 	if (FAILED(result))
 	{
@@ -282,7 +296,7 @@ void CResourceMgr::LoadCookieInfo()
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, strFilePath.c_str(), L"r");
 
-	if (nullptr == pFile) { LoadCookieInfo(); }
+	if (nullptr == pFile) { return; }
 
 	wchar_t szReadBuff[256] = {};
 
@@ -336,7 +350,7 @@ void CResourceMgr::LoadPetInfo()
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, strFilePath.c_str(), L"r");
 
-	if (nullptr == pFile) { LoadPetInfo(); }
+	if (nullptr == pFile) { return; }
 
 	wchar_t szReadBuff[256] = {};
 

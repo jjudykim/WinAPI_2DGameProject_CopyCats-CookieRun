@@ -142,7 +142,7 @@
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CAsset.h" />
-    <ClInclude Include="CButton.h" />
+    <ClInclude Include="CButtonUI.h" />
     <ClInclude Include="CDashState.h" />
     <ClInclude Include="CDeadByLifeState.h" />
     <ClInclude Include="CDeadByObsState.h" />
@@ -150,6 +150,7 @@
     <ClInclude Include="CGameDataMgr.h" />
     <ClInclude Include="CImageUI.h" />
     <ClInclude Include="CLevel_Logo.h" />
+    <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPet.h" />
     <ClInclude Include="CPetDashState.h" />
     <ClInclude Include="CPetRunState.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CRigidBody.h" />
     <ClInclude Include="CRunState.h" />
+    <ClInclude Include="CScoreUI.h" />
     <ClInclude Include="CSelectObj.h" />
     <ClInclude Include="CSlideState.h" />
     <ClInclude Include="CSound.h" />
@@ -211,7 +213,7 @@
     <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CAsset.cpp" />
-    <ClCompile Include="CButton.cpp" />
+    <ClCompile Include="CButtonUI.cpp" />
     <ClCompile Include="CDashState.cpp" />
     <ClCompile Include="CDeadByLifeState.cpp" />
     <ClCompile Include="CDeadByObsState.cpp" />
@@ -219,6 +221,7 @@
     <ClCompile Include="CGameDataMgr.cpp" />
     <ClCompile Include="CImageUI.cpp" />
     <ClCompile Include="CLevel_Logo.cpp" />
+    <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPet.cpp" />
     <ClCompile Include="CPetDashState.cpp" />
     <ClCompile Include="CPetRunState.cpp" />
@@ -252,6 +255,7 @@
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CRigidBody.cpp" />
     <ClCompile Include="CRunState.cpp" />
+    <ClCompile Include="CScoreUI.cpp" />
     <ClCompile Include="CSelectObj.cpp" />
     <ClCompile Include="CSlideState.cpp" />
     <ClCompile Include="CSound.cpp" />

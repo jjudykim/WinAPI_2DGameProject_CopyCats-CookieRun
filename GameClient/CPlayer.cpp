@@ -76,9 +76,9 @@ void CPlayer::begin()
 
 void CPlayer::tick()
 {
-	CObject::tick();
-
 	m_PrevYPos = GetPos().y;
+	
+	CObject::tick();
 }
 
 void CPlayer::render()
@@ -90,6 +90,32 @@ void CPlayer::render()
 
 void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
 {
+	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
+	{
+		++m_OverlapPLTCount;
+		if (m_OverlapPLTCount > 0)
+		{
+			if (!m_Jumping)
+			{
+				CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
+
+				if (0 < (int)(GetPos().y - m_PrevYPos))
+				{
+					if (plt->GetPLTType() == PLT_TYPE::FLOATED)
+					{
+						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
+
+					}
+					else
+					{
+						m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
+					}
+					m_RigidBody->SetGround(true);
+				}
+			}
+		}
+	}
+
 	if (!(CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE) 
 		|| CheckCookieState(COOKIE_COMPLEX_STATE::GIANT) 
 		|| CheckCookieState(COOKIE_COMPLEX_STATE::BOOST)))
@@ -106,31 +132,7 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 		}
 	}
 
-	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
-	{
-		++m_OverlapPLTCount;
-		if (m_OverlapPLTCount > 0)
-		{
-			if (!m_Jumping)
-			{
-				CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
-
-				if (0 < GetPos().y - m_PrevYPos)
-				{
-					if (plt->GetPLTType() == PLT_TYPE::FLOATED)
-					{
-						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
-
-					}
-					else
-					{
-						m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
-					}
-					m_RigidBody->SetGround(true);
-				}
-			}
-		}
-	}
+	
 }
 
 void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
@@ -143,21 +145,18 @@ void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* 
 			{
 				CPlatform* plt = static_cast<CPlatform*>(_OtherObj);
 
-				if (0 <= GetPos().y - m_PrevYPos)
+				if (plt->GetPLTType() == PLT_TYPE::FLOATED)
 				{
-					if (plt->GetPLTType() == PLT_TYPE::FLOATED)
+ 					if (0 < GetPos().y - m_PrevYPos)
 					{
-						if (0 < GetPos().y - m_PrevYPos)
-						{
-							m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
-						}
+						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
 					}
-					else
-					{
-						m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
-					}
-					m_RigidBody->SetGround(true);
 				}
+				else
+				{
+					m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
+				}
+				m_RigidBody->SetGround(true);
 				//LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 			}
 		}

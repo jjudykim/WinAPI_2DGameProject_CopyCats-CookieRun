@@ -67,6 +67,7 @@ public:
     void render(int);
     void render(char);
     void render(float);
+    void render(bool);
 
 public:
     CLONE(CAnimation);

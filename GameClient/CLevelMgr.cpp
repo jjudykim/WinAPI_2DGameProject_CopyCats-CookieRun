@@ -27,9 +27,10 @@ void CLevelMgr::init()
 {
 	m_arrLevel[(UINT)LEVEL_TYPE::EDITOR] = new CLevel_Editor;
 	m_arrLevel[(UINT)LEVEL_TYPE::LOGO_START] = new CLevel_Logo;
+	//m_arrLevel[(UINT)LEVEL_TYPE::LOBBY] = new CLevel_Lobby;
 	m_arrLevel[(UINT)LEVEL_TYPE::GAME] = new CLevel_Game;
 
-	m_CurrentLevelType = LEVEL_TYPE::LOGO_START;
+	m_CurrentLevelType = LEVEL_TYPE::GAME;
 	::ChangeLevel(m_CurrentLevelType);
 }
 

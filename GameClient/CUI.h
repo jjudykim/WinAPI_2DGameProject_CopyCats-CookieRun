@@ -20,6 +20,7 @@ private:
 
 public:
 	virtual void tick() final;
+	virtual void finaltick() final;
 	virtual void render() final;
 
 	virtual void tick_ui() = 0;

@@ -1,21 +1,33 @@
 #include "pch.h"
-#include "CButton.h"
+#include "CButtonUI.h"
 
 #include "CTaskMgr.h"
 
-CButton::CButton()
+CButtonUI::CButtonUI()
 	: m_Func(nullptr)
 	, m_HoverImg(nullptr)
 	, m_NormalImg(nullptr)
+	, m_State(0)
 {
 }
 
-CButton::~CButton()
+CButtonUI::~CButtonUI()
 {
 }
 
-void CButton::tick_ui()
+void CButtonUI::tick_ui()
 {
+	if (IsLbtnDowned() || IsMouseOn())
+	{
+		if (m_HoverImg != nullptr)
+			m_State = 1;
+	}
+	else
+	{
+		if (m_NormalImg != nullptr)
+			m_State = 0;
+	}
+
 	if (IsLbtnDowned() == true)
 	{
 		if (m_Func != nullptr)
@@ -26,20 +38,11 @@ void CButton::tick_ui()
 	}
 }
 
-void CButton::render_ui()
+void CButtonUI::render_ui()
 {
 	CTexture* CurTex = nullptr;
 
-	if (IsLbtnDowned() || IsMouseOn())
-	{
-		if (m_HoverImg != nullptr)
-			CurTex = m_HoverImg;
-	}
-	else
-	{
-		if (m_NormalImg != nullptr)
-			CurTex = m_NormalImg;
-	}
+	CurTex = m_State ? m_HoverImg : m_NormalImg;
 
 	if (CurTex != nullptr)
 	{
@@ -58,7 +61,7 @@ void CButton::render_ui()
 	}
 }
 
-void CButton::LButtonClicked()
+void CButtonUI::LButtonClicked()
 {
 	
 }

@@ -190,7 +190,7 @@ void CLevel_Editor::tick()
 				m_GuideDraw->SetTexture(CResourceMgr::GetInst()->FindTexture(L"GuideDraw"));
 				if (m_GuideDraw->GetTexture() == nullptr)
 				{
-					m_GuideDraw->SetTexture(CResourceMgr::GetInst()->CreateTexture(L"GuideDraw", 15000, 50, true));
+					m_GuideDraw->SetTexture(CResourceMgr::GetInst()->CreateTextureWithAlpha(L"GuideDraw", 15000, 50, Color(128, 0, 0, 255)));
 				}
 				m_GuideDraw->setDrawing(false);
 				m_GuideDraw->SetPos(0, 0);

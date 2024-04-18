@@ -5,6 +5,8 @@ class CStage;
 class CPlayer;
 class CPet;
 class CSound;
+class CButtonUI;
+class CImageUI;
 
 class CLevel_Game :
     public CLevel
@@ -14,16 +16,25 @@ private:
     CStage*     m_CurStage;
     CStage*     m_PostStage;
     
-    float       m_ResolutionWidth;
+    Vec2D       m_Resolution;
     float       m_ActingPosX;
     float       m_DeletePosX;
     float       m_PostStageStartPosX;
+    float       m_DestinationPosX;
 
     CSound*     m_BGM;
     CPlayer*    m_Cookie;
     CPet*       m_Pet;
 
+    CButtonUI*  m_BtnJump;
+    CButtonUI*  m_BtnSlide;
+    CImageUI*   m_MarkMiniMap;
+    CImageUI*   m_HeartGauge;
+    CImageUI*   m_HeartGaugeEffect;
+    CImageUI*   m_BTAlphabet[9];
+
     bool        m_GameOver;
+    bool        m_BonusTime[9];
 
     // Timer & Log
     int         m_CookieStateAction;
@@ -36,9 +47,9 @@ public:
     virtual void Enter() override;
     virtual void Exit() override;
 
-    
-
+   
 public:
+    void SetHUD();
     void LoadSoundResource();
     void SpawnStageSTObject(StageSTObjInfo& _ObjInfo);
     void SpawnStageDNObject(StageDNObjInfo& _ObjInfo);

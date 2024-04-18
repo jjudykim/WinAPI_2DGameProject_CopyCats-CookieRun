@@ -3,7 +3,7 @@
 
 typedef void(*BUTTON_CALLBACK)(void);
 
-class CButton :
+class CButtonUI :
     public CUI
 {
 private:
@@ -12,11 +12,15 @@ private:
     CTexture*            m_NormalImg;
     CTexture*            m_HoverImg;
 
+    bool                 m_State;        // 0 : Normal,  1 : Hover
+
 public:
     void SetCallBack(BUTTON_CALLBACK _Func) { m_Func = _Func; }
 
     void SetNormalImage(CTexture* _Tex) { m_NormalImg = _Tex; }
     void SetHoverImage(CTexture* _Tex) { m_HoverImg = _Tex; }
+
+    void SetButtonState(bool _state) { m_State = _state; }
  
 public:
     virtual void tick_ui() override;
@@ -24,8 +28,8 @@ public:
     virtual void LButtonClicked() override;
 
 public:
-    CLONE(CButton);
-    CButton();
-    ~CButton();
+    CLONE(CButtonUI);
+    CButtonUI();
+    ~CButtonUI();
 };
 

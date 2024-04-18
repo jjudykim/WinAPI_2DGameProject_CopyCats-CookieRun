@@ -33,13 +33,13 @@ int CTexture::Create(UINT _Width, UINT _Height)
 	return S_OK;
 }
 
-int CTexture::CreateWithAlpha(UINT _Width, UINT _Height)
+int CTexture::CreateWithAlpha(UINT _Width, UINT _Height, Color _color)
 {
 	Bitmap bitmap(_Width, _Height, PixelFormat32bppARGB);
 	Graphics graphics(&bitmap);
 
 	Color color(128, 0, 0, 255);
-	SolidBrush brush(color);
+	SolidBrush brush(_color);
 
 	graphics.FillRectangle(&brush, 0, 0, _Width, _Height);
 	
