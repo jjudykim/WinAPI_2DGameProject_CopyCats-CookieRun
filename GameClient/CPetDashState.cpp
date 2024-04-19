@@ -29,6 +29,8 @@ void CPetDashState::Enter()
 	CPetState::Enter();
 
 	GetOwnerAnimator()->Play(L"PetDash", true);
+
+	LOG(LOG_TYPE::DBG_LOG, L"Pet Dash ÁøÀÔ");
 }
 
 void CPetDashState::FinalTick()

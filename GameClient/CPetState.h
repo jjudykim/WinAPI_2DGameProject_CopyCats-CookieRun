@@ -3,6 +3,7 @@
 
 class CPet;
 class CAnimator;
+class CCollider;
 
 class CPetState :
     public CState
@@ -10,6 +11,7 @@ class CPetState :
 private:
     CPet*       m_pOwner;
     CAnimator*  m_pOwnerAnimator;
+    CCollider*  m_pOwnerCollider;
 
 public:
     virtual void Set() override;
@@ -19,9 +21,11 @@ public:
 
 public:
     void SetOwnerAnimator(CAnimator* _animator) { m_pOwnerAnimator = _animator; }
-
+    void SetOwnerCollider(CCollider* _collider) { m_pOwnerCollider = _collider; }
+    
     CPet* GetCurPet() { return m_pOwner; }
     CAnimator* GetOwnerAnimator() { return m_pOwnerAnimator; }
+    CCollider* GetOwnerCollider() { return m_pOwnerCollider; }
 
 public:
     CPetState();

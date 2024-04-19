@@ -12,6 +12,7 @@
 #include "CLevel.h"
 
 #include "CCollider.h"
+#include "CObstacle.h"
 #include "CRigidBody.h"
 #include "CFSM.h"
 #include "CAnimator.h"
@@ -116,11 +117,9 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 		}
 	}
 
-	if (!(CheckCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE) 
-		|| CheckCookieState(COOKIE_COMPLEX_STATE::GIANT) 
-		|| CheckCookieState(COOKIE_COMPLEX_STATE::BOOST)))
+	if (_OtherObj->GetLayerType() == LAYER_TYPE::OBSTACLE)
 	{
-		if (_OtherObj->GetLayerType() == LAYER_TYPE::OBSTACLE)
+		if (!((m_State & (UINT)COOKIE_COMPLEX_STATE::INVINCIBLE) || (m_State & (UINT)COOKIE_COMPLEX_STATE::GIANT) || (m_State & (UINT)COOKIE_COMPLEX_STATE::BOOST)))
 		{
 			CGameDataMgr::GetInst()->DeductHP(30);
 			if (CGameDataMgr::GetInst()->IsCookieDead() == true) m_FSM->ChangeState(L"DeadByObs");
@@ -130,12 +129,15 @@ void CPlayer::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollide
 				m_FSM->ChangeState(L"Damage");
 			}
 		}
+		else if (m_State & (UINT)COOKIE_COMPLEX_STATE::GIANT || m_State & (UINT)COOKIE_COMPLEX_STATE::BOOST)
+		{
+			CObstacle* obs = static_cast<CObstacle*>(_OtherObj);
+			obs->SetCrash(true);
+		}
 	}
-
-	
 }
 
-void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider)
+void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* _OtherCollider) 
 {
 	if (_OtherObj->GetLayerType() == LAYER_TYPE::PLATFORM)
 	{

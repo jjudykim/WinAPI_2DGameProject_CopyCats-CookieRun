@@ -43,18 +43,18 @@ void CPlayerState::FinalTick()
 
 	if (GetOwnerAnimator() != nullptr)
 	{
-		Vec2D ColPos = GetOwnerAnimator()->GetCurAnim()->GetColliderPos();
-		Vec2D ColSize = GetOwnerAnimator()->GetCurAnim()->GetColliderSize();
+		Vec2D ColPos = m_pOwnerAnimator->GetCurAnim()->GetColliderPos();
+		Vec2D ColSize = m_pOwnerAnimator->GetCurAnim()->GetColliderSize();
 
-		if (GetCurPlayer()->CheckCookieState(COOKIE_COMPLEX_STATE::GIANT))
+		if (m_pOwner->CheckCookieState(COOKIE_COMPLEX_STATE::GIANT))
 		{
-			GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x * 2, ColPos.y - (GetObj()->GetScale().y / 3.f)));
-			GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize() * 2.f);
+			m_pOwnerCollider->SetOffsetPos(Vec2D(ColPos.x * 2, ColPos.y - (GetObj()->GetScale().y / 3.f)));
+			m_pOwnerCollider->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize() * 2.f);
 		}
 		else
 		{
-			GetOwnerCollider()->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
-			GetOwnerCollider()->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
+			m_pOwnerCollider->SetOffsetPos(Vec2D(ColPos.x, ColPos.y - (GetObj()->GetScale().y / 2.f)));
+			m_pOwnerCollider->SetScale(GetOwnerAnimator()->GetCurAnim()->GetColliderSize());
 		}
 		
 	}

@@ -16,6 +16,7 @@ private:
 
     bool        m_UseMouse;
     bool        m_MouseOn;
+    bool        m_Crash;
     bool        m_Acted;
 
 public:
@@ -31,6 +32,7 @@ public:
     void SetEffectSound(CSound* _sound) { m_EffectSound = _sound; }
     void SetActed(bool _act) { m_Acted = _act; }
     void ObstacleDownAction();
+    void SetCrash(bool _Crash) { m_Crash = _Crash; }
 
     CTexture* GetTexture() { return m_Texture; }
     CSound* GetEffectSound() { return m_EffectSound; }

@@ -35,7 +35,6 @@ void CJumpState::Set()
 void CJumpState::Enter()
 {
 	CPlayerState::Enter();
-	LOG(LOG_TYPE::DBG_WARNING, L"Jump State ÁøÀÔ");
 
 	GetOwnerAnimator()->Play(L"Jump", false);
 	GetOwnerRigidBody()->SetUseGravity(true);

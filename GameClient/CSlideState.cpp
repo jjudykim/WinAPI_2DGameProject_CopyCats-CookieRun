@@ -31,7 +31,6 @@ void CSlideState::Set()
 void CSlideState::Enter()
 {
 	CPlayerState::Enter();
-	LOG(LOG_TYPE::DBG_WARNING, L"Slide State ÁøÀÔ");
 	GetOwnerRigidBody()->SetUseGravity(true);
 	GetOwnerAnimator()->Play(L"Slide", true);
 

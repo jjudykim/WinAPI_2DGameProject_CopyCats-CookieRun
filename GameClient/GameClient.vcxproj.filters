@@ -378,6 +378,9 @@
     <ClInclude Include="CScoreUI.h">
       <Filter>03. Game\06. Object\UI\ScoreUI</Filter>
     </ClInclude>
+    <ClInclude Include="CPetAttractState.h">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -565,6 +568,9 @@
     </ClCompile>
     <ClCompile Include="CScoreUI.cpp">
       <Filter>03. Game\06. Object\UI\ScoreUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CPetAttractState.cpp">
+      <Filter>03. Game\09. Module\State\PetState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

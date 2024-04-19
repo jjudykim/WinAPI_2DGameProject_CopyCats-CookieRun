@@ -7,6 +7,7 @@ class CPet;
 class CSound;
 class CButtonUI;
 class CImageUI;
+class CPanelUI;
 
 class CLevel_Game :
     public CLevel
@@ -33,10 +34,15 @@ private:
     CImageUI*   m_HeartGaugeEffect;
     CImageUI*   m_BTAlphabet[9];
 
+    CPanelUI*   m_CoinScoreUI;
+    CPanelUI*   m_HighScoreUI;
+    CPanelUI*   m_CurScoreUI;
+    vector<int> m_vecScore;
+
     bool        m_GameOver;
-    bool        m_BonusTime[9];
 
     // Timer & Log
+    bool        m_JellyAttract;
     int         m_CookieStateAction;
     Vec2D       m_LogPos;
 

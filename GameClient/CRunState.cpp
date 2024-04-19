@@ -37,7 +37,6 @@ void CRunState::Set()
 void CRunState::Enter()
 {
 	CPlayerState::Enter();
-	LOG(LOG_TYPE::DBG_WARNING, L"Run State ¡¯¿‘");
 
 	CPlayer* Player = GetCurPlayer();
 

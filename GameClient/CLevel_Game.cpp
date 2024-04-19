@@ -178,6 +178,19 @@ void CLevel_Game::tick()
 		m_BtnSlide->SetButtonState(0);
 	}
 
+	// BonusTime Update
+	if (CGameDataMgr::GetInst()->IsBTEditing())
+	{
+		for (int i = 0; i < 9; ++i)
+		{
+			if (CGameDataMgr::GetInst()->CheckAlphabetOn(i))
+			{
+				m_BTAlphabet[i]->SetTexture(CResourceMgr::GetInst()->FindTexture(L"BonusTime_" + std::to_wstring(i)));
+			}
+		}
+		CGameDataMgr::GetInst()->DoneBTEditing();
+	}
+	
 	// MiniMap Update
 	float RunRateStandard = m_Cookie->GetPos().x - (m_DestinationPosX - m_CurStage->GetSTGLength());
 	float RunRate = ( RunRateStandard / m_CurStage->GetSTGLength()) * 100.f;
@@ -186,6 +199,112 @@ void CLevel_Game::tick()
 	// HP Update
 	m_HeartGauge->SetScale(CGameDataMgr::GetInst()->GetRateHP() * 7.5f, m_HeartGauge->GetScale().y);
 	m_HeartGaugeEffect->SetPos(m_HeartGauge->GetScale().x, 0);
+
+	// Coin Score Update
+	if (CGameDataMgr::GetInst()->IsCoinEditing())
+	{
+		m_vecScore.clear();
+
+		// Setting Digit
+		int coin = CGameDataMgr::GetInst()->GetCurGameCoin();
+		while (true)
+		{
+			m_vecScore.push_back(coin % 10);
+			if (coin / 10 < 1) break;
+			else
+			{
+				coin /= 10;
+			}
+		}
+		int digit = m_vecScore.size();
+
+		// Add Child UI
+		const vector<CUI*>& ScoreUI = m_CoinScoreUI->GetChildUI();         // [0]은 제외!
+		int count = ScoreUI.size();
+		for (int i = 0; i < digit - (count - 1); ++i)
+		{
+			m_CoinScoreUI->AddChildUI(ScoreUI[1]->Clone());
+		}
+
+		// Set Score at UI
+		for (int i = 0; i < digit; ++i)
+		{
+			CScoreUI* pScoreUI = static_cast<CScoreUI*>(ScoreUI[1 + i]);
+			pScoreUI->SetSmallScore(m_vecScore[digit - 1 - i]);
+		}
+
+		// Set Pos All UI
+		for (int i = 1; i < ScoreUI.size(); ++i)
+		{
+			ScoreUI[i]->SetPos(30 + ScoreUI[i]->GetTexture()->GetWidth() * i, 0);
+		}
+
+		CGameDataMgr::GetInst()->DoneCoinEditing();
+	}
+
+
+	// Cur Score Update
+	if (CGameDataMgr::GetInst()->IsScoreEditing())
+	{
+		m_vecScore.clear();
+
+		// Setting Digit
+		int score = CGameDataMgr::GetInst()->GetCurScore();
+		while (true)
+		{
+			m_vecScore.push_back(score % 10);
+			if (score / 10 < 1) break;
+			else
+			{
+				score /= 10;
+			}
+		}
+		int digit = m_vecScore.size();
+
+		// Add Child UI
+		const vector<CUI*>& ScoreUI = m_CurScoreUI->GetChildUI();         // [0]은 제외!
+		int count = ScoreUI.size();
+		for (int i = 0; i < digit - count; ++i)
+		{
+			m_CurScoreUI->AddChildUI(ScoreUI[0]->Clone());
+		}
+
+		// Set Score at UI
+		for (int i = 0; i < digit; ++i)
+		{
+			CScoreUI* pScoreUI = static_cast<CScoreUI*>(ScoreUI[i]);
+			pScoreUI->SetBigScore(m_vecScore[digit - 1 - i]);
+		}
+
+		// Set Pos All UI
+		for (int i = 0; i < ScoreUI.size(); ++i)
+		{
+			float StartPosX = (8 - digit) * (ScoreUI[i]->GetTexture()->GetWidth());
+			ScoreUI[i]->SetPos(StartPosX + (ScoreUI[i]->GetTexture()->GetWidth() * i), 0.f);
+		}
+
+		CGameDataMgr::GetInst()->DoneScoreEditing();
+	}
+
+	if (CGameDataMgr::GetInst()->GetHighScore() < CGameDataMgr::GetInst()->GetCurScore())
+	{
+		const vector<CUI*>& ScoreUI = m_HighScoreUI->GetChildUI();
+		for (int i = 0; i < ScoreUI.size(); ++i)
+		{
+			if (i == 0)
+			{
+				ScoreUI[i]->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"Best", L"texture\\HUD\\Best2.png"));
+				ScoreUI[i]->SetScale(ScoreUI[i]->GetTexture()->GetWidth(), ScoreUI[i]->GetTexture()->GetHeight());
+				ScoreUI[i]->SetPos(250.f, 50.f);
+			}
+			else
+			{
+				ScoreUI[i]->SetTexture(nullptr);
+			}
+		}
+	}
+	// ===================================================
+
 
 	// Obstacle Animation Play
 	const vector<CObject*>& vecObs = GET_CUR_LEVEL->GetObjectsByLayerType(LAYER_TYPE::OBSTACLE);
@@ -230,6 +349,35 @@ void CLevel_Game::tick()
 		}
 	}
 
+	if (m_JellyAttract == true)
+	{
+		CCollisionMgr::GetInst()->CollisionCheck(LAYER_TYPE::PET, LAYER_TYPE::JELLY);
+
+		const vector<CObject*>& vecJelly = GET_CUR_LEVEL->GetObjectsByLayerType(LAYER_TYPE::JELLY);
+		CJelly* Jelly = nullptr;
+		float tPosX = 0;
+
+		for (size_t i = 0; i < vecJelly.size(); ++i)
+		{
+			Jelly = static_cast<CJelly*>(vecJelly[i]);
+			tPosX = vecJelly[i]->GetPos().x;
+			if (m_Cookie->GetPos().x < tPosX && tPosX <= m_ActingPosX)
+			{
+				float MoveDistanceX = (m_Pet->GetPos().x - Jelly->GetPos().x) * DT * 2.f;
+				float MoveDistanceY = (m_Pet->GetPos().y - Jelly->GetPos().y) * DT * 2.f;
+				Jelly->SetPos(Jelly->GetPos().x + MoveDistanceX, Jelly->GetPos().y + MoveDistanceY);
+			}	
+		}
+	}
+	else
+	{
+		CCollisionMgr::GetInst()->CollisionUnCheck(LAYER_TYPE::PET, LAYER_TYPE::JELLY);
+	}
+	
+
+	
+	
+	
 	// Delete Passed Stage Object
 	for (int i = 0; i < (UINT)LAYER_TYPE::UI; ++i)
 	{
@@ -330,6 +478,7 @@ void CLevel_Game::tick()
 		{
 			m_CookieStateAction |= (int)COOKIE_COMPLEX_STATE::BOOST;
 			m_Cookie->ChangeCookieFSMState(L"Dash");
+			m_Pet->ChangePetFSMState(L"Dash");
 			m_Cookie->SetSpeed(m_Cookie->GetSpeed() * 1.75f);
 			m_Pet->SetSpeed(m_Pet->GetSpeed() * 1.75f);
 
@@ -339,8 +488,23 @@ void CLevel_Game::tick()
 				m_Cookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
 				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::BOOST);
 				m_Cookie->ChangeCookieFSMState(L"Run");
+				m_Pet->ChangePetFSMState(L"Run");
 				LOG(LOG_TYPE::DBG_LOG, L"BOOST OFF");
 				m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::BOOST;
+				}, false);
+		}
+	}
+	if (m_Cookie->CheckCookieState(COOKIE_COMPLEX_STATE::ATTRACT))
+	{
+		if (!m_Pet->CheckPetFSMState(L"Attract"))
+		{
+			m_JellyAttract = true;
+			m_Pet->ChangePetFSMState(L"Attract");
+
+			CTimeMgr::GetInst()->AddTimer(4.f, [this]() {
+				m_Pet->ChangePetFSMState(L"Run");
+				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::ATTRACT);
+				m_JellyAttract = false;
 				}, false);
 		}
 	}
@@ -518,20 +682,21 @@ void CLevel_Game::SetHUD()
 
 
 	// BonusTime UI
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_B", L"texture\\HUD\\BonusTime_B.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_O", L"texture\\HUD\\BonusTime_O.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_N", L"texture\\HUD\\BonusTime_N.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_U", L"texture\\HUD\\BonusTime_U.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_S", L"texture\\HUD\\BonusTime_S.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_T", L"texture\\HUD\\BonusTime_T.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_I", L"texture\\HUD\\BonusTime_I.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_M", L"texture\\HUD\\BonusTime_M.png");
-	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_E", L"texture\\HUD\\BonusTime_E.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_0", L"texture\\HUD\\BonusTime_B.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_1", L"texture\\HUD\\BonusTime_O.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_2", L"texture\\HUD\\BonusTime_N.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_3", L"texture\\HUD\\BonusTime_U.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_4", L"texture\\HUD\\BonusTime_S.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_5", L"texture\\HUD\\BonusTime_T.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_6", L"texture\\HUD\\BonusTime_I.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_7", L"texture\\HUD\\BonusTime_M.png");
+	CResourceMgr::GetInst()->LoadTexture(L"BonusTime_8", L"texture\\HUD\\BonusTime_E.png");
 
 	for (int i = 0; i < 9; ++i)
 	{
 		pImageUI = new CImageUI;
 		pImageUI->SetScale(42.f, 46.f);
+		pImageUI->SetPos(-137 + (310.f / 9 + 2) * i, 0.f);         // TODO : 공식 수정 예정
 		m_BTAlphabet[i] = pImageUI;
 	}
 
@@ -547,8 +712,6 @@ void CLevel_Game::SetHUD()
 	AddObject(LAYER_TYPE::UI, pImageUI);
 	
 	
-
-
 	// Minimap UI
 	pImageUI = new CImageUI;
 	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"MiniMap_Mark", L"texture\\HUD\\MiniMap_Mark.png"));
@@ -571,14 +734,14 @@ void CLevel_Game::SetHUD()
 	AddObject(LAYER_TYPE::UI, pPanelUI);
 	
 
-	// Score UI
-
+	// Score UI Setting
 	for (int i = 0; i < 10; ++i)
 	{
 		CResourceMgr::GetInst()->LoadTexture(L"SmallScore_" + std::to_wstring(i), L"texture\\HUD\\SmallScore_" + std::to_wstring(i) + L".png");
 		CResourceMgr::GetInst()->LoadTexture(L"BigScore_" + std::to_wstring(i), L"texture\\HUD\\BigScore_" + std::to_wstring(i) + L".png");
 	}
-
+	
+	// Coin Score
 	pImageUI = new CImageUI;
 	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"ScoreCoin", L"texture\\HUD\\ScoreCoin.png"));
 	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetHeight());
@@ -587,16 +750,71 @@ void CLevel_Game::SetHUD()
 	pScoreUI = new CScoreUI;
 	pScoreUI->SetSmallScore(0);
 	pScoreUI->SetScale(pScoreUI->GetTexture()->GetWidth(), pScoreUI->GetTexture()->GetHeight());
-	pScoreUI->SetPos(50.f, 0.f);
+	pScoreUI->SetPos(30.f, 0.f);
 
 	pPanelUI = new CPanelUI;
 	pPanelUI->SetScale(Vec2D(200.f, 0.f));
 	pPanelUI->SetPos(m_Resolution.x / 2.f - 30.f, 30.f);
 	pPanelUI->AddChildUI(pImageUI);
 	pPanelUI->AddChildUI(pScoreUI);
+	m_CoinScoreUI = pPanelUI;
 
 	AddObject(LAYER_TYPE::UI, pPanelUI);
 
+
+	// HighScore
+	pImageUI = new CImageUI;
+	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"HighScore_Banner", L"texture\\HUD\\HighScore_Banner.png"));
+	pImageUI->SetScale(pImageUI->GetTexture()->GetWidth(), pImageUI->GetTexture()->GetHeight());
+	pImageUI->SetPos(250.f, -10.f);
+
+	pPanelUI = new CPanelUI;
+	pPanelUI->SetScale(Vec2D(700.f, 50.f));
+	pPanelUI->SetPos(m_Resolution.x - 20.f - (pPanelUI->GetScale().x / 2.f), 130.f);
+	pPanelUI->AddChildUI(pImageUI);
+	m_HighScoreUI = pPanelUI;
+
+
+	// HighScore ScoreUI Setting
+	m_vecScore.clear();
+
+	int score = CGameDataMgr::GetInst()->GetHighScore();
+	while (true)
+	{
+		m_vecScore.push_back(score % 10);
+		if (score / 10 < 1) break;
+		else score /= 10;
+	}
+	int digit = m_vecScore.size();
+
+	for (int i = 0; i < digit; ++i)
+	{
+		pScoreUI = new CScoreUI;
+		pScoreUI->SetSmallScore(m_vecScore[digit - 1 - i]);
+		float StartPosX = (11 - digit) * (pScoreUI->GetTexture()->GetWidth());
+		pScoreUI->SetPos(StartPosX + (pScoreUI->GetTexture()->GetWidth() * i), 30.f);
+		pScoreUI->SetScale(pScoreUI->GetTexture()->GetWidth(), pScoreUI->GetTexture()->GetHeight());
+		pPanelUI->AddChildUI(pScoreUI);
+	}
+
+	AddObject(LAYER_TYPE::UI, pPanelUI);
+
+
+
+	// CurScore ScoreUI Setting
+
+	pScoreUI = new CScoreUI;
+	pScoreUI->SetBigScore(0);
+	pScoreUI->SetScale(pScoreUI->GetTexture()->GetWidth(), pScoreUI->GetTexture()->GetHeight());
+	pScoreUI->SetPos(pScoreUI->GetTexture()->GetWidth() * 7, 0.f);
+
+	pPanelUI = new CPanelUI;
+	pPanelUI->SetScale(Vec2D(700.f, 50.f));
+	pPanelUI->SetPos(m_Resolution.x - 20.f - (pPanelUI->GetScale().x / 2.f), 250.f);
+	pPanelUI->AddChildUI(pScoreUI);
+	m_CurScoreUI = pPanelUI;
+
+	AddObject(LAYER_TYPE::UI, pPanelUI);
 }
 
 void CLevel_Game::LoadSoundResource()

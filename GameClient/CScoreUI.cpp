@@ -21,6 +21,7 @@ void CScoreUI::tick_ui()
 void CScoreUI::render_ui()
 {
 	CTexture* tex = GetTexture();
+	if (tex == nullptr) return;
 
 	Vec2D vPos = GetFinalPos();
 	Vec2D vScale = GetScale();

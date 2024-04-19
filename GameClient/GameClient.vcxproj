@@ -152,6 +152,7 @@
     <ClInclude Include="CLevel_Logo.h" />
     <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPet.h" />
+    <ClInclude Include="CPetAttractState.h" />
     <ClInclude Include="CPetDashState.h" />
     <ClInclude Include="CPetRunState.h" />
     <ClInclude Include="CPetState.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="CLevel_Logo.cpp" />
     <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPet.cpp" />
+    <ClCompile Include="CPetAttractState.cpp" />
     <ClCompile Include="CPetDashState.cpp" />
     <ClCompile Include="CPetRunState.cpp" />
     <ClCompile Include="CPetState.cpp" />

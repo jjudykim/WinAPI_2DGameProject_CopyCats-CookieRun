@@ -12,6 +12,7 @@ CGameDataMgr::CGameDataMgr()
 	, m_GlobalGameCoin(0)
 	, m_CurGameCoin(0)
 	, m_CookieDead(false)
+	, m_BonusTime{0}
 {
 
 }
@@ -24,15 +25,15 @@ void CGameDataMgr::init()
 {
 	m_MaxHP = 100;
 	m_CurHP = m_MaxHP;
-	m_HighGameScore = 5000;
+	m_HighGameScore = 5500;
 	m_CurGameScore = 0;
 	m_CookieDead = false;
 }
 
 void CGameDataMgr::tick()
 {
-	if (m_HighGameScore < m_CurGameScore)
+	/*if (m_HighGameScore < m_CurGameScore)
 	{
 		m_HighGameScore = m_CurGameScore;
-	}
+	}*/
 }

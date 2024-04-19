@@ -6,6 +6,8 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CMouseMgr.h"
+#include "CTimeMgr.h"
+#include "CTaskMgr.h"
 #include "CSound.h"
 
 CObstacle::CObstacle()
@@ -17,6 +19,7 @@ CObstacle::CObstacle()
 	, m_MouseOn(false)
 	, m_EffectSound(nullptr)
 	, m_Acted(false)
+	, m_Crash(false)
 {
 	SetLayerType(LAYER_TYPE::OBSTACLE);
 	m_Animator = nullptr;
@@ -56,6 +59,20 @@ void CObstacle::tick()
 	if (m_UseMouse)
 	{
 		CheckMouseOn();
+	}
+	
+	if (m_Crash)
+	{
+		Vec2D Definition = CCamera::GetInst()->GetRealPos(Vec2D(CEngine::GetInst()->GetResolution().x + 50.f, 70.f));
+
+		Vec2D Direction = Definition - GetPos();
+		Direction.Normalize();
+		SetPos(GetPos() + (Direction * 1700.f * DT));
+		if (Definition.x < GetPos().x)
+		{
+			Destroy();
+		}
+
 	}
 }
 

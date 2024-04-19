@@ -143,6 +143,7 @@ void CJelly::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider
 	}
 	else if (m_ObjType == DYNAMIC_OBJ_TYPE::BONUSTIME)
 	{
+		CGameDataMgr::GetInst()->AddBonusTimeAlphabet(m_Index - 8);
 	}
 	else if (m_ObjType == DYNAMIC_OBJ_TYPE::ITEM)
 	{
@@ -156,6 +157,7 @@ void CJelly::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider
 			CGameDataMgr::GetInst()->AddHP(40);
 			break;
 		case 19:       // GET_MAGNETISM
+			pCookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::ATTRACT);
 			break;
 		case 20:       // GET_DASH
 			pCookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::BOOST);
