@@ -20,6 +20,19 @@ void RunBtnCallBackFunc()
 	CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::GAME);
 }
 
+void EpisodeMapBtnCallBackFunc()
+{
+
+}
+
+void SelectCookieBtnCallBackFunc()
+{
+	CLevel_Lobby* level = static_cast<CLevel_Lobby*>(CLevelMgr::GetInst()->GetCurrentLevel());
+	level->SetSelectCookieUI();
+}
+
+
+
 CLevel_Lobby::CLevel_Lobby()
 {
 }
@@ -79,6 +92,11 @@ void CLevel_Lobby::Enter()
 	ImageUI->SetPos(m_Resolution.x - 30.f - (PanelUI->GetScale().x / 2.f), 535.f);
 	AddObject(LAYER_TYPE::UI, ImageUI);
 
+	ButtonUI = new CButtonUI;
+	ButtonUI->SetScale(ImageUI->GetTexture()->GetWidth() / 2.f, ImageUI->GetTexture()->GetHeight());
+	ButtonUI->SetPos(-130, 0);
+	ButtonUI->SetCallBack(&SelectCookieBtnCallBackFunc);
+	ImageUI->AddChildUI(ButtonUI);
 
 
 	m_CurCookieUI = new CImageUI;
@@ -204,6 +222,7 @@ void CLevel_Lobby::Enter()
 
 	ButtonUI = new CButtonUI;
 	ButtonUI->SetNormalImage(CResourceMgr::GetInst()->FindTexture(L"EpisodeMap_Normal"));
+	ButtonUI->SetCallBack(&EpisodeMapBtnCallBackFunc);
 	ButtonUI->SetScale(675.f, 140.f);
 	ButtonUI->SetPos(0.f, 20.f);
 	PanelUI->AddChildUI(ButtonUI);
@@ -240,6 +259,13 @@ void CLevel_Lobby::LoadTextureResource()
 		CResourceMgr::GetInst()->LoadTexture(L"BigScore_" + std::to_wstring(i), L"texture\\HUD\\BigScore_" + std::to_wstring(i) + L".png");
 	}
 
+
+	// Cookie & Pet Select Texture
+	CResourceMgr::GetInst()->CreateTextureWithAlpha(L"BlackBackgroundTex", m_Resolution.x + 1, m_Resolution.y + 1, Color(178, 0, 0, 0));
+	CResourceMgr::GetInst()->LoadTexture(L"SelectCookieBG0", L"texture\\Lobby\\SelectCookieBG0.png");
+
+	// Episode UI Texture
+
 	CResourceMgr::GetInst()->LoadTexture(L"NowEP_1", L"texture\\Lobby\\NowEP_1.png");
 	CResourceMgr::GetInst()->LoadTexture(L"NowEP_2", L"texture\\Lobby\\NowEP_2.png");
 	CResourceMgr::GetInst()->LoadTexture(L"NowEP_3", L"texture\\Lobby\\NowEP_3.png");
@@ -252,3 +278,30 @@ void CLevel_Lobby::LoadTextureResource()
 	CResourceMgr::GetInst()->LoadTexture(L"RunButton_Hover", L"texture\\Button\\Run_Hover.png");
 }
 
+void CLevel_Lobby::SetEpisodeMapUI()
+{
+	
+}
+
+void CLevel_Lobby::SetSelectCookieUI()
+{
+	CPanelUI* PanelUI = nullptr;
+	CImageUI* ImageUI = nullptr;
+	CButtonUI* ButtonUI = nullptr;
+
+	ImageUI = new CImageUI;
+	ImageUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"BlackBackgroundTex"));
+	ImageUI->SetScale(ImageUI->GetTexture()->GetWidth(), ImageUI->GetTexture()->GetHeight());
+	ImageUI->SetPos(0, 0);
+	AddObject(LAYER_TYPE::UI, ImageUI);
+
+	PanelUI = new CPanelUI;
+	PanelUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"SelectCookieBG0"));
+	PanelUI->SetScale(PanelUI->GetTexture()->GetWidth(), PanelUI->GetTexture()->GetHeight());
+	PanelUI->SetPos(0, 0);
+	AddObject(LAYER_TYPE::UI, PanelUI);	
+}
+
+void CLevel_Lobby::SetSelectPetUI()
+{
+}

@@ -25,6 +25,12 @@ public:
 public:
 	void LoadSoundResource();
 	void LoadTextureResource();
+
+	void SetEpisodeMapUI();
+
+	void SetSelectCookieUI();
+
+	void SetSelectPetUI();
 	
 
 public:
