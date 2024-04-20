@@ -40,6 +40,8 @@ private:
     vector<int> m_vecScore;
 
     bool        m_GameOver;
+    bool        m_WarningEffect;
+    bool        m_EffectPlaying;
 
     // Timer & Log
     bool        m_JellyAttract;

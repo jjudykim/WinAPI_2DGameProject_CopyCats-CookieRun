@@ -6,6 +6,8 @@ enum class CAM_EFFECT
 	FADE_OUT,
 	WHITE_FADE_IN,
 	WHITE_FADE_OUT,
+	DAMAGE_FADE_IN,
+	DAMAGE_FADE_OUT,
 	NONE,
 };
 
@@ -36,6 +38,7 @@ private:
 
 	CTexture*		m_FadeTex;
 	CTexture*		m_WhiteTex;
+	CTexture*		m_DamageTex;
 
 
 public:

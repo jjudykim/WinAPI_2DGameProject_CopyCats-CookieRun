@@ -32,6 +32,10 @@ void CDamageState::Enter()
 	GetOwnerAnimator()->Play(L"Damage", false);
 	GetSoundEffect()->SetVolume(70.f);
 	GetSoundEffect()->Play();
+
+	CCamera::GetInst()->SetCameraEffect(CAM_EFFECT::DAMAGE_FADE_IN, 0.3f);
+	CCamera::GetInst()->SetCameraEffect(CAM_EFFECT::DAMAGE_FADE_OUT, 0.3f);
+
 	CTimeMgr::GetInst()->AddTimer(0.3f, [this]() { GetFSM()->ChangeState(L"Run"); }, false);
 }
 

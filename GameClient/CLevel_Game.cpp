@@ -85,7 +85,7 @@ void CLevel_Game::begin()
 
 	m_BGM = CResourceMgr::GetInst()->FindSound(L"Bgm_MainGame");
 	m_BGM->SetVolume(50.f);
-	m_BGM->PlayToBGM();
+	m_BGM->PlayToBGM(true);
 }
 
 
@@ -199,6 +199,24 @@ void CLevel_Game::tick()
 	// HP Update
 	m_HeartGauge->SetScale(CGameDataMgr::GetInst()->GetRateHP() * 7.5f, m_HeartGauge->GetScale().y);
 	m_HeartGaugeEffect->SetPos(m_HeartGauge->GetScale().x, 0);
+	if (CGameDataMgr::GetInst()->GetRateHP() <= 20.f)
+	{
+		m_WarningEffect = true;
+	}
+	else
+	{
+		m_WarningEffect = false;
+	}
+
+	if (m_WarningEffect && !m_EffectPlaying)
+	{
+		m_EffectPlaying = true;
+		CCamera::GetInst()->SetCameraEffect(CAM_EFFECT::DAMAGE_FADE_IN, 1.f);
+		CCamera::GetInst()->SetCameraEffect(CAM_EFFECT::DAMAGE_FADE_OUT, 1.f);
+		CTimeMgr::GetInst()->AddTimer(2.f, [this]() {
+			m_EffectPlaying = false;
+			}, false);
+	}
 
 	// Coin Score Update
 	if (CGameDataMgr::GetInst()->IsCoinEditing())
@@ -375,9 +393,6 @@ void CLevel_Game::tick()
 	}
 	
 
-	
-	
-	
 	// Delete Passed Stage Object
 	for (int i = 0; i < (UINT)LAYER_TYPE::UI; ++i)
 	{
@@ -401,6 +416,7 @@ void CLevel_Game::tick()
 			}
 		}
 	}
+
 
 	// Cookie's Complex State Check
 	CCollider* CookieCol = m_Cookie->GetComponent<CCollider>();
@@ -734,13 +750,6 @@ void CLevel_Game::SetHUD()
 	AddObject(LAYER_TYPE::UI, pPanelUI);
 	
 
-	// Score UI Setting
-	for (int i = 0; i < 10; ++i)
-	{
-		CResourceMgr::GetInst()->LoadTexture(L"SmallScore_" + std::to_wstring(i), L"texture\\HUD\\SmallScore_" + std::to_wstring(i) + L".png");
-		CResourceMgr::GetInst()->LoadTexture(L"BigScore_" + std::to_wstring(i), L"texture\\HUD\\BigScore_" + std::to_wstring(i) + L".png");
-	}
-	
 	// Coin Score
 	pImageUI = new CImageUI;
 	pImageUI->SetTexture(CResourceMgr::GetInst()->LoadTexture(L"ScoreCoin", L"texture\\HUD\\ScoreCoin.png"));

@@ -21,6 +21,9 @@ CCamera::CCamera()
 	// FadeTex
 	m_FadeTex = CResourceMgr::GetInst()->CreateTexture(L"FadeTexture", (UINT)vResol.x, (UINT)vResol.y);
 
+	// DamageTex
+	m_DamageTex = CResourceMgr::GetInst()->LoadTexture(L"DamageTexture", L"texture\\EffectHeart.png");
+
 	// WhiteTex
 	m_WhiteTex = CResourceMgr::GetInst()->CreateTexture(L"WhiteTexture", (UINT)vResol.x, (UINT)vResol.y);
 	USE_BRUSH(m_WhiteTex->GetDC(), BRUSH_TYPE::BRUSH_WHITE);
@@ -87,17 +90,38 @@ void CCamera::render()
 	{
 		EffectTex = m_WhiteTex;
 	}
+	else if (info.Effect == CAM_EFFECT::DAMAGE_FADE_IN || info.Effect == CAM_EFFECT::DAMAGE_FADE_OUT)
+	{
+		EffectTex = m_DamageTex;
+	}
 
-	BLENDFUNCTION bf = {};
+	if (info.Effect == CAM_EFFECT::DAMAGE_FADE_IN || info.Effect == CAM_EFFECT::DAMAGE_FADE_OUT)
+	{
+		BLENDFUNCTION bf = {};
 
-	bf.BlendOp = AC_SRC_OVER;
-	bf.BlendFlags = 0;
-	bf.SourceConstantAlpha = (int)info.Alpha;
-	bf.AlphaFormat = 0;
+		bf.BlendOp = AC_SRC_OVER;
+		bf.BlendFlags = 0;
+		bf.SourceConstantAlpha = (int)info.Alpha;
+		bf.AlphaFormat = AC_SRC_ALPHA;
 
-	AlphaBlend(DC, 0, 0, EffectTex->GetWidth(), EffectTex->GetHeight()
-				 , EffectTex->GetDC(), 0, 0
-				 , EffectTex->GetWidth(), EffectTex->GetHeight(), bf);
+		AlphaBlend(DC, 0, 0, EffectTex->GetWidth(), EffectTex->GetHeight()
+			, EffectTex->GetDC(), 0, 0
+			, EffectTex->GetWidth(), EffectTex->GetHeight(), bf);
+	}
+	else
+	{
+		BLENDFUNCTION bf = {};
+
+		bf.BlendOp = AC_SRC_OVER;
+		bf.BlendFlags = 0;
+		bf.SourceConstantAlpha = (int)info.Alpha;
+		bf.AlphaFormat = 0;
+
+		AlphaBlend(DC, 0, 0, EffectTex->GetWidth(), EffectTex->GetHeight()
+			, EffectTex->GetDC(), 0, 0
+			, EffectTex->GetWidth(), EffectTex->GetHeight(), bf);
+	}
+	
 }
 
 void CCamera::SetCameraDefault()
@@ -170,19 +194,15 @@ void CCamera::CameraEffect()
 
 	CAM_EFFECT_INFO& info = m_EffectList.front();
 
-	if (CAM_EFFECT::FADE_IN == info.Effect)
+	if (CAM_EFFECT::FADE_IN == info.Effect
+		|| CAM_EFFECT::WHITE_FADE_IN == info.Effect
+		|| CAM_EFFECT::DAMAGE_FADE_IN == info.Effect)
 	{
 		info.Alpha = (1.f - (info.Time / info.Duration)) * 255.f;
 	}
-	else if (CAM_EFFECT::FADE_OUT == info.Effect)
-	{
-		info.Alpha = (info.Time / info.Duration) * 255.f;
-	}
-	else if (CAM_EFFECT::WHITE_FADE_IN == info.Effect)
-	{
-		info.Alpha = (1.f - (info.Time / info.Duration)) * 255.f;
-	}
-	else if (CAM_EFFECT::WHITE_FADE_OUT == info.Effect)
+	else if (CAM_EFFECT::FADE_OUT == info.Effect
+		|| CAM_EFFECT::WHITE_FADE_OUT == info.Effect
+		|| CAM_EFFECT::DAMAGE_FADE_OUT == info.Effect)
 	{
 		info.Alpha = (info.Time / info.Duration) * 255.f;
 	}

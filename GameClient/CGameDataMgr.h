@@ -27,6 +27,7 @@ public:
 public:
 	UINT GetHighScore() { return m_HighGameScore; }
 	UINT GetCurScore() { return m_CurGameScore; }
+	UINT GetGlobalGameCoin() { return m_GlobalGameCoin; }
 	UINT GetCurGameCoin() { return m_CurGameCoin; }
 	int GetCurHP() { return m_CurHP; }
 	int GetMaxHP() { return m_MaxHP; }

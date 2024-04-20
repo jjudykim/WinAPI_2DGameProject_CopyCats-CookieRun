@@ -201,7 +201,7 @@
     <ClInclude Include="enum.h">
       <Filter>03. Game\02. Header</Filter>
     </ClInclude>
-    <ClInclude Include="CLevel_Stage01.h">
+    <ClInclude Include="CLevel_Lobby.h">
       <Filter>03. Game\04. Level\Stage01</Filter>
     </ClInclude>
     <ClInclude Include="CPlayer.h">
@@ -395,7 +395,7 @@
     <ClCompile Include="CLevel.cpp">
       <Filter>03. Game\04. Level</Filter>
     </ClCompile>
-    <ClCompile Include="CLevel_Stage01.cpp">
+    <ClCompile Include="CLevel_Lobby.cpp">
       <Filter>03. Game\04. Level\Stage01</Filter>
     </ClCompile>
     <ClCompile Include="CPlayer.cpp">

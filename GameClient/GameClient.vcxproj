@@ -177,7 +177,7 @@
     <ClInclude Include="CLevelMgr.h" />
     <ClInclude Include="CLevel_Editor.h" />
     <ClInclude Include="CLevel_Game.h" />
-    <ClInclude Include="CLevel_Stage01.h" />
+    <ClInclude Include="CLevel_Lobby.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CObstacle.h" />
     <ClInclude Include="CPathMgr.h" />
@@ -249,7 +249,7 @@
     <ClCompile Include="CLevelMgr.cpp" />
     <ClCompile Include="CLevel_Editor.cpp" />
     <ClCompile Include="CLevel_Game.cpp" />
-    <ClCompile Include="CLevel_Stage01.cpp" />
+    <ClCompile Include="CLevel_Lobby.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CObstacle.cpp" />
     <ClCompile Include="CPathMgr.cpp" />

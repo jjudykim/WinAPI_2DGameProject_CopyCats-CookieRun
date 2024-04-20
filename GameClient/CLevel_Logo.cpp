@@ -23,7 +23,7 @@ void GameStartBtnCallBackFunc()
 	CSound* sound = CResourceMgr::GetInst()->FindSound(L"Effect_UIBtn");
 	sound->SetVolume(80.f);
 	sound->Play();
-	CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::GAME);
+	CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::LOBBY);
 }
 
 CLevel_Logo::CLevel_Logo()

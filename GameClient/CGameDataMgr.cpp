@@ -25,7 +25,8 @@ void CGameDataMgr::init()
 {
 	m_MaxHP = 100;
 	m_CurHP = m_MaxHP;
-	m_HighGameScore = 5500;
+	m_HighGameScore = 3247050;
+	m_GlobalGameCoin = 1723;
 	m_CurGameScore = 0;
 	m_CookieDead = false;
 }

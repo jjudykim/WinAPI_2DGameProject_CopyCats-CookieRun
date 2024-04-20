@@ -121,7 +121,7 @@ void CJelly::BeginOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider
 		m_Sound->SetVolume(70.f);
 		m_Sound->Play();
 	}
-	CPlayer* pCookie = static_cast<CPlayer*>(_OtherObj);
+	CPlayer* pCookie = dynamic_cast<CPlayer*>(CLevelMgr::GetInst()->GetCurrentLevel()->GetObjectsByLayerType(LAYER_TYPE::PLAYER)[0]);
 
 	CGameDataMgr::GetInst()->AddScore(m_Value);
 
