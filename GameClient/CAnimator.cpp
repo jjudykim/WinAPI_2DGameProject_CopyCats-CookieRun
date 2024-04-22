@@ -93,6 +93,12 @@ CAnimation* CAnimator::FindAnimation(const wstring& _AnimName)
 
 void CAnimator::LoadAnimation(const wstring& _Key, const wstring& _strRelativeFilePath)
 {
+	if (nullptr != FindAnimation(_Key))
+	{
+		LOG(LOG_TYPE::DBG_ERROR, L"중복된 애니메이션");
+		return;
+	}
+
 	CAnimation* pNewAnim = CResourceMgr::GetInst()->LoadAnimation(_Key, _strRelativeFilePath);
 
 	if (pNewAnim == nullptr)
@@ -100,11 +106,6 @@ void CAnimator::LoadAnimation(const wstring& _Key, const wstring& _strRelativeFi
 		delete pNewAnim;
 		LOG(LOG_TYPE::DBG_ERROR, L"애니메이션 로딩 실패");
 		return;
-	}
-
-	if (nullptr != FindAnimation(pNewAnim->GetName()))
-	{
-		LOG(LOG_TYPE::DBG_ERROR, L"중복된 애니메이션");
 	}
 
 	pNewAnim->m_Animator = this;

@@ -26,7 +26,9 @@ private:
 public:
 	void init();
 	void tick();
-
+	void LoadFromFile();
+	void SaveToFile();
+	
 public:
 	UINT GetHighScore() { return m_HighGameScore; }
 	UINT GetCurScore() { return m_CurGameScore; }
@@ -42,6 +44,8 @@ public:
 	bool IsBTEditing() { return m_BTEditing; }
 	bool IsCookieDead() { return m_CookieDead; }
 	bool CheckAlphabetOn(int _index) { return m_BonusTime[_index]; }
+
+	void ResetForGame();
 	
 	void SetMaxHP(int _hp) { m_MaxHP = _hp; }
 	void SetGlobalGameCoin(int _hp) { m_GlobalGameCoin = _hp; }

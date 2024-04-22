@@ -34,6 +34,7 @@ private:
 	wstring				m_SelectPetStr;
 
 	CButtonUI*			m_PageChangeBtn;
+	CPanelUI*			m_LoadingPanel;
 
 	bool				m_SelectingCookie;
 	int					m_CurPanelStartIndex;

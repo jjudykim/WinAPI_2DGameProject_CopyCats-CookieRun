@@ -2,6 +2,7 @@
 #include "CLevel_Lobby.h"
 
 #include "CGameDataMgr.h"
+#include "CTimeMgr.h"
 #include "CPathMgr.h"
 #include "CLevelMgr.h"
 #include "CKeyMgr.h"
@@ -20,7 +21,6 @@ void RunBtnCallBackFunc()
 	sound->SetVolume(80.f);
 	sound->Play();
 	level->ShowLoadingUI();
-	//CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::GAME);
 }
 
 void EpisodeMapBtnCallBackFunc()
@@ -55,7 +55,8 @@ void CloseSelectCookieBtnCallBackFunc(CButtonUI* _btn)
 	CLevel_Lobby* level = static_cast<CLevel_Lobby*>(CLevelMgr::GetInst()->GetCurrentLevel());
 	level->FindSelectCookieByBtn(_btn);
 	level->DeleteSelectCookieUI();
-}
+	CGameDataMgr::GetInst()->SaveToFile();
+}    
 
 void CloseSelectPetBtnCallBackFunc(CButtonUI* _btn)
 {
@@ -65,6 +66,7 @@ void CloseSelectPetBtnCallBackFunc(CButtonUI* _btn)
 	CLevel_Lobby* level = static_cast<CLevel_Lobby*>(CLevelMgr::GetInst()->GetCurrentLevel());
 	level->FindSelectPetByBtn(_btn);
 	level->DeleteSelectPetUI();
+	CGameDataMgr::GetInst()->SaveToFile();
 }
 
 void PagePlusBtnCallBackFunc()
@@ -141,11 +143,13 @@ void CLevel_Lobby::tick()
 
 void CLevel_Lobby::Enter()
 {
+	if (m_LoadingPanel != nullptr)
+	{
+		m_LoadingPanel->Destroy();
+	}
+
 	m_CurPanelStartIndex = 0;
 	m_Resolution = CEngine::GetInst()->GetResolution();
-
-	m_SelectCookieStr = L"Brave_Cookie";
-	m_SelectPetStr = L"GoldDrop";
 
 	LoadSoundResource();
 	LoadTextureResource();
@@ -205,13 +209,15 @@ void CLevel_Lobby::Enter()
 
 	m_CurCookieUI = new CImageUI;
 	// TODO : 나중에 파일로 기본 설정값 바꾸기
-	m_CurCookieUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"Illust_Brave_Cookie"));
+	m_SelectCookieStr = CGameDataMgr::GetInst()->GetCurPlayCookie();
+	m_CurCookieUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"Illust_" + m_SelectCookieStr));
 	m_CurCookieUI->SetScale(210.f, 240.f);
 	m_CurCookieUI->SetPos(100.f, 0.f);
 	PanelUI->AddChildUI(m_CurCookieUI);
 
 	m_CurPetUI = new CImageUI;
-	m_CurPetUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"Illust_Pet_GoldDrop"));
+	m_SelectPetStr = CGameDataMgr::GetInst()->GetCurPlayPet();
+	m_CurPetUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"Illust_Pet_" + m_SelectPetStr));
 	m_CurPetUI->SetScale(130.f, 130.f);
 	m_CurPetUI->SetPos(-100.f, -30.f);
 	PanelUI->AddChildUI(m_CurPetUI);
@@ -283,7 +289,7 @@ void CLevel_Lobby::Enter()
 	{
 		ScoreUI = new CScoreUI;
 		ScoreUI->SetSmallScore(m_vecScore[coin_digit - 1 - i]);
-		float StartPosX = (11 - coin_digit) * (ScoreUI->GetTexture()->GetWidth());
+		float StartPosX = (9 - coin_digit) * (ScoreUI->GetTexture()->GetWidth());
 		ScoreUI->SetPos(StartPosX + (ScoreUI->GetTexture()->GetWidth() * i), 80.f);
 		ScoreUI->SetScale(ScoreUI->GetTexture()->GetWidth(), ScoreUI->GetTexture()->GetHeight());
 		CoinScorePanel->AddChildUI(ScoreUI);
@@ -345,7 +351,6 @@ void CLevel_Lobby::Enter()
 
 void CLevel_Lobby::Exit()
 {
-	m_BGM->Stop();
 	CGameDataMgr::GetInst()->SetCurPlayCookie(m_SelectCookieStr);
 	CGameDataMgr::GetInst()->SetCurPlayPet(m_SelectPetStr);
 }
@@ -355,10 +360,6 @@ void CLevel_Lobby::LoadSoundResource()
 	CResourceMgr::GetInst()->LoadSound(L"Bgm_MainLobby", L"sound\\Bgm_MainLobby.wav");
 	CResourceMgr::GetInst()->LoadSound(L"Effect_GameStart", L"sound\\Effect_GameStart.wav");
 	CResourceMgr::GetInst()->LoadSound(L"Effect_UIBtn", L"sound\\Effect_UIButton.wav");
-	/*if (CResourceMgr::GetInst()->FindSound(L"Effect_UIBtn") == nullptr)
-	{
-		
-	}*/
 }
 
 void CLevel_Lobby::LoadTextureResource()
@@ -421,6 +422,10 @@ void CLevel_Lobby::LoadTextureResource()
 	// Run Button
 	CResourceMgr::GetInst()->LoadTexture(L"RunButton_Normal", L"texture\\Button\\Run_Normal.png");
 	CResourceMgr::GetInst()->LoadTexture(L"RunButton_Hover", L"texture\\Button\\Run_Hover.png");
+
+	// Loading Background
+	CResourceMgr::GetInst()->LoadTexture(L"LoadingBG", L"texture\\Lobby\\LoadingBG.png");
+	CResourceMgr::GetInst()->LoadTexture(L"Loading_Script", L"texture\\Lobby\\Loading_Script.png");
 }
 
 void CLevel_Lobby::SetEpisodeMapUI()
@@ -758,5 +763,35 @@ void CLevel_Lobby::LoadPetList()
 
 void CLevel_Lobby::ShowLoadingUI()
 {
+	m_LoadingPanel = new CPanelUI;
+	m_LoadingPanel->SetTexture(CResourceMgr::GetInst()->FindTexture(L"LoadingBG"));
+	m_LoadingPanel->SetScale(m_LoadingPanel->GetTexture()->GetWidth(), m_LoadingPanel->GetTexture()->GetHeight());
+	m_LoadingPanel->SetPos(m_Resolution.x / 2.f, m_Resolution.y / 2.f);
+
+	CImageUI* ImageUI = new CImageUI;
+	wstring CookieName = CGameDataMgr::GetInst()->GetCurPlayCookie();
+	if (CookieName == L"") { CookieName = m_vecCookieStr[0]; }
+	ImageUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"Illust_" + CookieName));
+	ImageUI->SetScale(ImageUI->GetTexture()->GetWidth(), ImageUI->GetTexture()->GetHeight());
+	ImageUI->SetPos(0, 0);
+	m_LoadingPanel->AddChildUI(ImageUI);
+
+	ImageUI = new CImageUI;
+	ImageUI->SetTexture(CResourceMgr::GetInst()->FindTexture(L"Loading_Script"));
+	ImageUI->SetScale(ImageUI->GetTexture()->GetWidth(), ImageUI->GetTexture()->GetHeight());
+	ImageUI->SetPos(100, -200);
+	m_LoadingPanel->AddChildUI(ImageUI);
+
+	AddObject(LAYER_TYPE::UI, m_LoadingPanel);
+
+	CSound* sound = CResourceMgr::GetInst()->FindSound(L"Effect_GameStart");
+	sound->SetVolume(80.f);
+	sound->Play();
+
+	m_BGM->Stop();
+
+	CTimeMgr::GetInst()->AddTimer(4.0f, [this]() {
+		CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::GAME);
+		}, false);
 
 }

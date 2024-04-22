@@ -33,7 +33,14 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 
-
+void GameOverBtnCallBackFunc()
+{
+	CSound* sound = CResourceMgr::GetInst()->FindSound(L"Effect_UIBtn");
+	sound->SetVolume(80.f);
+	sound->Play();
+	
+	CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::LOBBY);
+}
 
 CLevel_Game::CLevel_Game()
 	: m_Cookie(nullptr)
@@ -147,7 +154,6 @@ void CLevel_Game::tick()
 	m_ActingPosX = StandardPosX + 800.f;
 	m_DeletePosX = StandardPosX - m_Resolution.x * 0.5f;
 
-
 	// Cookie Debug Info
 	
 	DbgObjInfo CurCoinInfo = { CCamera::GetInst()->GetRealPos(Vec2D(600, 50)), 0, 
@@ -171,8 +177,10 @@ void CLevel_Game::tick()
 
 	PrintCookieLog();
 
-	// Update HUD ============================================
-
+	// ================================================
+	//					Update HUD
+	// ================================================
+	// 
 	// Jump & Slide Button State Check
 	if (KEY_TAP(KEY::SPACE) || KEY_PRESSED(KEY::SPACE))
 	{
@@ -581,6 +589,13 @@ void CLevel_Game::tick()
 		m_PrevStage = nullptr;
 		m_PostStage = nullptr;
 	}
+
+
+	// Cookie 낙사 체크
+	if (m_Resolution.y + (m_Resolution.y / 2.f) < m_Cookie->GetPos().y)
+	{
+		CGameDataMgr::GetInst()->DeductHP(10000);
+	}
 }
 
 
@@ -592,7 +607,6 @@ void CLevel_Game::Enter()
 	LoadTextureResource();
 	SetHUD();
 	
-
 	// 현재 스테이지 맵 데이터 불러오기
 	CStageMgr::GetInst()->SetStartStage(EPISODE_TYPE::EP1);
 	m_CurStage = CStageMgr::GetInst()->GetCurrentStage();
@@ -656,6 +670,18 @@ void CLevel_Game::Enter()
 void CLevel_Game::Exit()
 {
 	m_BGM->Stop();
+	m_GameOver = false;
+	CGameDataMgr::GetInst()->SaveToFile();
+	CGameDataMgr::GetInst()->ResetForGame();
+
+	for (UINT i = 0; i < (UINT)LAYER_TYPE::UI; ++i)
+	{
+		vector<CObject*> vecObjects = GetObjectsByLayerType(static_cast<LAYER_TYPE>(i));
+		for (size_t j = 0; j < vecObjects.size(); ++j)
+		{
+			vecObjects[j]->Destroy();
+		}
+	}
 }
 
 void CLevel_Game::SetHUD()
@@ -893,6 +919,7 @@ void CLevel_Game::SetHUD()
 	pButtonUI = new CButtonUI;
 	pButtonUI->SetNormalImage(CResourceMgr::GetInst()->FindTexture(L"GameOverUI_NormalBtn"));
 	pButtonUI->SetHoverImage(CResourceMgr::GetInst()->FindTexture(L"GameOverUI_HoverBtn"));
+	pButtonUI->SetCallBack(&GameOverBtnCallBackFunc);
 	pButtonUI->SetScale(194.f, 65.f);
 	pButtonUI->SetPos(0, 130);
 	m_GameOverUI->AddChildUI(pButtonUI);
