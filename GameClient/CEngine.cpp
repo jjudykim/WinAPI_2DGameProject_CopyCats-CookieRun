@@ -14,6 +14,7 @@
 #include "CSoundMgr.h"
 #include "CTaskMgr.h"
 #include "CGameDataMgr.h"
+#include "CUIMgr.h"
 #include "CCamera.h"
 
 
@@ -95,6 +96,7 @@ void CEngine::progress()
 	// ===============
 	CLevelMgr::GetInst()->progress();
 	CCollisionMgr::GetInst()->tick();
+	CUIMgr::GetInst()->tick();
 
 	// ===============
 	// Render

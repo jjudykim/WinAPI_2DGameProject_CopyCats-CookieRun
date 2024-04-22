@@ -44,8 +44,6 @@ CPlayer::CPlayer()
 	m_Animator = (CAnimator*)AddComponent(new CAnimator);
 	m_RigidBody = (CRigidBody*)AddComponent(new CRigidBody);
 	m_FSM = (CFSM*)AddComponent(new CFSM);
-
-	CResourceMgr::GetInst()->LoadCookieInfo();
 }
 
 CPlayer::~CPlayer()

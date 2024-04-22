@@ -133,8 +133,14 @@ void CUI::LButtonDown()
 	m_MouseLbtnDown = true;
 }
 
+void CUI::LButtonUp()
+{
+}
+
 void CUI::LButtonClicked()
 {
+	m_MouseLbtnDown = false;
+	m_MouseClicked = true;
 }
 
 

@@ -25,8 +25,6 @@ CPet::CPet()
 	m_RigidBody = (CRigidBody*)AddComponent(new CRigidBody);
 	m_Collider = (CCollider*)AddComponent(new CCollider);
 	m_FSM = (CFSM*)AddComponent(new CFSM);
-
-	CResourceMgr::GetInst()->LoadPetInfo();
 }
 
 CPet::~CPet()

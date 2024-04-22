@@ -97,6 +97,10 @@ void CLevel_Game::tick()
 	{
 		ChangeLevel(LEVEL_TYPE::EDITOR);
 	}
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::L) == KEY_STATE::TAP)
+	{
+		ChangeLevel(LEVEL_TYPE::LOBBY);
+	}
 
 	if (CGameDataMgr::GetInst()->IsCookieDead() == true)
 	{
@@ -610,7 +614,7 @@ void CLevel_Game::Enter()
 	CObject* pObject = new CPlayer;
 	pObject->SetName(L"Player");
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
-	pPlayer->SetCurCookie(COOKIE_TYPE::BRAVE_COOKIE);
+	pPlayer->SetCurCookie(CGameDataMgr::GetInst()->GetCurPlayCookie());
 	pPlayer->SetPos(COOKIE_DEFAULT_POSX, COOKIE_DEFAULT_POSY);
 	pPlayer->SetScale(pPlayer->GetCurCookie()._frmSize.x, pPlayer->GetCurCookie()._frmSize.y);
 	pPlayer->SetSpeed(COOKIE_DEFAULT_SPEED);
@@ -621,7 +625,7 @@ void CLevel_Game::Enter()
 	pObject = new CPet;
 	pObject->SetName(L"Pet");
 	CPet* pPet = dynamic_cast<CPet*>(pObject);
-	pPet->SetCurPet(PET_TYPE::GOLD_DROP);
+	pPet->SetCurPet(CGameDataMgr::GetInst()->GetCurPlayPet());
 	pPet->SetPos(PET_DEFAULT_POSX, PET_DEFAULT_POSY);
 	pPet->SetScale(pPet->GetCurPet()._frmSize.x, pPet->GetCurPet()._frmSize.y);
 	pPet->SetSpeed(400.f);

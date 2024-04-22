@@ -11,6 +11,9 @@ private:
 	UINT	m_GlobalGameCoin;
 	UINT	m_CurGameCoin;
 	bool	m_CoinEditing;
+
+	wstring	m_CurPlayCookie;
+	wstring	m_CurPlayPet;
 	
 	int		m_MaxHP;
 	int		m_CurHP;
@@ -29,6 +32,8 @@ public:
 	UINT GetCurScore() { return m_CurGameScore; }
 	UINT GetGlobalGameCoin() { return m_GlobalGameCoin; }
 	UINT GetCurGameCoin() { return m_CurGameCoin; }
+	wstring GetCurPlayCookie() { return m_CurPlayCookie; }
+	wstring GetCurPlayPet() { return m_CurPlayPet; }
 	int GetCurHP() { return m_CurHP; }
 	int GetMaxHP() { return m_MaxHP; }
 	float GetRateHP() { return (float)m_CurHP / (float)m_MaxHP * 100.f; }
@@ -40,6 +45,8 @@ public:
 	
 	void SetMaxHP(int _hp) { m_MaxHP = _hp; }
 	void SetGlobalGameCoin(int _hp) { m_GlobalGameCoin = _hp; }
+	void SetCurPlayCookie(wstring _Cookie) { m_CurPlayCookie = _Cookie; }
+	void SetCurPlayPet(wstring _Pet) { m_CurPlayPet = _Pet; }
 	void DoneCoinEditing() { m_CoinEditing = false; }
 	void DoneScoreEditing() { m_ScoreEditing = false; }
 	void DoneBTEditing() { m_BTEditing = false; }

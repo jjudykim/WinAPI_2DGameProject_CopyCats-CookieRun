@@ -41,5 +41,7 @@ public:
 public:
 	CLevel();
 	~CLevel();
+
+	friend class CUIMgr;
 };
 

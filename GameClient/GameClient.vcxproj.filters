@@ -169,6 +169,9 @@
     <Filter Include="03. Game\06. Object\UI\ScoreUI">
       <UniqueIdentifier>{1fb31005-d4bd-42eb-84cb-e696633f68d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Game\03. Manager\UIMgr">
+      <UniqueIdentifier>{b1ee8995-3105-4b6b-83fe-6e56c5f1883d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -381,6 +384,9 @@
     <ClInclude Include="CPetAttractState.h">
       <Filter>03. Game\09. Module\State\PetState</Filter>
     </ClInclude>
+    <ClInclude Include="CUIMgr.h">
+      <Filter>03. Game\03. Manager\UIMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -571,6 +577,9 @@
     </ClCompile>
     <ClCompile Include="CPetAttractState.cpp">
       <Filter>03. Game\09. Module\State\PetState</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIMgr.cpp">
+      <Filter>03. Game\03. Manager\UIMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

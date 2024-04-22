@@ -48,7 +48,10 @@ CTexture* CResourceMgr::LoadTexture(const wstring& _Key, const wstring& _strRela
 
 CTexture* CResourceMgr::CreateTextureWithAlpha(const wstring& _Key, UINT _Width, UINT _Height, Color _color)
 {
-	assert(!FindTexture(_Key));
+	if (FindTexture(_Key) != nullptr)
+	{
+		return FindTexture(_Key);
+	};
 
 	CTexture* pTex = new CTexture;
 	int result;
@@ -325,16 +328,16 @@ void CResourceMgr::LoadCookieInfo()
 				wstring strRead = szReadBuff;
 				info._nameStr = strRead;
 
-				m_mapCookieInfo.insert(make_pair((UINT)info._type, info));
+				m_mapCookieInfo.insert(make_pair(info._nameStr, info));
 			}
 		}
 	}
 	fclose(pFile);
 }
 
-CookieInfo CResourceMgr::FindCookieInfo(const UINT& _Key)
+CookieInfo CResourceMgr::FindCookieInfo(const wstring& _Key)
 {
-	map<UINT, CookieInfo>::iterator iter = m_mapCookieInfo.find(_Key);
+	map<wstring, CookieInfo>::iterator iter = m_mapCookieInfo.find(_Key);
 
 	if (m_mapCookieInfo.end() == iter)
 		return CookieInfo{};
@@ -378,16 +381,16 @@ void CResourceMgr::LoadPetInfo()
 				wstring strRead = szReadBuff;
 				info._nameStr = strRead;
 
-				m_mapPetInfo.insert(make_pair((UINT)info._type, info));
+				m_mapPetInfo.insert(make_pair(info._nameStr, info));
 			}
 		}
 	}
 	fclose(pFile);
 }
 
-PetInfo CResourceMgr::FindPetInfo(const UINT& _Key)
+PetInfo CResourceMgr::FindPetInfo(const wstring& _Key)
 {
-	map<UINT, PetInfo>::iterator iter = m_mapPetInfo.find(_Key);
+	map<wstring, PetInfo>::iterator iter = m_mapPetInfo.find(_Key);
 
 	if (m_mapPetInfo.end() == iter)
 		return PetInfo{};

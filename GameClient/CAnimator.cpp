@@ -104,9 +104,7 @@ void CAnimator::LoadAnimation(const wstring& _Key, const wstring& _strRelativeFi
 
 	if (nullptr != FindAnimation(pNewAnim->GetName()))
 	{
-		delete pNewAnim;
 		LOG(LOG_TYPE::DBG_ERROR, L"중복된 애니메이션");
-		return;
 	}
 
 	pNewAnim->m_Animator = this;

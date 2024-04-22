@@ -8,6 +8,7 @@
 #include "CLevelMgr.h"
 #include "CStageMgr.h"
 #include "CJellyMgr.h"
+#include "CKeyMgr.h"
 #include "CResourceMgr.h"
 #include "CDbgRenderMgr.h"
 #include "CTaskMgr.h"
@@ -82,6 +83,11 @@ void CLevel_Editor::begin()
 
 void CLevel_Editor::tick()
 {
+	if (CKeyMgr::GetInst()->GetKeyState(KEY::ESC) == KEY_STATE::TAP)
+	{
+		ChangeLevel(LEVEL_TYPE::LOBBY);
+	}
+
 	CLevel::tick();
 
 	DbgObjInfo info = { CCamera::GetInst()->GetRealPos(Vec2D(500, 50)), 0,

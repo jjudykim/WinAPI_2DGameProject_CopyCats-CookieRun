@@ -27,15 +27,6 @@ void CButtonUI::tick_ui()
 		if (m_NormalImg != nullptr)
 			m_State = 0;
 	}
-
-	if (IsLbtnDowned() == true)
-	{
-		if (m_Func != nullptr)
-		{
-			m_Func();
-			CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::UI_LBTN_DOWN, (DWORD_PTR)this, false });
-		}
-	}
 }
 
 void CButtonUI::render_ui()
@@ -63,7 +54,18 @@ void CButtonUI::render_ui()
 
 void CButtonUI::LButtonClicked()
 {
-	
+	if (m_Func != nullptr)
+	{
+		m_Func();
+		CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::UI_LBTN_DOWN, (DWORD_PTR)this, false });
+		DoneMouseClickEvent();
+	}
+	else if (m_FuncWithBtn != nullptr)
+	{
+		m_FuncWithBtn(this);
+		CTaskMgr::GetInst()->AddTask(Task{ TASK_TYPE::UI_LBTN_DOWN, (DWORD_PTR)this, false });
+		DoneMouseClickEvent();
+	}
 }
 
 

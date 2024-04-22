@@ -28,10 +28,11 @@ void CFSM::finaltick()
 
 void CFSM::AddState(const wstring& _strStateName, CState* _State)
 {
-	assert(!FindState(_strStateName));
-
-	_State->m_Owner = this;
-	m_mapState.insert(make_pair(_strStateName, _State));
+	if (FindState(_strStateName) == nullptr)
+	{
+		_State->m_Owner = this;
+		m_mapState.insert(make_pair(_strStateName, _State));
+	};
 }
 
 void CFSM::SetState()

@@ -53,7 +53,7 @@ public:
 
     void SetJumpingState(bool _Jumping) { m_Jumping = _Jumping; }
     void PlusJumpCount() { ++m_CurJumpCount; }
-    void SetCurCookie(COOKIE_TYPE _cookieType) { m_CurCookie = CResourceMgr::GetInst()->FindCookieInfo((UINT)_cookieType); }
+    void SetCurCookie(wstring _cookieStr) { m_CurCookie = CResourceMgr::GetInst()->FindCookieInfo(_cookieStr); }
     bool CheckCookieFSMState(const wstring& _str) { return m_FSM->GetCurState() == m_FSM->FindState(_str); }
     void ChangeCookieFSMState(const wstring& _str) { m_FSM->ChangeState(_str); }
     bool CheckCookieState(COOKIE_COMPLEX_STATE _State) { return m_State & (int)_State; }

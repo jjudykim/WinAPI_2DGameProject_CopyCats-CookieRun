@@ -21,7 +21,7 @@ public:
     virtual void tick();
 
 public:
-    void SetCurPet(PET_TYPE _petType) { m_CurPet = CResourceMgr::GetInst()->FindPetInfo((UINT)_petType); }
+    void SetCurPet(wstring _petStr) { m_CurPet = CResourceMgr::GetInst()->FindPetInfo(_petStr); }
     const PetInfo& GetCurPet() { return m_CurPet; }
     bool CheckPetFSMState(const wstring& _str) { return m_FSM->GetCurState() == m_FSM->FindState(_str); }
     void ChangePetFSMState(const wstring& _str) { m_FSM->ChangeState(_str); }
