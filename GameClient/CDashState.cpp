@@ -29,7 +29,6 @@ void CDashState::Set()
 void CDashState::Enter()
 {
 	GetOwnerAnimator()->Play(L"Dash", true);
-	CTimeMgr::GetInst()->AddTimer(2.3f, [this]() { GetFSM()->ChangeState(L"Run"); }, false);
 }
 
 void CDashState::FinalTick()

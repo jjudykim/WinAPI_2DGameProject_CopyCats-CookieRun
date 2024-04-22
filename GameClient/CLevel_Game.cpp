@@ -523,10 +523,10 @@ void CLevel_Game::tick()
 			CTimeMgr::GetInst()->AddTimer(2.3f, [this]() {
 				m_Cookie->SetSpeed(COOKIE_DEFAULT_SPEED);
 				m_Pet->SetSpeed(COOKIE_DEFAULT_SPEED);
+ 				m_Cookie->ChangeCookieFSMState(L"Run");
+				m_Pet->ChangePetFSMState(L"Run");
 				m_Cookie->TurnOnCookieState(COOKIE_COMPLEX_STATE::INVINCIBLE);
 				m_Cookie->TurnOffCookieState(COOKIE_COMPLEX_STATE::BOOST);
-				m_Cookie->ChangeCookieFSMState(L"Run");
-				m_Pet->ChangePetFSMState(L"Run");
 				LOG(LOG_TYPE::DBG_LOG, L"BOOST OFF");
 				m_CookieStateAction &= ~(int)COOKIE_COMPLEX_STATE::BOOST;
 				}, false);

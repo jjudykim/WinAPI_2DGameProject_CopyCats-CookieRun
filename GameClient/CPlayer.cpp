@@ -147,7 +147,7 @@ void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* 
 
 				if (plt->GetPLTType() == PLT_TYPE::FLOATED)
 				{
- 					if (0 < GetPos().y - m_PrevYPos)
+					if (0 < GetPos().y - m_PrevYPos)
 					{
 						m_RigidBody->SetGroundStandardPosY(plt->GetPos().y + (plt->GetScale().y / 4.f));
 					}
@@ -157,7 +157,6 @@ void CPlayer::OnOverlap(CCollider* _OwnCollider, CObject* _OtherObj, CCollider* 
 					m_RigidBody->SetGroundStandardPosY(COOKIE_DEFAULT_POSY);
 				}
 				m_RigidBody->SetGround(true);
-				//LOG(LOG_TYPE::DBG_LOG, L"SetGround -> true");
 			}
 		}
 	}
