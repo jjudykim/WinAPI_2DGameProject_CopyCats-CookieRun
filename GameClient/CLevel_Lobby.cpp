@@ -15,10 +15,12 @@
 
 void RunBtnCallBackFunc()
 {
+	CLevel_Lobby* level = static_cast<CLevel_Lobby*>(CLevelMgr::GetInst()->GetCurrentLevel());
 	CSound* sound = CResourceMgr::GetInst()->FindSound(L"Effect_UIBtn");
 	sound->SetVolume(80.f);
 	sound->Play();
-	CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::GAME);
+	level->ShowLoadingUI();
+	//CLevelMgr::GetInst()->ChangeLevel(LEVEL_TYPE::GAME);
 }
 
 void EpisodeMapBtnCallBackFunc()
@@ -172,7 +174,6 @@ void CLevel_Lobby::Enter()
 
 
 	// Current Cookie & Pet Panel Setting
-
 	// Load Cookie Info From File
 	LoadCookieList();
 	LoadPetList();
@@ -282,7 +283,7 @@ void CLevel_Lobby::Enter()
 	{
 		ScoreUI = new CScoreUI;
 		ScoreUI->SetSmallScore(m_vecScore[coin_digit - 1 - i]);
-		float StartPosX = (8 - coin_digit) * (ScoreUI->GetTexture()->GetWidth());
+		float StartPosX = (11 - coin_digit) * (ScoreUI->GetTexture()->GetWidth());
 		ScoreUI->SetPos(StartPosX + (ScoreUI->GetTexture()->GetWidth() * i), 80.f);
 		ScoreUI->SetScale(ScoreUI->GetTexture()->GetWidth(), ScoreUI->GetTexture()->GetHeight());
 		CoinScorePanel->AddChildUI(ScoreUI);
@@ -353,10 +354,11 @@ void CLevel_Lobby::LoadSoundResource()
 {
 	CResourceMgr::GetInst()->LoadSound(L"Bgm_MainLobby", L"sound\\Bgm_MainLobby.wav");
 	CResourceMgr::GetInst()->LoadSound(L"Effect_GameStart", L"sound\\Effect_GameStart.wav");
-	if (CResourceMgr::GetInst()->FindSound(L"Effect_UIBtn") == nullptr)
+	CResourceMgr::GetInst()->LoadSound(L"Effect_UIBtn", L"sound\\Effect_UIButton.wav");
+	/*if (CResourceMgr::GetInst()->FindSound(L"Effect_UIBtn") == nullptr)
 	{
-		CResourceMgr::GetInst()->LoadSound(L"Effect_UIBtn", L"sound\\Effect_UIButton.wav");
-	}
+		
+	}*/
 }
 
 void CLevel_Lobby::LoadTextureResource()
@@ -752,4 +754,9 @@ void CLevel_Lobby::LoadPetList()
 		}
 	}
 	fclose(pFile);
+}
+
+void CLevel_Lobby::ShowLoadingUI()
+{
+
 }

@@ -66,6 +66,8 @@ public:
 
 	void LoadCookieList();
 	void LoadPetList();
+
+	void ShowLoadingUI();
 public:
 	void SetCurPanelStartIndex(int _index) { m_CurPanelStartIndex = _index; }
 	int GetCurPanelStartIndex() { return m_CurPanelStartIndex; }

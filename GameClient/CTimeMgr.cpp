@@ -2,6 +2,7 @@
 #include "CTimeMgr.h"
 #include "CEngine.h"
 #include "CLevelMgr.h"
+#include "CLevel_Game.h"
 #include "CGameDataMgr.h"
 
 float CTimeMgr::AccTime = 0.f;
@@ -44,13 +45,20 @@ void CTimeMgr::tick()
 
 	AccTime += m_DeltaTime;
 
-	if (CGameDataMgr::GetInst()->IsCookieDead() == false) { TimerUpdate(); }
 	if (1.f < AccTime)
 	{
 		swprintf_s(szBuff, L"DeltaTime : %f, FPS : %d", m_DeltaTime, m_FPS);
 		AccTime = 0.f;
 		m_FPS = 0;
 	}
+
+	if (CGameDataMgr::GetInst()->IsCookieDead() == true)
+	{
+		CLevel_Game* CurGame = static_cast<CLevel_Game*>(CLevelMgr::GetInst()->GetCurrentLevel());
+		if (CurGame->GetGameOver() == true) { return; }
+	}
+
+	TimerUpdate();
 }
 
 void CTimeMgr::render()

@@ -37,6 +37,7 @@ private:
     CPanelUI*   m_CoinScoreUI;
     CPanelUI*   m_HighScoreUI;
     CPanelUI*   m_CurScoreUI;
+    CPanelUI*   m_GameOverUI;
     vector<int> m_vecScore;
 
     bool        m_GameOver;
@@ -58,11 +59,17 @@ public:
    
 public:
     void SetHUD();
+    void ShowGameOverUI();
     void LoadSoundResource();
+    void LoadTextureResource();
     void SpawnStageSTObject(StageSTObjInfo& _ObjInfo);
     void SpawnStageDNObject(StageDNObjInfo& _ObjInfo);
     void PrintCookieLog();
     //void DeleteStageObject(CObject* _Obj);
+
+public:
+    bool GetGameOver() { return m_GameOver; }
+
 public:
     CLONE_DISABLE(CLevel_Game);
 
