@@ -3,7 +3,7 @@
 
 > Windows API를 활용한 2D Game Copy Project
 
-<a href="https://youtu.be/xiwObELJPmY?si=2U84cyJ0oTqDS3tH" target="_blank"><img src="https://img.shields.io/badge/Notion%EC%9D%84%20%ED%86%B5%ED%95%B4%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EA%B3%BC%EC%A0%95%20%ED%99%95%EC%9D%B8%ED%95%98%EA%B8%B0-222222?style=social&logo=Notion&logoColor=Black&label=Notion&logoSize=200"/></a>
+<a href="https://www.notion.so/Copycat-s-CookieRun-ea8a5923a4724a6db10cb8c8b85e599f?pvs=4" target="_blank"><img src="https://img.shields.io/badge/Notion%EC%9D%84%20%ED%86%B5%ED%95%B4%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EA%B3%BC%EC%A0%95%20%ED%99%95%EC%9D%B8%ED%95%98%EA%B8%B0-222222?style=social&logo=Notion&logoColor=Black&label=Notion&logoSize=200"/></a>
 
 <br>
 
