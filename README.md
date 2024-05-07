@@ -62,7 +62,7 @@ MFC를 사용한 직관적인 인터페이스를 통해 편의성과 확장성�
 | :--- | :--- |
 |  게임명   | 쿠키런　　　　　　　　　　 |
 |  개발사 / 출시일   | 데브시스터즈 (現 스튜디오 킹덤) / 2013년 4월 2일 |
-|  플랫폼 | 모바일 (Andriod | iOS) |
+|  플랫폼 | 모바일 (Andriod \| iOS) |
 | 장르 | 횡스크롤 러닝 액션  |
 
 </div>
@@ -107,8 +107,8 @@ MFC를 사용한 직관적인 인터페이스를 통해 편의성과 확장성�
     | Mode | Animation Edit Mode |
     | --- | :---: |  
     | 구현 | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/6b0f4912-c518-480b-ad87-2f497d809d9c" width="85%" height="85%" title="Animation Edit Mode" alt="AnimationEditMode"></img><br/> |
-    | 개요 | 맵을 구성하는 Platform과 Obstacle 등의 에피소드/스테이지별 알맞은 에셋에 따른 Spawn Position을 지정할 수 있는 모드 |
-    | 세부<br>기능 | - 각 Stage에 맞는 Map Object의 에셋과 Drag & Drop을 통한 편리한 위치 지정 가능 <br> - 각 Map Object의 배치 가능 위치에 따라 가이드라인 생성 & 배치 시 Position 조정 <br> - 배치한 Map Object의 세부적인 Position Button UI를 통해 조정 가능 |
+    | 개요 | 게임에 활용되는 애니메이션 에셋을 직접 생성하고 편집할 수 있는 Animation Edit Mode |
+    | 세부<br>기능 | - Atlas Texture를 활용해 직접 애니메이션 에셋 제작 가능<br>- 마우스 드래그를 활용한 Direct Draw / Spin Control을 활용한 세부 수치 조정을 통해<br>원하는 애니메이션 프레임을 손쉽게 편집 가능<br>- Play / Stop을 통해 현재 편집 중인 애니메이션 미리보기 가능<br>- 파일 스트림을 통한 저장 / 불러오기 |
 
 <br>
 
