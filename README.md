@@ -1,6 +1,9 @@
-# Copycat's CookieRun
+<img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/920682e3-8251-4aa4-8d89-87a1efc0a0ee" width="100%" height="100%" title="Banner" alt="Banner"></img><br/>
+# <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/aab331c7-e5fa-4e8e-8829-8821eea97b8e" width="4.5%" height="4.5%" title="Icon" alt="Icon"></img> Copycat's CookieRun
 
 > Windows API를 활용한 2D Game Copy Project
+
+<a href="https://youtu.be/xiwObELJPmY?si=2U84cyJ0oTqDS3tH" target="_blank"><img src="https://img.shields.io/badge/Notion%EC%9D%84%20%ED%86%B5%ED%95%B4%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EA%B3%BC%EC%A0%95%20%ED%99%95%EC%9D%B8%ED%95%98%EA%B8%B0-222222?style=social&logo=Notion&logoColor=Black&label=Notion&logoSize=200"/></a>
 
 <br>
 
@@ -44,6 +47,14 @@ MFC를 사용한 직관적인 인터페이스를 통해 편의성과 확장성�
 
 **게임 설명**
 
+<div align="center">
+<img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/4294edb2-ff76-42b3-b3aa-c7c9dd476f5e" width="256px" height="256px" title="Logo" alt="Logo"></img><br/>
+<img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/7c334442-00af-44e4-bbaa-ffb308442e5c" width="226px" height="110px" title="Title" alt="Title"></img><br/>
+</div>
+
+
+
+
 <!-- 아래 표에는 넓이를 위한 전각문자가 포함되어 있음 (　)-->
 <div align="center">
     
@@ -55,7 +66,8 @@ MFC를 사용한 직관적인 인터페이스를 통해 편의성과 확장성�
 | 장르 | 횡스크롤 러닝 액션  |
 
 </div>
-<br>
+
+<br><br>
 
 **프로젝트에 반영된 게임의 특징**
 <br><br>
@@ -86,32 +98,32 @@ MFC를 사용한 직관적인 인터페이스를 통해 편의성과 확장성�
 
 **프로젝트 설명** <br><br>
 
-> 🛠️ 손쉽게 Stage, Animation 제작이 가능한 Edit Tool
+> 🛠️ **손쉽게 Stage, Animation 제작이 가능한 Edit Tool**
 
 <br>
 
 - Animation Edit Tool
-    
-    
-    | 구현 | [이미지 첨부] |
-    | --- | --- |
+
+    | Mode | Animation Edit Mode |
+    | --- | :---: |  
+    | 구현 | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/6b0f4912-c518-480b-ad87-2f497d809d9c" width="85%" height="85%" title="Animation Edit Mode" alt="AnimationEditMode"></img><br/> |
     | 개요 | 맵을 구성하는 Platform과 Obstacle 등의 에피소드/스테이지별 알맞은 에셋에 따른 Spawn Position을 지정할 수 있는 모드 |
-    | 세부 기능 | - 각 Stage에 맞는 Map Object의 에셋과 Drag & Drop을 통한 편리한 위치 지정 가능 <br> - 각 Map Object의 배치 가능 위치에 따라 가이드라인 생성 & 배치 시 Position 조정 <br> - 배치한 Map Object의 세부적인 Position Button UI를 통해 조정 가능 |
+    | 세부<br>기능 | - 각 Stage에 맞는 Map Object의 에셋과 Drag & Drop을 통한 편리한 위치 지정 가능 <br> - 각 Map Object의 배치 가능 위치에 따라 가이드라인 생성 & 배치 시 Position 조정 <br> - 배치한 Map Object의 세부적인 Position Button UI를 통해 조정 가능 |
 
 <br>
 
 - Stage Edit Tool
 
 | Mode | Static Object Edit Mode | Dynamic Object Edit Mode |
-| --- | --- | --- |
-| 구현 | [이미지 첨부] | [이미지 첨부] |
+| --- | :---: | :---: |
+| 구현 | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/d30e1a0a-1738-4eff-b693-e3c2b63067da" width="100%" height="100%" title="Static Object Edit Mode" alt="STObjEditMode"></img><br/> | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/38f22a6c-26f0-4375-881d-859486db38ea" width="100%" height="100%" title="Dynamic Object Edit Mode" alt="DNObjEditMode"></img><br/> |
 | 개요 | 맵을 구성하는 Platform과 Obstacle 등의 에피소드/스테이지별 알맞은 에셋에 따른 Spawn Position을 지정할 수 있는 모드 | 게임을 진행하며 스테이지에서 획득할 수 있는 유동적인 오브젝트들의 Spawn Position을 지정할 수 있는 모드 |
-| 세부 기능 | - 각 Stage에 맞는 Object의 에셋과 Drag & Drop을 통한 편리한 위치 지정 가능 <br> - 각 Object의 배치 가능 위치에 따라 가이드라인 생성 & 배치 시 Position 조정 <br> - 배치한 Static Object의 세부적인 Position을Button UI를 통해 조정 가능 | - Tile의 형태로 Jelly 및 Coin의 Spawn Position 저장 가능 <br> - 선택한 Object를 클릭/드래그 하는 타일의 위치에 배치 가능 |
+| 세부<br>기능 | - 각 Stage에 맞는 Object의 에셋과 Drag & Drop을 통한 편리한 위치 지정 가능 <br> - 각 Object의 배치 가능 위치에 따라 가이드라인 생성 & 배치 시 Position 조정 <br> - 배치한 Static Object의 세부적인 Position을Button UI를 통해 조정 가능 | - Tile의 형태로 Jelly 및 Coin의 Spawn Position 저장 가능 <br> - 선택한 Object를 클릭/드래그 하는 타일의 위치에 배치 가능 |
 
 
 <br><br>
 
-> 🏆 원작 ‘쿠키런’의 플레이 방식 / 컨텐츠를 재현
+> 🏆 **원작 ‘쿠키런’의 플레이 방식 / 컨텐츠를 재현**
 
 <br>
 
@@ -120,24 +132,34 @@ MFC를 사용한 직관적인 인터페이스를 통해 편의성과 확장성�
     기본적인 UI는 모두 마우스 `L Click` 활용
     
     | 상호작용 | JUMP | SLIDE |
-    | --- | --- | --- |
+    | :---: | :---: | :---: |
     | 키보드 | SPACE BAR  | ⬇️ |
 
 <br>
 
 - 컨텐츠
-    
-    
+        
     | 최고 점수 갱신 | 스테이지 |
-    | --- | --- |
-    | [이미지 첨부] | [이미지 첨부] |
+    | :---: | :---: |
+    | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/ed3fa2d5-a071-4546-adf2-d77a2a6f1347" width="100%" height="100%" title="Lobby" alt="Lobby"></img><br/> | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/b533cd92-67da-4f16-8ba9-3e70c37d132b" width="100%" height="100%" title="ChangeStage" alt="ChangeStage"></img><br/> |
     | 플레이어의 최고 점수 저장해 갱신 가능 | 여러 에피소드를 선택해 순차적으로 스테이지 플레이 가능 |
-    
+
+    <br>
+  
     | 쿠키 | 펫 |
-    | --- | --- |
-    | [이미지 첨부] | [이미지 첨부] |
+    | :---: | :---: |
+    | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/812c5cfa-d51d-4cdb-8523-7f3339445ca2" width="100%" height="100%" title="SelectCookie" alt="SelectCookie"></img><br/> | <img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/5290933e-71ad-4504-9b78-051fdf46c17b" width="100%" height="100%" title="SelectPet" alt="SelectPet"></img><br/> |
     | 여러 종류의 쿠키들 중 선택해 플레이 가능 | 여러 종류의 펫들 중 선택해 플레이 가능 |
 
 <br><br><br>
 
 ### 프로젝트 결과
+
+<br>
+
+**시연 영상** <br><br>
+_이미지를 클릭하면 youtube링크로 이동합니다_
+
+<div align="center">
+<a href="https://youtu.be/xiwObELJPmY?si=NiR0zuokpjSpDYIH"><img src="https://github.com/jjudykim/WinAPI_2DGameProject_CopyCats-CookieRun/assets/66450769/3d1f30ba-be6a-4c7f-9f65-a337ffcd1b41" width="80%" height="80%" title="ResultVideo" alt="ResultVideo"></img></a>
+</div>
